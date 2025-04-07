@@ -15,21 +15,36 @@ namespace Naitv1.Controllers
 
         public IActionResult Index()
         {
+            string estaLogueadoString = HttpContext.Session.GetString("estaLogueado") ?? "false";
+            bool estaLogueado = estaLogueadoString == "true";
+
+            ViewBag.estaLogueado = estaLogueado;
+
+            if (estaLogueado)
+            {
+                ViewBag.nombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+            }
+
             return View();
         }
 
         public IActionResult CrearActividad()
         {
+            HttpContext.Session.SetString("estaLogueado", "true");
+            HttpContext.Session.SetString("nombreUsuario", "Matias");
             return View();
         }
 
         public IActionResult Configuracion()
         {
+            HttpContext.Session.SetString("estaLogueado", "false");
+            HttpContext.Session.SetString("nombreUsuario", "");
             return View();
         }
 
         public IActionResult Ayuda()
         {
+            HttpContext.Session.Clear();
             return View();
         }
 
