@@ -2,3 +2,5 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+// LA API KEY DE GOOGLE MAPS ESTA EN EL ARCHIVO api_key.js
+// const GOOGLE_MAPS_API_KEY
