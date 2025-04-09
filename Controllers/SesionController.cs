@@ -15,10 +15,7 @@ namespace Naitv1.Controllers
 
         public IActionResult Index()
         {
-            string estaLogueadoString = HttpContext.Session.GetString("estaLogueado") ?? "false";
-            bool estaLogueado = estaLogueadoString == "true";
-
-            ViewBag.estaLogueado = estaLogueado;
+            ViewBag.estaLogueado = UsuarioLogueado.estaLogueado(HttpContext.Session);
             return View();
         }
 
@@ -46,28 +43,51 @@ namespace Naitv1.Controllers
 
         public IActionResult Registrarse()
         {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
         public IActionResult ErrorDeRegistro()
         {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
         public IActionResult ErrorDeInicio()
         {
-            return View();
+           if(UsuarioLogueado.estaLogueado(HttpContext.Session)) {
+                return RedirectToAction("Index", "Home");
+           }
+
+           return View();
         }
 
         public IActionResult CuentaCreadaConExito()
         {
-            ViewBag.NombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+           if(UsuarioLogueado.estaLogueado(HttpContext.Session) == false) {
+                return RedirectToAction("Index", "Home");
+           }
 
-            return View();
+           ViewBag.NombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+
+           return View();
         }
         
         public IActionResult Salir()
         {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             HttpContext.Session.Clear();
             return Redirect("/");
         }
@@ -75,6 +95,10 @@ namespace Naitv1.Controllers
         [HttpPost]
         public IActionResult CrearUsuario(string nombre, string email, string password, string passwordConfirmation)
         {
+            if(UsuarioLogueado.estaLogueado(HttpContext.Session)) {
+                return RedirectToAction("Index", "Home");
+            }
+
             if ( password == passwordConfirmation)
             {
                 Usuario usuario = new Usuario();
