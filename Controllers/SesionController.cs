@@ -29,10 +29,7 @@ namespace Naitv1.Controllers
             if (resultado.Count > 0)
             {
                 Usuario usuario = resultado.First();
-
-                HttpContext.Session.SetString("estaLogueado", "true");
-                HttpContext.Session.SetString("nombreUsuario", usuario.Nombre);
-                HttpContext.Session.SetString("emailUsuario", usuario.Email);
+                UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
 
                 return Redirect("/");
             } else
@@ -109,9 +106,7 @@ namespace Naitv1.Controllers
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
 
-                HttpContext.Session.SetString("estaLogueado", "true");
-                HttpContext.Session.SetString("nombreUsuario", nombre);
-                HttpContext.Session.SetString("emailUsuario", email);
+                UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
 
                 return Redirect("/Sesion/CuentaCreadaConExito");
             } else
