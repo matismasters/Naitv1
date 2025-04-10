@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Naitv1.Data;
 
@@ -10,9 +11,11 @@ using Naitv1.Data;
 namespace Naitv1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250409232541_agregar lat lon a actividad")]
+    partial class agregarlatlonaactividad
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,17 +32,8 @@ namespace Naitv1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Activa")
-                        .HasColumnType("bit");
-
                     b.Property<int>("AnfitrionId")
                         .HasColumnType("int");
-
-                    b.Property<float>("Lat")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Lon")
-                        .HasColumnType("real");
 
                     b.Property<string>("MensajeDelAnfitrion")
                         .IsRequired()
@@ -48,11 +42,17 @@ namespace Naitv1.Migrations
                     b.Property<string>("TipoActividad")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<float>("lat")
+                        .HasColumnType("real");
+
+                    b.Property<float>("lon")
+                        .HasColumnType("real");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AnfitrionId");
 
-                    b.ToTable("Actividades", (string)null);
+                    b.ToTable("Actividades");
                 });
 
             modelBuilder.Entity("Naitv1.Models.Usuario", b =>
@@ -77,7 +77,7 @@ namespace Naitv1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios", (string)null);
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("Naitv1.Models.Actividad", b =>

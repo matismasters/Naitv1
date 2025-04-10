@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Crear Actividad";
+}
+
+<div class="container mt-5">
+    <h1>Crear Actividad</h1>
+
+    <form method="post" action="/Actividades/CrearActividad">
+        <div class="error">
+            <span>@ViewBag.errors</span>
+        </div>
+        <div class="mb-3">
+            <label for="MensajeDelAnfitrion" class="form-label">Nombre</label>
+            <input type="text" id="MensajeDelAnfitrion" name="mensajeDelAnfitrion" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="TipoActividad" class="form-label">Tipo Actividad</label>
+            <select id="TipoActividad" name="tipoActividad" class="form-control">
+                <option selected disabled>Seleccione Tipo de Actividad</option> 
+                @foreach (string actividad in Actividad.TiposActividad)
+                {
+                    <option value="@actividad">@actividad</option>
+                }
+            </select>
+          </div>
+          <input id="latitudUsuario" type="hidden" name="lat" value="" />
+          <input id="longitudUsuario" type="hidden" name="lon" value="" />
+
+          <button type="submit" class="btn btn-primary">Crear Actividad</button>
+    </form>
+</div>
+

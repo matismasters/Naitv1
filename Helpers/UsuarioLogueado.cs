@@ -22,5 +22,15 @@ namespace Naitv1.Helpers
             sesionActual.SetString("nombreUsuario", usuario.Nombre);
             sesionActual.SetString("emailUsuario", usuario.Email);
         }
+
+        public static Usuario Usuario(ISession sesionActual)
+        {
+            Usuario usuario = new Usuario();
+            usuario.Id = sesionActual.GetInt32("idUsuario") ?? 0;
+            usuario.Nombre = sesionActual.GetString("nombreUsuario") ?? "";
+            usuario.Email = sesionActual.GetString("emailUsuario") ?? "";
+
+            return usuario;
+        }
     }
 }
