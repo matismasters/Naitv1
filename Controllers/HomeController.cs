@@ -17,7 +17,6 @@ namespace Naitv1.Controllers
         public IActionResult Index()
         {
             Actividad actividad = new Actividad();
-            ViewBag.Booleanito = actividad.Activa;
 
             bool estaLogueado = UsuarioLogueado.estaLogueado(HttpContext.Session);
             ViewBag.estaLogueado = estaLogueado;
