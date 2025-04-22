@@ -5,7 +5,7 @@
 <div class="container mt-5">
     <h1>Crear Actividad</h1>
 
-    <form method="post" action="/Actividades/CrearActividad">
+    <form method="post" action="/Actividades" id="formCrearActividad">
         <div class="error">
             <span>@ViewBag.errors</span>
         </div>
@@ -16,17 +16,73 @@
         <div class="mb-3">
             <label for="TipoActividad" class="form-label">Tipo Actividad</label>
             <select id="TipoActividad" name="tipoActividad" class="form-control">
-                <option selected disabled>Seleccione Tipo de Actividad</option> 
+                <option selected disabled>Seleccione Tipo de Actividad</option>
                 @foreach (string actividad in Actividad.TiposActividad)
                 {
                     <option value="@actividad">@actividad</option>
                 }
             </select>
-          </div>
-          <input id="latitudUsuario" type="hidden" name="lat" value="" />
-          <input id="longitudUsuario" type="hidden" name="lon" value="" />
+        </div>
+        <input id="latitudUsuario" type="hidden" name="lat" value="" />
+        <input id="longitudUsuario" type="hidden" name="lon" value="" />
 
-          <button type="submit" class="btn btn-primary">Crear Actividad</button>
+        <button type="submit" class="btn btn-primary">Crear Actividad</button>
     </form>
 </div>
+
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        const formCrearActividad = document.getElementById("formCrearActividad");
+
+        formCrearActividad.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            if ('geolocation' in navigator) {
+              navigator.geolocation.getCurrentPosition(
+                function (position) {
+                  // Éxito: aquí tienes las coordenadas
+                  const lat = position.coords.latitude;
+                  const lon = position.coords.longitude;
+                  console.log(`Latitud: ${lat}, Longitud: ${lon}`);
+
+                  const latInput = document.getElementById("latitudUsuario");
+                  const lonInput = document.getElementById("longitudUsuario");
+
+                  latInput.value = lat;
+                  lonInput.value = lon;
+
+                  const formCrearActividad = document.getElementById("formCrearActividad");
+                  formCrearActividad.submit();
+                },
+                function (error) {
+                  // Error o usuario denegó el permiso
+                  switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                      console.error('Permiso denegado');
+                      break;
+                    case error.POSITION_UNAVAILABLE:
+                      console.error('Posición no disponible');
+                      break;
+                    case error.TIMEOUT:
+                      console.error('Tiempo de espera agotado');
+                      break;
+                    default:
+                      console.error('Error desconocido');
+                      break;
+                  }
+                },
+                {
+                  enableHighAccuracy: true, // pide más precisión (consume más batería)
+                  timeout: 10000,           // 10 s máximo para obtener la posición
+                  maximumAge: 0             // no use cache previo
+                }
+              );
+            } else {
+              console.error('Geolocalización no soportada en este navegador.');
+            }
+        })
+    })
+</script>
+
 

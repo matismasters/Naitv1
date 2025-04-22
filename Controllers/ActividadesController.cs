@@ -9,6 +9,11 @@ namespace Naitv1.Controllers
     {
         private readonly AppDbContext _context;
 
+        public ActividadesController(AppDbContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -26,7 +31,6 @@ namespace Naitv1.Controllers
             actividad.Lat = lat;
             actividad.Lon = lon;
             actividad.AnfitrionId = usuario.Id;
-            actividad.Anfitrion = usuario;
 
             _context.Actividades.Add(actividad);
             _context.SaveChanges();
