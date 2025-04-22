@@ -1,4 +1,5 @@
-﻿  function initMap() {
+﻿let MAP; // Variable global para el mapa
+ function initMap() {
     var customStyles = [
       {
         featureType: "poi",
@@ -24,12 +25,24 @@
     ];
 
     // Inicialización del mapa, centrado en Madrid como ejemplo
-    var map = new google.maps.Map(document.getElementById('map'), {
+    MAP = new google.maps.Map(document.getElementById('map'), {
         center: {lat: -34.471388888889, lng: -57.844166666667},
         zoom: 13,
         disableDefaultUI: true,
         styles: customStyles
     });
+
+    // Actividades
+     ACTIVIDADES.forEach(function (actividad) {
+         console.log(actividad);
+
+         let marker = new google.maps.Marker({
+             position: { lat: parseFloat(actividad.lat), lng: parseFloat(actividad.lon) },
+             map: MAP,
+             title: actividad.nombre
+         });
+         console.log(marker);
+     });
 
     // Comprobar si el navegador soporta Geolocalización
     if (navigator.geolocation) {
@@ -42,21 +55,21 @@
           };
 
           // Centra el mapa en la ubicación actual
-          map.setCenter(pos);
+          MAP.setCenter(pos);
 
           // Coloca un marcador (pin) en la ubicación actual
           new google.maps.Marker({
             position: pos,
-            map: map
+            map: MAP
           });
         },
         function() {
-          handleLocationError(true, map.getCenter());
+          handleLocationError(true, MAP.getCenter());
         }
       );
     } else {
       // El navegador no soporta Geolocalización
-      handleLocationError(false, map.getCenter());
+      handleLocationError(false, MAP.getCenter());
     }
   }
 

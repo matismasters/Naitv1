@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Naitv1.Data;
 using Naitv1.Helpers;
 using Naitv1.Models;
 using System.Diagnostics;
@@ -8,10 +10,12 @@ namespace Naitv1.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -24,6 +28,12 @@ namespace Naitv1.Controllers
             if (estaLogueado)
             {
                 ViewBag.nombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+
+                List<Actividad> actividades = _context.Actividades
+                    .Include(a => a.Anfitrion)
+                    .ToList();
+
+                ViewBag.actividades = actividades;
             }
 
             return View();
