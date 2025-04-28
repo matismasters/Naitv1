@@ -1,16 +1,36 @@
-﻿namespace Naitv1.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Naitv1.Models
 {
+
+    public enum EstadoPartner
+    {
+        Pendiente,
+        Rechazado,
+        Aceptado
+    }
     public class Partner
     {
+
         public int Id { get; set; }
 
         public string Nombre { get; set; }
 
         public string? Direccion { get; set; }
 
+
+        [Required(ErrorMessage = "El campo Telefono es obligatorio")]
+        public int Telefono { get; set; }
+
+        [Required(ErrorMessage = "El campo Email es obligatorio")]
+        [EmailAddress(ErrorMessage = "El campo Email no es una dirección de correo válida")]
+        public string Email { get; set; }
+
         public string LogoUrl { get; set; }
         public string? Descripcion { get; set; }
-        public Boolean EstadoPartner{ get; set; }
+        public EstadoPartner Estado { get; set; } = EstadoPartner.Pendiente;
+
+
 
 
 
