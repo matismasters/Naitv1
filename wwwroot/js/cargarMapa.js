@@ -27,7 +27,7 @@
     // Inicialización del mapa, centrado en Madrid como ejemplo
     MAP = new google.maps.Map(document.getElementById('map'), {
         center: {lat: -34.471388888889, lng: -57.844166666667},
-        zoom: 13,
+        zoom: 14,
         disableDefaultUI: true,
         styles: customStyles
     });
