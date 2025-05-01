@@ -18,8 +18,13 @@ namespace Naitv1.Controllers
             _context = context;
         }
 
+
+
         public IActionResult Index()
         {
+
+
+
             Actividad actividad = new Actividad();
 
             bool estaLogueado = UsuarioLogueado.estaLogueado(HttpContext.Session);

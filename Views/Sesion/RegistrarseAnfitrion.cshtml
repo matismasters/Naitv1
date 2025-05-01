@@ -1,7 +1,7 @@
 ﻿<div class="container mt-5">
-    <h1>Registrarse como Usuario</h1>
+    <h1>Registrarse como Anfitrion</h1>
 
-    <form method="post" action="/Sesion/CrearUsuario">
+    <form method="post" action="/Sesion/CrearUsuarioAnfitrion">
           <div class="error">
             <span>@ViewBag.errors</span>
           </div>
@@ -21,7 +21,6 @@
             <label for="PasswordConfirmation" class="form-label">Password Confirmation</label>
             <input type="password" id="PasswordConfirmation" name="passwordConfirmation" class="form-control" required />
           </div>
-        
           
           <button type="submit" class="btn btn-primary">Registrarse</button>
 

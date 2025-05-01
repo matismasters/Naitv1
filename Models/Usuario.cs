@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Naitv1.Migrations;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Naitv1.Models
 {
@@ -8,5 +10,8 @@ namespace Naitv1.Models
         public string Nombre { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string TipoUsuario { get; set; }
+
     }
 }
+
