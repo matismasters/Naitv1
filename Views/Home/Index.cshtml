@@ -5,7 +5,8 @@
     @if (ViewBag.estaLogueado)
     {
         <div style="z-index:10" class="position-absolute">
-            <h1>Estas logueado como @ViewBag.nombreUsuario</h1>
+            <h1>Estas logueado como @ViewBag.nombreUsuario
+            </h1>
             <a href="/Sesion/Salir">Salir</a>
         </div>
         <div id="map" style="z-index:1"></div>
@@ -20,5 +21,6 @@
         <a href="/Sesion">Iniciar Sesion</a>
         <span>o</span>
         <a href = "/Sesion/Registrarse" > Registrarse </a>
+        <a href="/Sesion/RegistroAnfitrion">Registrate como anfitrion</a>
     }
 </div>
