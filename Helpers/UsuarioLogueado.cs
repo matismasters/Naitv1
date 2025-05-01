@@ -14,6 +14,12 @@ namespace Naitv1.Helpers
             return estaLogueado;
         }
 
+        public static bool esAnfitrion (ISession sesionActual)
+        {
+            string tipoUsuario = sesionActual.GetString("tipoUsuario") ?? "";
+            return tipoUsuario == "Anfitrion";
+        }
+
         public static void loguearUsuario(ISession sesionActual, Usuario usuario)
         {
             sesionActual.SetString("estaLogueado", "true");
@@ -21,6 +27,7 @@ namespace Naitv1.Helpers
             sesionActual.SetInt32("idUsuario", usuario.Id);
             sesionActual.SetString("nombreUsuario", usuario.Nombre);
             sesionActual.SetString("emailUsuario", usuario.Email);
+            sesionActual.SetString("tipoUsuario", usuario.TipoUsuario);
         }
 
         public static Usuario Usuario(ISession sesionActual)
