@@ -21,6 +21,7 @@ namespace Naitv1.Helpers
             sesionActual.SetInt32("idUsuario", usuario.Id);
             sesionActual.SetString("nombreUsuario", usuario.Nombre);
             sesionActual.SetString("emailUsuario", usuario.Email);
+            sesionActual.SetString("anfitrion", usuario.Anfitrion);
         }
 
         public static Usuario Usuario(ISession sesionActual)
@@ -29,7 +30,8 @@ namespace Naitv1.Helpers
             usuario.Id = sesionActual.GetInt32("idUsuario") ?? 0;
             usuario.Nombre = sesionActual.GetString("nombreUsuario") ?? "";
             usuario.Email = sesionActual.GetString("emailUsuario") ?? "";
-
+            usuario.Anfitrion = sesionActual.GetString("anfitrion") ?? "";
+            
             return usuario;
         }
     }
