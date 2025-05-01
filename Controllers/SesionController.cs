@@ -139,6 +139,7 @@ namespace Naitv1.Controllers
                 usuario.Email = email;
                 usuario.Nombre = nombre;
                 usuario.Password = MD5Libreria.Encriptar(password);
+                usuario.Anfitrion = "Anfitrión";
 
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
