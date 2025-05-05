@@ -48,7 +48,17 @@ namespace Naitv1.Controllers
             return View();
         }
 
-        
+        public IActionResult RegistrarseAnfitrion()
+        {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View();
+        }
+
+
 
         public IActionResult ErrorDeRegistro()
         {
@@ -84,10 +94,10 @@ namespace Naitv1.Controllers
         {
             if (UsuarioLogueado.estaLogueado(HttpContext.Session))
             {
-                return RedirectToAction("Index", "Home");
+                HttpContext.Session.Clear();
             }
 
-            HttpContext.Session.Clear();
+            
             return Redirect("/");
         }
 

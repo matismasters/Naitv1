@@ -23,12 +23,15 @@ namespace Naitv1.Controllers
             Actividad actividad = new Actividad();
 
             bool estaLogueado = UsuarioLogueado.estaLogueado(HttpContext.Session);
+            
             ViewBag.estaLogueado = estaLogueado;
-
+            
             if (estaLogueado)
             {
-                ViewBag.nombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+                string nobreUsuarioActual = HttpContext.Session.GetString("nombreUsuario");
 
+                ViewBag.nombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+                
                 List<Actividad> actividades = _context.Actividades
                     .Include(a => a.Anfitrion)
                     .ToList();
@@ -73,6 +76,14 @@ namespace Naitv1.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public static bool esAnfitrion(Usuario usuarioActual)
+        {
+            if(usuarioActual.TipoUsuario == "Anfitrion")
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
