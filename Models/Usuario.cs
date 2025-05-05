@@ -12,6 +12,21 @@ namespace Naitv1.Models
         public string Password { get; set; }
         public string TipoUsuario { get; set; }
 
+        public string chequeoUsuario(Usuario usuario)
+        {
+
+            if (usuario.TipoUsuario == null)
+            {
+                return usuario.TipoUsuario = "usuarioComun"; ;
+            }
+            else
+            {
+                return usuario.TipoUsuario;
+            }
+
+        }
+
     }
 }
+
 
