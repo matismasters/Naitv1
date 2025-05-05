@@ -41,6 +41,21 @@ namespace Naitv1.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var partner=_context.Partners.FirstOrDefault(p => p.Id == id);
+            if (partner == null)
+            {
+                return NotFound();
+            }
+
+            _context.Partners.Remove(partner);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Home");
+        }
        
     }
 }
