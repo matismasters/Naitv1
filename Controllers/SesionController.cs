@@ -112,7 +112,7 @@ namespace Naitv1.Controllers
                 usuario.Email = email;
                 usuario.Nombre = nombre;
                 usuario.Password = MD5Libreria.Encriptar(password);
-                usuario.Anfitrion = "false";
+                usuario.TipoUsuario = "basico";
 
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
@@ -139,7 +139,7 @@ namespace Naitv1.Controllers
                 usuario.Email = email;
                 usuario.Nombre = nombre;
                 usuario.Password = MD5Libreria.Encriptar(password);
-                usuario.Anfitrion = "true";
+                usuario.TipoUsuario = "anfitrion";
 
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();

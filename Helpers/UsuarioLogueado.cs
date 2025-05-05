@@ -16,8 +16,8 @@ namespace Naitv1.Helpers
 
         public static bool esAnfitrion(ISession sesionActual)
         {
-            string esAnfitrionString = sesionActual.GetString("esAnfitrion") ?? "false";
-            bool esAnfitrion = esAnfitrionString == "true";
+            string tipoUsuarioString = sesionActual.GetString("tipoUsuario") ?? "basico";
+            bool esAnfitrion = tipoUsuarioString == "anfitrion";
 
             return esAnfitrion;
         }
@@ -29,7 +29,7 @@ namespace Naitv1.Helpers
             sesionActual.SetInt32("idUsuario", usuario.Id);
             sesionActual.SetString("nombreUsuario", usuario.Nombre);
             sesionActual.SetString("emailUsuario", usuario.Email);
-            sesionActual.SetString("esAnfitrion", usuario.Anfitrion);
+            sesionActual.SetString("tipoUsuario", usuario.TipoUsuario);
         }
 
         public static Usuario Usuario(ISession sesionActual)
@@ -38,6 +38,7 @@ namespace Naitv1.Helpers
             usuario.Id = sesionActual.GetInt32("idUsuario") ?? 0;
             usuario.Nombre = sesionActual.GetString("nombreUsuario") ?? "";
             usuario.Email = sesionActual.GetString("emailUsuario") ?? "";
+            usuario.TipoUsuario = sesionActual.GetString("tipoUsuario") ?? "basico";
 
             return usuario;
         }

@@ -8,7 +8,6 @@ namespace Naitv1.Models
         public string Nombre { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-
-        public string Anfitrion { get; set; }
+        public string TipoUsuario { get; set; }
     }
 }
