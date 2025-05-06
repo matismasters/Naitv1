@@ -41,7 +41,17 @@
              map: MAP,
              title: actividad.nombre
          });
-         console.log(marker);
+
+         // Agregar evento de clic al marcador
+         marker.addListener('click', function () {
+             // Configurar el contenido del modal dinámicamente
+             document.getElementById('modalTitle').innerText = actividad.tipoActividad;
+             document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
+
+             // Mostrar el modal de Bootstrap
+             let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
+             modal.show();
+         });
      });
 
     // Comprobar si el navegador soporta Geolocalización
