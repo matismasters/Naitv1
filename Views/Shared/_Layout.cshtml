@@ -35,15 +35,9 @@
         </nav>
         </header>
             -->
-    <div class="container nait">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="navbar fixed-bottom navbar-dark bg-dark">
-        <div class="container-fluid justify-content-around">
-            <p class="text-white"> 
+    <header class="navbar fixed-top navbar-dark bg-dark">
+        <div class="container-fluid justify-content-around mb-0 pb-0">
+            <p class="text-white pb-0 mb-0"> 
                 <span class="text-white">
                     @UsuarioLogueado.nombreUsuario(Context.Session)
                 </span>
@@ -58,7 +52,15 @@
                 }
            </p>
         </div>
-        <div class="container-fluid justify-content-around">
+    </header>
+    <div class="container nait mt-4">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="navbar fixed-bottom navbar-dark bg-dark">
+       <div class="container-fluid justify-content-around">
             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">H</a>
             <a class="nav-link text-white" asp-area="" asp-controller="Actividades" asp-action="Index">CA</a>
             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Configuracion">Conf</a>
