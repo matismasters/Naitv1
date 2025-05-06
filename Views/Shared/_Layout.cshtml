@@ -35,21 +35,29 @@
         </nav>
         </header>
             -->
-    <div class="container">
+    <div class="container nait">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
     <footer class="navbar fixed-bottom navbar-dark bg-dark">
-        @if (UsuarioLogueado.esAnfitrion(Context.Session))
-            {
-                <div class="container-fluid justify-content-around">
-                    <p class="text-white">
-                        Anfitrión ☆ ★
-                    </p>
-                </div>
-            }
+        <div class="container-fluid justify-content-around">
+            <p class="text-white"> 
+                <span class="text-white">
+                    @UsuarioLogueado.nombreUsuario(Context.Session)
+                </span>
+ 
+                @if (UsuarioLogueado.esAnfitrion(Context.Session))
+                {
+                        <span>Anfitrión ☆ ★</span>
+                }
+                @if (UsuarioLogueado.esSuperAdmin(Context.Session))
+                {
+                        <span>Super Admin 🌑</span>
+                }
+           </p>
+        </div>
         <div class="container-fluid justify-content-around">
             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">H</a>
             <a class="nav-link text-white" asp-area="" asp-controller="Actividades" asp-action="Index">CA</a>

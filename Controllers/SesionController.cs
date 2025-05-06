@@ -92,10 +92,9 @@ namespace Naitv1.Controllers
         {
             if (UsuarioLogueado.estaLogueado(HttpContext.Session))
             {
-                return RedirectToAction("Index", "Home");
+                HttpContext.Session.Clear();
             }
 
-            HttpContext.Session.Clear();
             return Redirect("/");
         }
 

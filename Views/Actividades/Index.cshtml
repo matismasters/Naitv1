@@ -26,6 +26,20 @@
         <input id="latitudUsuario" type="hidden" name="lat" value="" />
         <input id="longitudUsuario" type="hidden" name="lon" value="" />
 
+        @if(UsuarioLogueado.esSuperAdmin(Context.Session))
+        {
+
+            <div class="mb-3">
+                <label for="latitudSuperAdmin" class="form-label">Latitud</label>
+                <input name="latSuperAdmin" type="text" value="" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="longitudSuperAdmin" class="form-label">Longitud</label>
+                <input name="lonSuperAdmin" type="text" value="" class="form-control" />
+            </div>
+        }
+
         <button type="submit" class="btn btn-primary">Crear Actividad</button>
     </form>
 </div>

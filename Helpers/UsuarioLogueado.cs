@@ -22,6 +22,19 @@ namespace Naitv1.Helpers
             return esAnfitrion;
         }
 
+        public static string nombreUsuario(ISession sessionActual)
+        {
+            string nombreUsuario = sessionActual.GetString("nombreUsuario") ?? "";
+            return nombreUsuario;
+        }
+
+        public static bool esSuperAdmin(ISession sessionActual)
+        {
+            string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "basico";
+            bool esSuperAdmin = tipoUsuarioString == "superadmin";
+            return esSuperAdmin;
+        }
+
         public static void loguearUsuario(ISession sesionActual, Usuario usuario)
         {
             sesionActual.SetString("estaLogueado", "true");

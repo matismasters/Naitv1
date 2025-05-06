@@ -21,15 +21,23 @@ namespace Naitv1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string mensajeDelAnfitrion, string tipoActividad, float lat, float lon)
+        public IActionResult Index(string mensajeDelAnfitrion, string tipoActividad, float lat, float lon, float? latSuperAdmin, float? lonSuperAdmin)
         {
             Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
             Actividad actividad = new Actividad();
 
             actividad.MensajeDelAnfitrion = mensajeDelAnfitrion;
             actividad.TipoActividad = tipoActividad;
-            actividad.Lat = lat;
-            actividad.Lon = lon;
+            if (latSuperAdmin != null && lonSuperAdmin != null && UsuarioLogueado.esSuperAdmin(HttpContext.Session))
+            {
+                actividad.Lat = (float) latSuperAdmin;
+                actividad.Lon = (float) lonSuperAdmin;
+            }
+            else
+            {
+                actividad.Lat = lat;
+                actividad.Lon = lon;
+            }
             actividad.AnfitrionId = usuario.Id;
 
             _context.Actividades.Add(actividad);
