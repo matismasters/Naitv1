@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,6 +9,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Naitv1.styles.css" asp-append-version="true" />
+    
 </head>
 <body>
     <!--
@@ -28,6 +31,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="People">People</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Partners">Partners</a>
                         </li>
                     </ul>
                 </div>
@@ -82,6 +88,16 @@
             <a class="nav-link text-white" asp-area="" asp-controller="Actividades" asp-action="Index">CA</a>
             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Configuracion">Conf</a>
             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Ayuda">?</a>
+            <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="Index">Partners</a>
+            @if (UsuarioLogueado.estaLogueado(Context.Session))
+			{
+                <a class="nav-link text-white"> Logueado Como Anfitrion </a>
+            }
+
+            else {
+				<a> Logueado Como Usuario </a>
+			}
+            
         </div>
     </footer>
 

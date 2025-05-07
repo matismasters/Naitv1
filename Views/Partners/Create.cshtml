@@ -1,0 +1,44 @@
+﻿@page
+@model Naitv1.Views.Partners.IndexModel
+
+<div class="container mt-5"> 
+	<h1>Crear Partner</h1>
+	<form method= "post"  action="/Partners"  id="formCrearPartner">
+		<div class="mb-3" >
+			<label for="Nombre" class=" form-label" >Nombre</label>
+			<input type="text" id="Nombre" name="nombre" class="form-control" required />
+		</div>
+		
+		<div class="mb-3">
+			<label for="Direccion" class=" form-label">Direccion</label>
+			<input type="text" id="Direccion" name="direccion" class="form-control" required />
+		</div>
+
+		<div class="mb-3">
+			<label for="Email" class=" form-label">Email</label>
+			<input type="email" id="Email" name="email" class="form-control" required />
+		</div>
+
+		<div class="mb-3">
+			<label for="Telefono" class=" form-label">Telefono</label>
+			<input type="number" id="Telefono" name="telefono" class="form-control" required />
+		</div>
+			
+		<div class="mb-3">
+			<label for="Email" class=" form-label">LogoUrl</label>
+			<input type="url" id="LogoUrl" name="logoUrl" class="form-control" required />
+		</div>
+
+		<div class="mb-3">
+			<label for="Descripcion" class=" form-label">Descripion </label>
+			<input type="text" id="Descripcion" name="descripcion" class="form-control" required />
+		</div>
+
+		<button type="submit" class="btn btn-primary">Crear Partner</button>
+
+	</form>
+
+
+
+
+</div>
