@@ -16,9 +16,17 @@ namespace Naitv1.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Create()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult Index()
+        {
+            var partners = _context.Partners.ToList();
+
+            return View(partners);
         }
 
 
@@ -31,7 +39,7 @@ namespace Naitv1.Controllers
 
             partner.Nombre = nombre;
             partner.Direccion = direccion;
-            partner.LogoUrl = logoUrl; // jijiijij
+            partner.LogoUrl = logoUrl; 
             partner.Descripcion = descripcion;
             partner.Telefono = telefono;
             partner.Email = email;

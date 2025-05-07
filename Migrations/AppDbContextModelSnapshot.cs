@@ -113,7 +113,6 @@ namespace Naitv1.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TipoUsuario")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

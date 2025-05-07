@@ -1,45 +1,42 @@
-﻿@page
-@model Naitv1.Views.Partners.IndexModel
+﻿@model IEnumerable<Naitv1.Models.Partner>  
+
 @{
+    ViewData["Title"] = "Lista de Partners";
 }
-<div class="container mt-5"> 
-	<h1>Crear Partner</h1>
-	<form method= "post"  action="/Partners"  id="formCrearPartner">
-		<div class="mb-3" >
-			<label for="Nombre" class=" form-label" >Nombre</label>
-			<input type="text" id="Nombre" name="nombre" class="form-control" required />
-		</div>
-		
-		<div class="mb-3">
-			<label for="Direccion" class=" form-label">Direccion</label>
-			<input type="text" id="Direccion" name="direccion" class="form-control" required />
-		</div>
 
-		<div class="mb-3">
-			<label for="Email" class=" form-label">Email</label>
-			<input type="email" id="Email" name="email" class="form-control" required />
-		</div>
+<h2>Lista de Partners</h2>
+<a href="@Url.Action("Create", "Partners")" class="btn btn-primary">Crear</a>
 
-		<div class="mb-3">
-			<label for="Telefono" class=" form-label">Telefono</label>
-			<input type="number" id="Telefono" name="telefono" class="form-control" required />
-		</div>
-			
-		<div class="mb-3">
-			<label for="Email" class=" form-label">LogoUrl</label>
-			<input type="url" id="LogoUrl" name="logoUrl" class="form-control" required />
-		</div>
-
-		<div class="mb-3">
-			<label for="Descripcion" class=" form-label">Descripion </label>
-			<input type="text" id="Descripcion" name="descripcion" class="form-control" required />
-		</div>
-
-		<button type="submit" class="btn btn-primary">Crear Partner</button>
-
-	</form>
-
-
-
-
-</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Logo</th>
+            <th>Descripción</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var partner in Model)  
+        {
+            <tr>
+                <td>@partner.Nombre</td>
+                <td>@partner.Direccion</td>
+                <td><img src="@partner.LogoUrl" alt="Logo" width="50" height="50" /></td>  
+                <td>@partner.Descripcion</td>
+                <td>@partner.Telefono</td>
+                <td>@partner.Email</td>
+                <td>@partner.Estado</td>
+                <td>
+                    
+                    <a href="@Url.Action("Edit", "Partners", new { id = partner.Id })" class="btn btn-primary">Editar</a>
+                    <a href="@Url.Action("Delete", "Partners", new { id = partner.Id })" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
