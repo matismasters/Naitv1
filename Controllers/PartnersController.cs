@@ -31,7 +31,7 @@ namespace Naitv1.Controllers
 
             partner.Nombre = nombre;
             partner.Direccion = direccion;
-            partner.LogoUrl = logoUrl;
+            partner.LogoUrl = logoUrl; // jijiijij
             partner.Descripcion = descripcion;
             partner.Telefono = telefono;
             partner.Email = email;
