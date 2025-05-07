@@ -113,7 +113,7 @@ namespace Naitv1.Controllers
                 usuario.Password = MD5Libreria.Encriptar(password);
                 usuario.TipoUsuario = "basico";
 
-				_context.Usuarios.Add(usuario);
+                _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
 
                 UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
@@ -125,47 +125,13 @@ namespace Naitv1.Controllers
             }
         }
 
-<<<<<<< HEAD
         public IActionResult CrearUsuarioAnfitrion(string nombre, string email, string password, string passwordConfirmation)
-=======
-        [HttpPost]
-        public IActionResult CrearUsuarioAnfitrion(string nombre, string email, string password, string passwordConfirmation)
-		{
-			if (UsuarioLogueado.estaLogueado(HttpContext.Session))
-			{
-				return RedirectToAction("Index", "Home");
-			}
-
-			if (password == passwordConfirmation)
-			{
-				Usuario usuario = new Usuario();
-				usuario.Email = email;
-				usuario.Nombre = nombre;
-				usuario.Password = MD5Libreria.Encriptar(password);
-				usuario.TipoUsuario = "Anfitrion";
-
-				_context.Usuarios.Add(usuario);
-				_context.SaveChanges();
-
-				UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
-
-				return Redirect("/Sesion/CuentaCreadaConExito");
-			}
-			else
-			{
-				return Redirect("/Sesion/ErrorDeRegistro");
-			}
-		}
-
-        public IActionResult RegistroAnfitrion()
->>>>>>> siete-mayo
         {
             if (UsuarioLogueado.estaLogueado(HttpContext.Session))
             {
                 return RedirectToAction("Index", "Home");
             }
 
-<<<<<<< HEAD
             if (password == passwordConfirmation)
             {
                 Usuario usuario = new Usuario();
@@ -185,9 +151,6 @@ namespace Naitv1.Controllers
             {
                 return Redirect("/Sesion/ErrorDeRegistro");
             }
-=======
-            return View();
->>>>>>> siete-mayo
         }
     }
 }
