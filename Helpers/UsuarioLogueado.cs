@@ -16,7 +16,7 @@ namespace Naitv1.Helpers
 
         public static bool esAnfitrion(ISession sesionActual)
         {
-            string tipoUsuarioString = sesionActual.GetString("tipoUsuario") ?? "basico";
+            string tipoUsuarioString = sesionActual.GetString("tipoUsuario") ?? "false";
             bool esAnfitrion = tipoUsuarioString == "anfitrion";
 
             return esAnfitrion;
@@ -28,9 +28,9 @@ namespace Naitv1.Helpers
             return nombreUsuario;
         }
 
-        public static bool esSuperAdmin(ISession sessionActual)
+        public static bool esSuperAdmin(ISession sessionActual) //MODIFICADO EL FALSE PARA QUE ENTRE EN EL IF.
         {
-            string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "basico";
+            string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "false";
             bool esSuperAdmin = tipoUsuarioString == "superadmin";
             return esSuperAdmin;
         }
