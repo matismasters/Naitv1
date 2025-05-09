@@ -4,8 +4,8 @@
     ViewData["Title"] = "Lista de Partners";
 }
 
-<h2>Lista de Partners</h2>
-<a href="@Url.Action("Create", "Partners")" class="btn btn-primary">Crear</a>
+<h2>Admin Partner</h2>
+
 
 <table class="table table-striped">
     <thead>
@@ -33,8 +33,8 @@
                 <td>@partner.Estado</td>
                 <td>
                     
-                    <a href="@Url.Action("Edit", "Partners", new { id = partner.Id })" class="btn btn-primary">Editar</a>
-                    <a href="@Url.Action("Delete", "Partners", new { id = partner.Id })" class="btn btn-danger">Eliminar</a>
+                    <a href="@Url.Action("Aprobe", "Partners", new { id = partner.Id })" class="btn btn-primary">Aprobar</a>
+                    <a href="@Url.Action("Delete", "Partners", new { id = partner.Id })" class="btn btn-danger">Rechazar</a>
                 </td>
             </tr>
         }

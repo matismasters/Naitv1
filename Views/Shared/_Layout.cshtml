@@ -42,7 +42,7 @@
         </header>
             -->
     <header class="navbar fixed-top navbar-dark bg-dark">
-        <div class="container-fluid justify-content-around mb-0 pb-0">
+        <div class="container-fluid text-end mb-0 pb-0">
             <p class="text-white pb-0 mb-0"> 
                 <span class="text-white">
                     @UsuarioLogueado.nombreUsuario(Context.Session)
@@ -55,6 +55,14 @@
                 @if (UsuarioLogueado.esSuperAdmin(Context.Session))
                 {
                         <span>Super Admin 🌑</span>
+                }
+
+                @if (ViewBag.HayPartnerVerificado != null && ViewBag.HayPartnerVerificado == true)
+                {
+                    <div class="insignia-partner">
+
+                        <span style="color: green; font-size: 12px;">Partner Verificado ✓</span>
+                    </div>
                 }
            </p>
         </div>
@@ -88,7 +96,17 @@
             <a class="nav-link text-white" asp-area="" asp-controller="Actividades" asp-action="Index">CA</a>
             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Configuracion">Conf</a>
             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Ayuda">?</a>
-            <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="Index">Partners</a>
+            @if (UsuarioLogueado.esSuperAdmin(Context.Session))
+            {
+                <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="Index">Admin Partners</a>
+
+                <span>Super Admin 🌑</span>
+            }
+            @if (UsuarioLogueado.esAnfitrion(Context.Session))
+            {
+                <a href="@Url.Action("Create", "Partners")" class="btn btn-primary">Registrar partner</a>
+               
+            }
             @if (UsuarioLogueado.estaLogueado(Context.Session))
 			{
                 <a class="nav-link text-white"> Logueado Como Anfitrion </a>

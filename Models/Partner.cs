@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 
 namespace Naitv1.Models
 {
@@ -30,6 +31,17 @@ namespace Naitv1.Models
         public string? Descripcion { get; set; }
         public EstadoPartner Estado { get; set; } = EstadoPartner.Pendiente;
 
+       
+        public string Ciudad { get; set; }
+
+        public string Pais { get; set; }
+   
+        public string Departamento { get;set; } = "Sin departamento";
+        public bool EsVerificado { get; set; } = false;
+
+        public Usuario? Creador { get; set; }
+
+        public int CreadorId { get; set; }
 
 
 

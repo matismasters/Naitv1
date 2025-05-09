@@ -32,7 +32,7 @@ namespace Naitv1.Controllers
 
         [HttpPost]
 
-        public IActionResult Index(string nombre, string? direccion, string logoUrl, string? descripcion,int telefono, string email)
+        public IActionResult Index(string nombre, string? direccion, string logoUrl, string? descripcion,int telefono, string email, string ciudad, string pais, string departamento)
         {
             Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
             Partner partner = new Partner();
@@ -44,8 +44,14 @@ namespace Naitv1.Controllers
             partner.Telefono = telefono;
             partner.Email = email;
             partner.Estado = EstadoPartner.Pendiente;
+            partner.Ciudad = ciudad;
+            partner.Pais = ciudad;
+            partner.Departamento = departamento;
+            partner.EsVerificado = false;
+            partner.CreadorId = usuario.Id; 
             _context.Partners.Add(partner);
             _context.SaveChanges();
+            
 
             return RedirectToAction("Index", "Home");
         }
@@ -64,6 +70,24 @@ namespace Naitv1.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-       
+
+
+        [HttpGet]
+
+        public IActionResult Aprobe(int id) {
+            var partner = _context.Partners.FirstOrDefault(p => p.Id == id);
+            if (partner == null)
+            {
+                return NotFound();
+            }
+
+            partner.Estado = EstadoPartner.Aceptado;
+            partner.EsVerificado = true;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }
