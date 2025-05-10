@@ -50,6 +50,10 @@
                 {
                         <span>Super Admin 🌑</span>
                 }
+                @if (UsuarioLogueado.esModerador(Context.Session))
+                {
+                    <span>Moderador 🌚</span>    
+                }
            </p>
         </div>
     </header>
