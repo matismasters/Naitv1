@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Naitv1.Data;
+using Naitv1.Services;
+using DinkToPdf;
+using DinkToPdf.Contracts;
+using Naitv1.wkhtmltox;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +12,13 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<GeneradorReportesService>(); ///agrego servicios generador de reportes
+
+var context = new CustomAssemblyLoadContext();
+context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "wkhtmltox", "libwkhtmltox.dll"));
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+builder.Services.AddScoped<pdfServices>();  //Agrego servicios a program
 
 builder.Services.AddSession(); 
 

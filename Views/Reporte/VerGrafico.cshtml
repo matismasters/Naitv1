@@ -1,0 +1,54 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Generando gráfico...</h2>
+    <canvas id="graficoKpis" width="400" height="200"></canvas>
+
+    <script>
+        const ctx = document.getElementById('graficoKpis').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Usuarios', 'Ventas', 'Actividades'],
+                datasets: [{
+                    label: 'KPIs',
+                    data: [124, 3200, 57],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)'
+                    ]
+                }]
+            }
+        });
+
+        // Esperamos que se dibuje el gráfico
+        setTimeout(() => {
+            const canvas = document.getElementById('graficoKpis');
+            const base64 = canvas.toDataURL('image/png');
+
+            fetch('/Reporte/SubirGraficoBase64', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ base64 })
+            }).then(() => {
+                alert("✅ Imagen generada y guardada. Ahora podés ir a /Reporte/Ver");
+            }).catch(error => {
+                console.error("Error al subir la imagen", error);
+            });
+        }, 1000); // Esperamos 1 segundo para asegurar que el gráfico esté listo
+    </script>
+</body>
+</html>
+
+}
