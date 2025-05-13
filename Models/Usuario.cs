@@ -10,7 +10,7 @@ namespace Naitv1.Models
         public string Password { get; set; }
         public string TipoUsuario { get; set; }
 
-        public int Codigo { get; set; } //?
+        //public int? Codigo { get; set; }
 
         public List<string> TiposUsuarios = new List<string>
         {
