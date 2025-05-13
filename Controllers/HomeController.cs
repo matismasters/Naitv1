@@ -23,6 +23,7 @@ namespace Naitv1.Controllers
             Actividad actividad = new Actividad();
 
             bool estaLogueado = UsuarioLogueado.estaLogueado(HttpContext.Session);
+           
             ViewBag.estaLogueado = estaLogueado;
 
             if (estaLogueado)
@@ -34,6 +35,7 @@ namespace Naitv1.Controllers
                     .ToList();
 
                 ViewBag.actividades = actividades;
+               
             }
 
             return View();

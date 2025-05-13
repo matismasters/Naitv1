@@ -1,0 +1,63 @@
+﻿@model Naitv1.Helpers.DashboardData
+@{
+    ViewData["Title"] = "Dashboard de Actividades";
+}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container mt-4">
+    <h2>Actividades por Hora (últimas 24 hs)</h2>
+    <canvas id="lineChart"></canvas>
+
+    <h2 class="mt-5">Actividades por Ciudad (últimos 7 días)</h2>
+    <canvas id="barChart"></canvas>
+</div>
+
+
+<script>
+    // Datos desde el modelo
+    const datosPorHora = @Html.Raw(Json.Serialize(Model.PorHora));
+    const datosPorCiudad = @Html.Raw(Json.Serialize(Model.PorCiudad));
+
+    // Gráfico de líneas: Actividades por hora
+    const ctxLine = document.getElementById('lineChart').getContext('2d');
+    const lineChart = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+            labels: datosPorHora.map(d => d.hora),
+            datasets: [{
+                label: 'Actividades',
+                data: datosPorHora.map(d => d.cantidad),
+                fill: false,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: 'Hora' } },
+                y: { title: { display: true, text: 'Cantidad' }, beginAtZero: true }
+            }
+        }
+    });
+
+    // Gráfico de barras: Actividades por ciudad
+    const ctxBar = document.getElementById('barChart').getContext('2d');
+    const barChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: datosPorCiudad.map(d => d.ciudad),
+            datasets: [{
+                label: 'Actividades',
+                data: datosPorCiudad.map(d => d.cantidad)
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: 'y',
+            scales: {
+                x: { title: { display: true, text: 'Cantidad' }, beginAtZero: true },
+                y: { title: { display: true, text: 'Ciudad' } }
+            }
+        }
+    });
+</script>
