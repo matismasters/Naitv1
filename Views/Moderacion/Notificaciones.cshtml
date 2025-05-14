@@ -1,0 +1,27 @@
+﻿@{
+	ViewData["Title"] = "Notificaciones";
+}
+
+﻿<div class="px-2">
+	<div class="container-fluid justify-content-around mb-4">
+		<h1>Moderación</h1>
+		<h2>Reportes y Notificaciones</h2>
+	</div>
+
+	@foreach (var notificacion in Model)
+	{
+		<a href="/Moderacion/Reportes/@notificacion.Id" class="card mb-2">
+		<div class="card-body">
+			@if (notificacion.EstadoNotificacion == "Pendiente")
+				{
+				<h5 class="card-title">Nuevo</h5>
+				}
+			else
+				{
+				<h5 class="card-title">Resuelto</h5>
+				}
+			<p class="card-text">@notificacion.Motivo</p>
+		</div>
+	</a>			
+	}
+</div>
