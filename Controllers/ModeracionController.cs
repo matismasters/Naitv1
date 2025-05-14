@@ -29,15 +29,31 @@ namespace Naitv1.Controllers
         {
             if (UsuarioLogueado.esModerador(HttpContext.Session))
 			{
-                List<RegistroNotificacion> notificaciones = _context.RegistroNotificaciones
-                    .Include(n => n.ActividadRef)
-                    .ToList();
+				List<RegistroNotificacion> notificaciones = _context.
+					RegistroNotificaciones.
+					ToList();
 
-				return View();
+				return View(notificaciones);
 			} else {
 				return RedirectToAction("Index", "Home");
 			}
         }
+
+		public IActionResult Reportes(int id)
+			{
+			if (UsuarioLogueado.esModerador(HttpContext.Session))
+				{
+				var actividadReportada = _context.
+					RegistroNotificaciones.
+					Find(id);
+
+				return View(actividadReportada);
+				}
+			else
+				{
+				return RedirectToAction("Index", "Home");
+				}
+			}
 
 		public IActionResult Estadisticas()
 			{
