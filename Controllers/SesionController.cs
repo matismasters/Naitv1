@@ -19,26 +19,34 @@ namespace Naitv1.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Iniciar(string email, string password)
-        {
-            List<Usuario> resultado = _context.Usuarios.Where(
-                usuario => usuario.Email == email && usuario.Password == MD5Libreria.Encriptar(password)
-            ).ToList();
+		[HttpPost]
+		public IActionResult Iniciar(string email, string password)
+			{
+			List<Usuario> resultado = _context.Usuarios.Where(
+				usuario => usuario.Email == email && usuario.Password == MD5Libreria.Encriptar(password)
+			).ToList();
 
-            if (resultado.Count > 0)
-            {
-                Usuario usuario = resultado.First();
-                UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
+			if (resultado.Count > 0)
+				{
+				Usuario usuario = resultado.First();
+				UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
 
-                return Redirect("/");
-            } else
-            {
-                return Redirect("/Sesion/ErrorDeInicio");
-            }
-        }
+				if (usuario.TipoUsuario == "moderador")
+					{
+					return RedirectToAction("Index", "Moderacion");
+					}
+				else
+					{
+					return Redirect("/");
+					}
+				}
+			else
+				{
+				return Redirect("/Sesion/ErrorDeInicio");
+				}
+			}
 
-        public IActionResult Registrarse()
+		public IActionResult Registrarse()
         {
             if (UsuarioLogueado.estaLogueado(HttpContext.Session))
             {
