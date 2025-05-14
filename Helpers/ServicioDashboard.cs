@@ -18,18 +18,13 @@ namespace Naitv1.Helpers
         public int Cantidad { get; set; }
     }
 
-    public class ActividadMapaDTO
-    {
-        public float Lat { get; set; }
-        public float Lon { get; set; }
-    }
 
     // Contenedor de resultados
     public class DashboardData
     {
         public List<ActividadesPorHoraDTO> PorHora { get; set; }
         public List<ActividadesPorCiudadDTO> PorCiudad { get; set; }
-        public List<ActividadMapaDTO> Activas { get; set; }
+       
     }
 
     // Servicio principal
@@ -78,22 +73,14 @@ namespace Naitv1.Helpers
                 .OrderByDescending(dto => dto.Cantidad)
                 .ToList();
 
-            // Actividades activas para el mapa
-            List<ActividadMapaDTO> actividadesActivas = _context.Actividades
-                .Where(a => a.Activa)
-                .Select(a => new ActividadMapaDTO
-                {
-                    Lat = a.Lat,
-                    Lon = a.Lon
-                })
-                .ToList();
+
 
 
             return new DashboardData
             {
                 PorHora = actividadesPorHora,
                 PorCiudad = actividadesPorCiudad,
-                Activas = actividadesActivas
+               
             };
         }
     }
