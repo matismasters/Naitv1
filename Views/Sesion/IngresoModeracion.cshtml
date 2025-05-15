@@ -1,0 +1,22 @@
+﻿@if (ViewBag.estaLogueado)
+{
+    <h1>Estas logueado</h1>
+}
+else
+{
+    <div class="container mt-5">
+        <h1>Ingresar como Moderador</h1>
+
+        <form method="post" action="/Sesion/IniciarModerador">
+            <div class="mb-3">
+                <label for="Email" class="form-label">Email</label>
+                <input type="email" id="Email" name="email" class="form-control" value="" required />
+            </div>
+            <div class="mb-3">
+                <label for="Password" class="form-label">Password</label>
+                <input type="password" id="Password" name="password" class="form-control" value="" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Ingresar</button>
+        </form>
+    </div>
+}
