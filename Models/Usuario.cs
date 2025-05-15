@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Naitv1.Models
+﻿namespace Naitv1.Models
 {
     public class Usuario
     {

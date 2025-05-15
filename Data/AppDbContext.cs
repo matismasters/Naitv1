@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Naitv1.Models;
 
-
 namespace Naitv1.Data
 {
     public class AppDbContext : DbContext
@@ -12,5 +11,6 @@ namespace Naitv1.Data
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Actividad> Actividades { get; set; }
+        public DbSet<Partner> Partners { get; set; }
     }
 }

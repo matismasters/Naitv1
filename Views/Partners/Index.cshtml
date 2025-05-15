@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Naitv1.Models.Partner>  
+
+@{
+    ViewData["Title"] = "Lista de Partners";
+}
+
+<h2>Admin Partner</h2>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Logo</th>
+            <th>Descripción</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var partner in Model)  
+        {
+            <tr>
+                <td>@partner.Nombre</td>
+                <td>@partner.Direccion</td>
+                <td><img src="@partner.LogoUrl" alt="Logo" width="50" height="50" /></td>  
+                <td>@partner.Descripcion</td>
+                <td>@partner.Telefono</td>
+                <td>@partner.Email</td>
+                <td>@partner.Estado</td>
+                <td>
+                    
+                    <a href="@Url.Action("Aprobar", "Partners", new { id = partner.Id })" class="btn btn-primary">Aprobar</a>
+                    <a href="@Url.Action("Eliminar", "Partners", new { id = partner.Id })" class="btn btn-danger">Rechazar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
