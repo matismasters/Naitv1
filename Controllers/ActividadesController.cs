@@ -8,10 +8,12 @@ namespace Naitv1.Controllers
     public class ActividadesController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IGeocodingService _geocodingService;
 
-        public ActividadesController(AppDbContext context)
+        public ActividadesController(AppDbContext context, IGeocodingService geocodingService)
         {
             _context = context;
+            _geocodingService = geocodingService;
         }
 
         [HttpGet]
@@ -21,29 +23,38 @@ namespace Naitv1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string mensajeDelAnfitrion, string tipoActividad, float lat, float lon, float? latSuperAdmin, float? lonSuperAdmin)
+        public async Task<IActionResult> Index(string mensajeDelAnfitrion, string tipoActividad, float lat, float lon, float? latSuperAdmin, float? lonSuperAdmin)
         {
             Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
             Actividad actividad = new Actividad();
 
             actividad.MensajeDelAnfitrion = mensajeDelAnfitrion;
             actividad.TipoActividad = tipoActividad;
+
             if (latSuperAdmin != null && lonSuperAdmin != null && UsuarioLogueado.esSuperAdmin(HttpContext.Session))
             {
-                actividad.Lat = (float) latSuperAdmin;
-                actividad.Lon = (float) lonSuperAdmin;
+                actividad.Lat = (float)latSuperAdmin;
+                actividad.Lon = (float)lonSuperAdmin;
             }
             else
             {
                 actividad.Lat = lat;
                 actividad.Lon = lon;
             }
+
             actividad.AnfitrionId = usuario.Id;
+
+            // Llamada al servicio geoCoding para obtener la ciudad,es asincrono
+            actividad.Ciudad = await _geocodingService.ObtenerCiudadDesdeCoordenadasAsync(actividad.Lat, actividad.Lon);
+            actividad.FechaCreacion = DateTime.Now;
 
             _context.Actividades.Add(actividad);
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Home");
         }
+
+
+
     }
 }

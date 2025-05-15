@@ -27,7 +27,12 @@ namespace Naitv1.Helpers
             string nombreUsuario = sessionActual.GetString("nombreUsuario") ?? "";
             return nombreUsuario;
         }
-
+        public static bool esAdmin(ISession sessionActual)
+        {
+            string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "basico";
+            bool esAdmin = tipoUsuarioString == "administrador";
+            return esAdmin;
+        }
         public static bool esSuperAdmin(ISession sessionActual)
         {
             string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "basico";

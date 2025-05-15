@@ -23,17 +23,31 @@ namespace Naitv1.Controllers
             Actividad actividad = new Actividad();
 
             bool estaLogueado = UsuarioLogueado.estaLogueado(HttpContext.Session);
+           
             ViewBag.estaLogueado = estaLogueado;
 
             if (estaLogueado)
             {
-                ViewBag.nombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+                ViewBag.esAdmin = UsuarioLogueado.esAdmin(HttpContext.Session);
 
-                List<Actividad> actividades = _context.Actividades
-                    .Include(a => a.Anfitrion)
+                if (UsuarioLogueado.esAdmin(HttpContext.Session))
+                {
+                    List<Actividad> actividades = _context.Actividades
+                    .Where(a => a.Activa == true)
                     .ToList();
 
-                ViewBag.actividades = actividades;
+                    ViewBag.actividades = actividades;
+                    Console.WriteLine("Actividades activas: " + actividades.Count);
+                }
+                else
+                {
+                    ViewBag.nombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+                    List<Actividad> actividades = _context.Actividades
+                        .Include(a => a.Anfitrion)
+                        .ToList();
+
+                    ViewBag.actividades = actividades;
+                }
             }
 
             return View();

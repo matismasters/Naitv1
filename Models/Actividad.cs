@@ -12,6 +12,9 @@ namespace Naitv1.Models
         public float Lat { get; set; }
         public float Lon { get; set; }
         public bool Activa { get; set; } = true;
+        public string Ciudad { get; set; } 
+
+        public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
         public static List<string> TiposActividad = new List<string>
         {

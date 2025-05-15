@@ -8,8 +8,18 @@
 
         <script type="text/javascript">
             const ACTIVIDADES = @Html.Raw(Json.Serialize(ViewBag.actividades));
+            const ES_ADMIN = @Html.Raw(Json.Serialize(ViewBag.esAdmin));
         </script>
         <script src="~/js/cargarMapa.js"></script>
+
+        @if (ViewBag.esAdmin)
+        {
+            <script type="text/javascript">
+                setTimeout(() => {
+                    location.reload();
+                }, 10000);
+            </script>
+        }
     }
     else
     {
