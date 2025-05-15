@@ -29,11 +29,11 @@ namespace Naitv1.Controllers
         {
             if (UsuarioLogueado.esModerador(HttpContext.Session))
 			{
-				List<RegistroNotificacion> notificaciones = _context.
-					RegistroNotificaciones.
-					ToList();
+				//List<RegistroNotificacion> notificaciones = _context.
+					//RegistroNotificaciones.
+					//ToList();
 
-				return View(notificaciones);
+				return View(/*notificaciones*/);
 			} else {
 				return RedirectToAction("Index", "Home");
 			}
@@ -43,11 +43,11 @@ namespace Naitv1.Controllers
 			{
 			if (UsuarioLogueado.esModerador(HttpContext.Session))
 				{
-				var actividadReportada = _context.
-					RegistroNotificaciones.
-					Find(id);
+				//var actividadReportada = _context.
+					//RegistroNotificaciones.
+					//Find(id);
 
-				return View(actividadReportada);
+				return View(/*actividadReportada*/);
 				}
 			else
 				{
