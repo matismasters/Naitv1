@@ -6,8 +6,8 @@ namespace Naitv1.Models
         {
         public int Id { get; set; }
 
-
         public int ActividadId { get; set; }
+
         public Actividad? Actividad { get; set; }
 
         public int UsuarioId { get; set; }

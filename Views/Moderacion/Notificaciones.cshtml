@@ -8,10 +8,10 @@
 		<h2>Reportes y Notificaciones</h2>
 	</div>
 
-	@foreach (var notificacion in Model)
+	@foreach (var notificacion in ViewBag.notificaciones)
 	{
-		<a href="/Moderacion/Reportes/@notificacion.Id" class="card mb-2">
-		<div class="card-body">
+		<a href="/Moderacion/Reportes/@notificacion.Id" class="card mb-2 text-decoration-none text-reset">
+			<div class="card-body text-info bg-dark rounded">
 			@if (notificacion.EstadoNotificacion == "Pendiente")
 				{
 				<h5 class="card-title">Nuevo</h5>
