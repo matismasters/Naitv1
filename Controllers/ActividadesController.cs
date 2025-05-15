@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Naitv1.Models;
 using Naitv1.Data;
 using Naitv1.Helpers;
+using Naitv1.Models;
 
 namespace Naitv1.Controllers
 {
@@ -30,8 +30,8 @@ namespace Naitv1.Controllers
             actividad.TipoActividad = tipoActividad;
             if (latSuperAdmin != null && lonSuperAdmin != null && UsuarioLogueado.esSuperAdmin(HttpContext.Session))
             {
-                actividad.Lat = (float) latSuperAdmin;
-                actividad.Lon = (float) lonSuperAdmin;
+                actividad.Lat = (float)latSuperAdmin;
+                actividad.Lon = (float)lonSuperAdmin;
             }
             else
             {

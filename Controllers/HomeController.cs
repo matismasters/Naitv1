@@ -38,11 +38,10 @@ namespace Naitv1.Controllers
 
             var usuarioId = HttpContext.Session.GetInt32("idUsuario");
 
-            bool tienePartnerVerificado = false; //chequear
+            bool tienePartnerVerificado = false;
 
-            if (usuarioId.HasValue)
+            if (usuarioId != null) //cambio realizado
             {
-                
                 tienePartnerVerificado = _context.Partners
                     .Any(p => p.CreadorId == usuarioId.Value && p.EsVerificado);
             }

@@ -33,8 +33,8 @@
                 <td>@partner.Estado</td>
                 <td>
                     
-                    <a href="@Url.Action("Aprobe", "Partners", new { id = partner.Id })" class="btn btn-primary">Aprobar</a>
-                    <a href="@Url.Action("Delete", "Partners", new { id = partner.Id })" class="btn btn-danger">Rechazar</a>
+                    <a href="@Url.Action("Aprobar", "Partners", new { id = partner.Id })" class="btn btn-primary">Aprobar</a>
+                    <a href="@Url.Action("Eliminar", "Partners", new { id = partner.Id })" class="btn btn-danger">Rechazar</a>
                 </td>
             </tr>
         }

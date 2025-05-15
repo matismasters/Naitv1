@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Naitv1.Models;
+﻿using Naitv1.Models;
 
 namespace Naitv1.Helpers
 {
     public class UsuarioLogueado
     {
-
         public static bool estaLogueado(ISession sesionActual)
         {
             string estaLogueadoString = sesionActual.GetString("estaLogueado") ?? "false";

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Naitv1.Models;
 
-
 namespace Naitv1.Data
 {
     public class AppDbContext : DbContext
