@@ -15,7 +15,7 @@ namespace Naitv1.Controllers
         public IActionResult Index()
         {
             DashboardData datos = _servicioDashboard.ObtenerMetrics();
-            return View("Dashboard", datos); // Asegurate de tener la vista Dashboard.cshtml
+            return View("Dashboard", datos); 
         }
     }
 }

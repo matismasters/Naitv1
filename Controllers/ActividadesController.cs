@@ -44,7 +44,7 @@ namespace Naitv1.Controllers
 
             actividad.AnfitrionId = usuario.Id;
 
-            // Llamada al servicio asincrónico
+            // Llamada al servicio geoCoding para obtener la ciudad,es asincrono
             actividad.Ciudad = await _geocodingService.ObtenerCiudadDesdeCoordenadasAsync(actividad.Lat, actividad.Lon);
             actividad.FechaCreacion = DateTime.Now;
 

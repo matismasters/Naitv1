@@ -18,8 +18,7 @@ namespace Naitv1.Helpers
         public int Cantidad { get; set; }
     }
 
-
-    // Contenedor de resultados
+     // Estadisicas del dashboard
     public class DashboardData
     {
         public List<ActividadesPorHoraDTO> PorHora { get; set; }
@@ -27,7 +26,6 @@ namespace Naitv1.Helpers
        
     }
 
-    // Servicio principal
     public class ServicioDashboard
     {
         private readonly AppDbContext _context;
@@ -41,7 +39,7 @@ namespace Naitv1.Helpers
         {
             DateTime ahora = DateTime.UtcNow;
 
-            // 1. Agrupamiento real de actividades por hora (últimas 24 hs)
+            // actividades por hora (últimas 24 hs)
             List<ActividadesPorHoraDTO> datosAgrupados = _context.Actividades
                 .Where(a => a.FechaCreacion >= ahora.AddHours(-24))
                 .GroupBy(a => a.FechaCreacion.Hour)
@@ -52,7 +50,7 @@ namespace Naitv1.Helpers
                 })
                 .ToList();
 
-            // 2. Generar lista completa de 0 a 23 horas, llenando con 0 donde no hay datos
+            // aca pasamos las estadisticas y ponemos que vaya de a una hora la tabla, que cuando no hay actividad ponga 0
             List<ActividadesPorHoraDTO> actividadesPorHora = Enumerable.Range(0, 24)
                 .Select(h => new ActividadesPorHoraDTO
                 {
@@ -61,7 +59,7 @@ namespace Naitv1.Helpers
                 })
                 .ToList();
 
-            // Actividades por ciudad en últimos 7 días
+            // actividades por ciudad en últimos 7 días
             List<ActividadesPorCiudadDTO> actividadesPorCiudad = _context.Actividades
                 .Where(a => a.FechaCreacion >= ahora.AddDays(-7))
                 .GroupBy(a => a.Ciudad)
@@ -73,14 +71,10 @@ namespace Naitv1.Helpers
                 .OrderByDescending(dto => dto.Cantidad)
                 .ToList();
 
-
-
-
             return new DashboardData
             {
                 PorHora = actividadesPorHora,
-                PorCiudad = actividadesPorCiudad,
-               
+                PorCiudad = actividadesPorCiudad,               
             };
         }
     }
