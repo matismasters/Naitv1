@@ -3,3 +3,14 @@
 }
 
 <a href="/Sesion/Salir">Salir</a>
+
+@if(ViewBag.esAnfitrion)
+{
+    <div>
+        <a href="/Admin/Crear">Crear Notificación</a>
+        <a href="/Admin/NotificacionesIndex">Ver Notificaciones</a>
+    </div>
+    <div>
+        <a href="/Ciudades/InsercionManual">Insertar ciudades pre cargadas</a>
+    </div>
+}

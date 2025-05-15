@@ -12,5 +12,9 @@ namespace Naitv1.Data
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Actividad> Actividades { get; set; }
+
+        public DbSet<Notificaciones> Notificaciones { get; set; }
+
+        public DbSet<Ciudades> Ciudades { get; set; }
     }
 }
