@@ -17,6 +17,11 @@ namespace Naitv1.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session) == false)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
