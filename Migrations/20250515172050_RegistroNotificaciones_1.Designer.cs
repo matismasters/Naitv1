@@ -12,8 +12,8 @@ using Naitv1.Data;
 namespace Naitv1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250514041259_RegistroNotificacion-ErrorPrimaryKey")]
-    partial class RegistroNotificacionErrorPrimaryKey
+    [Migration("20250515172050_RegistroNotificaciones_1")]
+    partial class RegistroNotificaciones_1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,7 +67,7 @@ namespace Naitv1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ActividadRefId")
+                    b.Property<int>("ActividadId")
                         .HasColumnType("int");
 
                     b.Property<string>("Descripcion")
@@ -85,9 +85,6 @@ namespace Naitv1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ReferenciaId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Tipo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -97,7 +94,9 @@ namespace Naitv1.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActividadRefId");
+                    b.HasIndex("ActividadId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("RegistroNotificaciones");
                 });
@@ -144,11 +143,21 @@ namespace Naitv1.Migrations
 
             modelBuilder.Entity("Naitv1.Models.RegistroNotificacion", b =>
                 {
-                    b.HasOne("Naitv1.Models.Actividad", "ActividadRef")
+                    b.HasOne("Naitv1.Models.Actividad", "Actividad")
                         .WithMany()
-                        .HasForeignKey("ActividadRefId");
+                        .HasForeignKey("ActividadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("ActividadRef");
+                    b.HasOne("Naitv1.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Actividad");
+
+                    b.Navigation("Usuario");
                 });
 #pragma warning restore 612, 618
         }

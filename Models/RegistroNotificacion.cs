@@ -1,14 +1,18 @@
-﻿namespace Naitv1.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Naitv1.Models
     {
     public class RegistroNotificacion
         {
         public int Id { get; set; }
 
-        public int ReferenciaId { get; set; }
+
+        public int ActividadId { get; set; }
+        public Actividad? Actividad { get; set; }
 
         public int UsuarioId { get; set; }
 
-        public Actividad? ActividadRef { get; set; }
+        public Usuario? Usuario { get; set; }
 
         public string Tipo { get; set; } = "Actividad";
 
