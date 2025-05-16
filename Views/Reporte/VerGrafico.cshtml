@@ -11,13 +11,14 @@
 <body>
     <h2>Generando gráfico...</h2>
     <canvas id="graficoKpis" width="400" height="200"></canvas>
+    <a href="/Reporte/Ver" class="btn btn-primary">Descargar PDF</a>
 
     <script>
         const ctx = document.getElementById('graficoKpis').getContext('2d');
         const chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Usuarios', 'Ventas', 'Actividades'],
+                labels: ['Usuarios', 'Actividades'],
                 datasets: [{
                     label: 'KPIs',
                     data: [124, 3200, 57],
