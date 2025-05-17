@@ -15,17 +15,16 @@ namespace Naitv1.Services
             _context = context;
         }
 
-        public void CrearRegistro(DateTime fechaProgramada)
+        public void CrearRegistro(DateTime fechaProgramada, string desitinatario, string asunto)
         {
             string html = GenerarHtmlConReporte();
 
             var registro = new RegistroEmail
             {
-                Destinatario = "Nelsonalvarez_2001@hotmail.com",
-                Asunto = "Resumen Semanal de KPIs",
+                Destinatario = desitinatario,
+                Asunto = asunto,
                 CuerpoHtml = html,
                 FechaProgramada = fechaProgramada,
-                Estado = "Pendiente"
             };
 
             _context.RegistroEmails.Add(registro);
