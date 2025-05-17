@@ -18,15 +18,16 @@ namespace Naitv1.Jobs
         public Task Execute(IJobExecutionContext context)
         {
             // Obtener la fecha programada (lunes a las 9 AM)
-            var fechaProgramada = DateTime.Now.Date.AddDays(1); // Fecha del lunes
+            DateTime fechaProgramada = DateTime.Now.Date.AddDays(1); // Fecha del lunes
             while (fechaProgramada.DayOfWeek != DayOfWeek.Monday)
             {
                 fechaProgramada = fechaProgramada.AddDays(1); // Sumar días hasta llegar al lunes
             }
             fechaProgramada = fechaProgramada.AddHours(9); // Ajustar la hora a las 9 AM
 
-            // Llamamos al método CrearRegistro para programar el reporte
-            _generadorReportesService.CrearRegistro(fechaProgramada);
+            string destinatario = "Nelsonalvarez_2001@hotmail.com";
+            string asunto = "Resumen Semanal de KPIs";
+            _generadorReportesService.CrearRegistro(fechaProgramada, destinatario, asunto);
 
             return Task.CompletedTask;
         }

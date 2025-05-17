@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Naitv1.Services;
+using Naitv1.Helpers;
 
 namespace Naitv1.Controllers
 {
@@ -15,7 +16,7 @@ namespace Naitv1.Controllers
             _emailServices = emailServices;
         }
 
-        public IActionResult Ver()
+        public IActionResult Imprimir()
         {
             string html = _reporteService.GenerarHtmlConReporte();
             byte[] pdfBytes = _pdfServices.GeneradorPdfHTML(html);
@@ -26,16 +27,18 @@ namespace Naitv1.Controllers
 
         public IActionResult VerGrafico()
         {
-            return View(); // Busca Views/Reporte/VerGrafico.cshtml
+            if (UsuarioLogueado.esSuperAdmin(HttpContext.Session) == false)
+            {
+                return RedirectToAction("RestriccionAcceso", "Reporte");
+            }
+            return View(); 
         }
 
         [HttpPost]
         public IActionResult SubirGraficoBase64([FromBody] ImagenDto data)
         {
-            // Elimina el encabezado "data:image/png;base64,"
             var base64Data = data.Base64.Split(',')[1];
 
-            // Guardamos el archivo en wwwroot/graficos
             var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "graficos", "graficoKpirs.png");
             System.IO.File.WriteAllBytes(path, Convert.FromBase64String(base64Data));
 
@@ -48,6 +51,11 @@ namespace Naitv1.Controllers
             _emailServices.Enviar("founder@empresa.com", "Reporte Semanal", html);
 
             return Ok("Correo enviado.");
+        }
+
+        public IActionResult RestriccionAcceso()
+        {
+            return View();
         }
 
         public class ImagenDto

@@ -21,7 +21,7 @@ namespace Naitv1.Services
 
             var registro = new RegistroEmail
             {
-                Destinatario = "kpis@empresa.com",
+                Destinatario = "Nelsonalvarez_2001@hotmail.com",
                 Asunto = "Resumen Semanal de KPIs",
                 CuerpoHtml = html,
                 FechaProgramada = fechaProgramada,

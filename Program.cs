@@ -50,8 +50,7 @@ builder.Services.AddQuartz(q =>
         .ForJob(jobKey)
         .WithIdentity("ReporteSemanalTrigger")
         .WithCronSchedule("0 0 9 ? * MON") // Cron expression para lunes a las 9 AM
-        .StartAt(DateTimeOffset.Now)
-        .Build());
+        .StartAt(DateTimeOffset.Now));
 });
 
 // Configurar el scheduler de Quartz.NET

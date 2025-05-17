@@ -11,7 +11,7 @@
 <body>
     <h2>Generando gráfico...</h2>
     <canvas id="graficoKpis" width="400" height="200"></canvas>
-    <a href="/Reporte/Ver" class="btn btn-primary">Descargar PDF</a>
+    <a href="/Reporte/Imprimir" class="btn btn-primary">Descargar PDF</a>
 
     <script>
         const ctx = document.getElementById('graficoKpis').getContext('2d');
@@ -21,11 +21,10 @@
                 labels: ['Usuarios', 'Actividades'],
                 datasets: [{
                     label: 'KPIs',
-                    data: [124, 3200, 57],
+                    data: [124, 3200],
                     backgroundColor: [
                         'rgba(54, 162, 235, 0.5)',
                         'rgba(255, 206, 86, 0.5)',
-                        'rgba(75, 192, 192, 0.5)'
                     ]
                 }]
             }
@@ -42,8 +41,6 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ base64 })
-            }).then(() => {
-                alert("✅ Imagen generada y guardada. Ahora podés ir a /Reporte/Ver");
             }).catch(error => {
                 console.error("Error al subir la imagen", error);
             });
