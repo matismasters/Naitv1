@@ -79,6 +79,12 @@
     <footer class="navbar fixed-bottom navbar-dark bg-dark">
        <div class="container-fluid justify-content-around">
             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">H</a>
+            @* @if (UsuarioLogueado.esAdmin(Context.Session))
+            {
+                <a class="nav-link text-white" asp-area="" asp-controller="PanelAdmin" asp-action="Index">Rp</a>
+
+            } *@
+            <a class="nav-link text-white" asp-area="" asp-controller="PanelAdmin" asp-action="Index">Rp</a>
             <a class="nav-link text-white" asp-area="" asp-controller="Actividades" asp-action="Index">CA</a>
             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Configuracion">Conf</a>
             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Ayuda">?</a>

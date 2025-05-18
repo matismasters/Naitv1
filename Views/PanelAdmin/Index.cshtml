@@ -1,0 +1,43 @@
+﻿<h3>Actividades por hora (últimas 24 h)</h3>
+
+<canvas id="graficoHoras"></canvas>
+
+
+
+@* <script src="~/js/api_key.js"></script> *@
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Convertir ViewBag a objeto JS
+    const actividadesPorHora = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ActividadesPorHora));
+
+    // Preparar arrays ordenados
+    const labels = Object.keys(actividadesPorHora).sort((a, b) => a - b);
+    const data = labels.map(hora => actividadesPorHora[hora]);
+
+    const ctx = document.getElementById('graficoHoras').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels.map(h => `${h}:00`),
+            datasets: [{
+                label: 'Actividades por hora',
+                data: data,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+</script>
+
+@* <div id="map" style="height: 100px;"></div>
+<script src="~/js/cargarMapa.js"></script> *@
