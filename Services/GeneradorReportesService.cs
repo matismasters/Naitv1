@@ -45,7 +45,6 @@ namespace Naitv1.Services
             <body>
                 <h2>Reporte Semanal</h2>
                 <ul>
-                    <li><b>Usuarios nuevos:</b> 124</li>
                     <li><b>Ventas:</b> $3,200</li>
                     <li><b>Actividades creadas:</b> 57</li>
                 </ul>

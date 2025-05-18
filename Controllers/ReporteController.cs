@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Naitv1.Services;
 using Naitv1.Helpers;
+using Naitv1.Data.Repositories;
 
 namespace Naitv1.Controllers
 {
@@ -9,11 +10,13 @@ namespace Naitv1.Controllers
         private readonly GeneradorReportesService _reporteService;
         private readonly pdfServices _pdfServices;
         private readonly IEmailServices _emailServices;
-        public ReporteController(GeneradorReportesService reporteService, pdfServices pdfServices, IEmailServices emailServices)
+        private readonly IActividadRepository _actividadRepository;
+        public ReporteController(GeneradorReportesService reporteService, pdfServices pdfServices, IEmailServices emailServices, IActividadRepository actividadRepository)
         {
             _reporteService = reporteService;
             _pdfServices = pdfServices;
             _emailServices = emailServices;
+            _actividadRepository = actividadRepository;
         }
 
         public IActionResult Imprimir()
@@ -57,6 +60,35 @@ namespace Naitv1.Controllers
         {
             return View();
         }
+
+        public IActionResult FormReport()
+        {
+            if (UsuarioLogueado.esSuperAdmin(HttpContext.Session) == false)
+            {
+                return RedirectToAction("RestriccionAcceso", "Reporte");
+            }
+            return View();
+        }
+
+        public IActionResult conteoActividad()
+        {
+            int cantidad = _actividadRepository.ContarActividades();
+            ViewBag.Cantidad = cantidad;
+            return View();
+
+        }
+
+        [HttpPost]
+        public IActionResult CrearCrearRegistroEmailManual(string destinatario, string asunto)
+        {
+            DateTime fechaProgramada = DateTime.Now;
+
+            _reporteService.CrearRegistro(fechaProgramada, destinatario, asunto);
+            TempData["Mensaje"] = "Mensaje programado correctamente.";
+            return RedirectToAction("Index", "Home");
+        }
+
+
 
         public class ImagenDto
         {

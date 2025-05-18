@@ -7,6 +7,7 @@ using Naitv1.wkhtmltox;
 using Quartz;
 using Quartz.Impl;
 using Naitv1.Jobs;
+using Naitv1.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,9 @@ builder.Services.AddScoped<IEmailServices, SmtpEmailService>();
 
 // Agregar soporte para sesiones
 builder.Services.AddSession();
+
+builder.Services.AddScoped<IActividadRepository, ActividadRepository>();
+
 
 // Configurar Quartz.NET
 builder.Services.AddQuartz(q =>
