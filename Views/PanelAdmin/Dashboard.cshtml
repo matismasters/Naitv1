@@ -4,6 +4,34 @@
 }
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+
+<div>
+    <form>
+        <div class="form-group">
+            <label for="filtroCiudad">Ciudad</label>
+            <select id="filtroCiudad" name="filtroCiudad" class="form-control">
+                <option selected disabled>Seleccione Tipo de Actividad</option>
+                @foreach (string ciudad in DashboardData.Ciudades)
+                {
+                    <option value="@ciudad">@ciudad</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="fechaDesde">Desde:</label>
+            <input type="date" id="fechaDesde" name="fechaDesde" class="form-control" value="@Model.FechaDesde.ToString("yyyy-MM-dd")" />
+        </div>
+
+        <div class="form-group">
+            <label for="fechaHasta">Hasta:</label>
+            <input type="date" id="fechaHasta" name="fechaHasta" class="form-control" value="@Model.FechaHasta.ToString("yyyy-MM-dd")" />
+        </div>
+        
+        <button type="submit" class="btn btn-primary mt-2">Actualizar</button>
+    </form>
+</div>
+
 <div class="container mt-4">
     <h2>Actividades por Hora (últimas 24 hs)</h2>
     <canvas id="lineChart"></canvas>

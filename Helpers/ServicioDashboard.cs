@@ -5,25 +5,23 @@ using System.Linq;
 
 namespace Naitv1.Helpers
 {
-    // DTOs
+    // Estadisicas del dashboard
+    public class DashboardData
+    {
+        public List<ActividadesPorHoraDTO> PorHora { get; set; }
+        public List<ActividadesPorCiudadDTO> PorCiudad { get; set; }
+
+    }
+    // DTOs tablas que muestra chart.js
     public class ActividadesPorHoraDTO
     {
         public int Hora { get; set; }
         public int Cantidad { get; set; }
     }
-
     public class ActividadesPorCiudadDTO
     {
         public string Ciudad { get; set; }
         public int Cantidad { get; set; }
-    }
-
-     // Estadisicas del dashboard
-    public class DashboardData
-    {
-        public List<ActividadesPorHoraDTO> PorHora { get; set; }
-        public List<ActividadesPorCiudadDTO> PorCiudad { get; set; }
-       
     }
 
     public class ServicioDashboard
@@ -74,7 +72,7 @@ namespace Naitv1.Helpers
             return new DashboardData
             {
                 PorHora = actividadesPorHora,
-                PorCiudad = actividadesPorCiudad,               
+                PorCiudad = actividadesPorCiudad,
             };
         }
     }
