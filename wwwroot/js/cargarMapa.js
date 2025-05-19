@@ -32,7 +32,18 @@
         styles: customStyles
     });
 
-    traerActividadesTodoElTiempo();
+    // Iniciamos observación
+    const actividadesVisibles = new Observado();
+    const obsContador = new ObservadorContador('contadorActividades');
+    const obsContador2 = new ObservadorContador('contadorActividades2');
+    const obsContador3 = new ObservadorContador('contadorActividades3');
+    const obsMapa = new ObservadorMapa(MAP);
+
+    actividadesVisibles.agregarObservador(obsContador);
+    actividadesVisibles.agregarObservador(obsContador2);
+    actividadesVisibles.agregarObservador(obsContador3);
+    actividadesVisibles.agregarObservador(obsMapa);
+    actividadesVisibles.traerActividadesTodoElTiempo();
 
     // Comprobar si el navegador soporta Geolocalización
     if (navigator.geolocation) {
@@ -80,46 +91,89 @@ document.addEventListener('DOMContentLoaded', function () {
     loadGoogleMapsAPI();
 })
 
-function traerActividadesTodoElTiempo() {
-    setInterval(function () {
-        // Llama a la función para cargar las actividades cada 5 segundos
-        console.log("traemos actividades");
-        traerActividades();
-    }, 5000); // 5000 ms = 5 segundos
-}
-function traerActividades() {
-    fetch('/Actividades/Visibles')
-        .then(response => response.json())
-        .then(recargarActividades)
-        .catch(error => console.error('Error al cargar las actividades:', error));
-}
-function recargarActividades(actividades) {
-    // Aca actualizamos el contador
-    const divContador = document.getElementById('contadorActividades');
-    divContador.innerHTML = actividades.length;
+class Observado {
+    constructor() {
+        this.observadores = [];
+        this.actividades = [];
+    }
 
-    // Actividades
-    actividades.forEach(function (actividad) {
-        console.log(actividad);
+    notificarObservadores(actividades) {
+        this.observadores.forEach(
+            (observador) => observador.recargarActividades(actividades)
+        );
+    }
 
-        let marker = new google.maps.Marker({
-            position: { lat: parseFloat(actividad.lat), lng: parseFloat(actividad.lon) },
-            map: MAP,
-            title: actividad.mensajeDelAnfitrion
+    agregarObservador(observador) {
+        this.observadores.push(observador)
+    }
+
+    traerActividades() {
+        fetch('/Actividades/Visibles')
+            .then(response => response.json())
+            .then((datos) => {
+                this.actividades = datos;
+                this.notificarObservadores(datos);
+            })
+            .catch(error => console.error('Error al cargar las actividades:', error));
+    }
+
+    traerActividadesTodoElTiempo() {
+        setInterval(() => {
+            this.traerActividades();
+        }, 5000); // 5000 ms = 5 segundos
+    }
+}
+
+class ObservadorContador {
+    constructor(idDivContador) {
+        this.idDivContador = idDivContador;
+    }
+
+    recargarActividades(actividades) {
+        // Aca actualizamos el contador
+        const divContador = document.getElementById(this.idDivContador);
+        divContador.innerHTML = actividades.length;
+    }
+}
+
+class ObservadorMapa {
+    constructor(mapa) {
+        this.mapa = mapa;
+        this.markers = [];
+    }
+
+    recargarActividades(actividades) {
+        this.borrarMarcadores();
+        // Actividades
+        actividades.forEach((actividad) => {
+            let marker = new google.maps.Marker({
+                position: { lat: parseFloat(actividad.lat), lng: parseFloat(actividad.lon) },
+                map: this.mapa,
+                title: actividad.mensajeDelAnfitrion
+            });
+
+            // Agregar evento de clic al marcador
+            marker.addListener('click', function () {
+                // Configurar el contenido del modal dinámicamente
+                document.getElementById('modalTitle').innerText = actividad.tipoActividad;
+                document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
+
+                // Mostrar el modal de Bootstrap
+                let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
+                modal.show();
+            });
+
+            this.markers.push(marker);
         });
+    }
 
-        // Agregar evento de clic al marcador
-        marker.addListener('click', function () {
-            // Configurar el contenido del modal dinámicamente
-            document.getElementById('modalTitle').innerText = actividad.tipoActividad;
-            document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
-
-            // Mostrar el modal de Bootstrap
-            let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
-            modal.show();
-        });
-    });
+    borrarMarcadores() {
+        this.markers.forEach((marker) => marker.setMap(null));
+        this.markers = [];
+    }
 }
+
+
 
 ///////////////////////////
 // Implementación mínima
