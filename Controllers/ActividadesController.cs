@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Naitv1.Models;
 using Naitv1.Data;
 using Naitv1.Helpers;
+using System.Net.Http.Json;
 
 namespace Naitv1.Controllers
 {
@@ -29,9 +30,7 @@ namespace Naitv1.Controllers
                 .Include(a => a.Anfitrion)
                 .ToList();
 
-            ViewBag.actividades = actividades;
-
-            return View();
+            return Json(actividades);
         }
 
         [HttpPost]

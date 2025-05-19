@@ -25,15 +25,5 @@ namespace Naitv1.Models
             "Asado",
             "Trabajar"
         };
-
-        public string ToJson()
-        {
-            return $"{{\"id\":{Id},\"mensajeDelAnfitrion\":\"{MensajeDelAnfitrion}\",\"anfitrionId\":{AnfitrionId},\"tipoActividad\":\"{TipoActividad}\",\"lat\":{Lat},\"lon\":{Lon},\"activa\":{ActivaAsString()}}}";
-        }
-
-        private string ActivaAsString()
-        {
-            return Activa ? "true" : "false";
-        }
     }
 }
