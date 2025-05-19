@@ -29,20 +29,18 @@
         center: {lat: -34.471388888889, lng: -57.844166666667},
         zoom: 14,
         disableDefaultUI: true,
-        styles: customStyles
+        styles: customStyles,
+        mapId: 'mainMap'
     });
 
     // Iniciamos observación
     const actividadesVisibles = new Observado();
     const obsContador = new ObservadorContador('contadorActividades');
-    const obsContador2 = new ObservadorContador('contadorActividades2');
-    const obsContador3 = new ObservadorContador('contadorActividades3');
     const obsMapa = new ObservadorMapa(MAP);
 
     actividadesVisibles.agregarObservador(obsContador);
-    actividadesVisibles.agregarObservador(obsContador2);
-    actividadesVisibles.agregarObservador(obsContador3);
     actividadesVisibles.agregarObservador(obsMapa);
+    actividadesVisibles.traerActividades();
     actividadesVisibles.traerActividadesTodoElTiempo();
 
     // Comprobar si el navegador soporta Geolocalización
@@ -59,9 +57,10 @@
           MAP.setCenter(pos);
 
           // Coloca un marcador (pin) en la ubicación actual
-          new google.maps.Marker({
+          new google.maps.marker.AdvancedMarkerElement({
             position: pos,
-            map: MAP
+            map: MAP,
+            title: 'Aqui estoy'
           });
         },
         function() {
@@ -79,7 +78,7 @@ function loadGoogleMapsAPI() {
     var apiKey = GOOGLE_MAPS_API_KEY; // Reemplaza con tu clave de API
     var script = document.createElement('script');
     // Se construye la URL incluyendo la clave y el callback que llama a initMap
-    script.src = "https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&callback=initMap";
+    script.src = "https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&callback=initMap&libraries=marker";
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
@@ -146,14 +145,14 @@ class ObservadorMapa {
         this.borrarMarcadores();
         // Actividades
         actividades.forEach((actividad) => {
-            let marker = new google.maps.Marker({
+            let marker = new google.maps.marker.AdvancedMarkerElement({
                 position: { lat: parseFloat(actividad.lat), lng: parseFloat(actividad.lon) },
                 map: this.mapa,
                 title: actividad.mensajeDelAnfitrion
             });
 
             // Agregar evento de clic al marcador
-            marker.addListener('click', function () {
+            marker.addListener('gmp-click', function () {
                 // Configurar el contenido del modal dinámicamente
                 document.getElementById('modalTitle').innerText = actividad.tipoActividad;
                 document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
