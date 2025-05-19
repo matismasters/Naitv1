@@ -1,0 +1,12 @@
+﻿@{
+    Layout = null;
+}
+[
+@for (int i = 0; i < @ViewBag.actividades.Count; i++)
+{
+    @Html.Raw(
+        @ViewBag.actividades[i].ToJson() + 
+        (i != ViewBag.actividades.Count - 1 ? "," : "")
+    )
+}
+]

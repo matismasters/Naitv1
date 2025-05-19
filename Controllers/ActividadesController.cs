@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Naitv1.Models;
 using Naitv1.Data;
 using Naitv1.Helpers;
@@ -17,6 +18,19 @@ namespace Naitv1.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Visibles()
+        {
+            List<Actividad> actividades = _context.Actividades
+                .Where(a => a.Activa == true)
+                .Include(a => a.Anfitrion)
+                .ToList();
+
+            ViewBag.actividades = actividades;
+
             return View();
         }
 

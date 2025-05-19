@@ -32,27 +32,7 @@
         styles: customStyles
     });
 
-    // Actividades
-     ACTIVIDADES.forEach(function (actividad) {
-         console.log(actividad);
-
-         let marker = new google.maps.Marker({
-             position: { lat: parseFloat(actividad.lat), lng: parseFloat(actividad.lon) },
-             map: MAP,
-             title: actividad.nombre
-         });
-
-         // Agregar evento de clic al marcador
-         marker.addListener('click', function () {
-             // Configurar el contenido del modal dinámicamente
-             document.getElementById('modalTitle').innerText = actividad.tipoActividad;
-             document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
-
-             // Mostrar el modal de Bootstrap
-             let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
-             modal.show();
-         });
-     });
+    traerActividadesTodoElTiempo();
 
     // Comprobar si el navegador soporta Geolocalización
     if (navigator.geolocation) {
@@ -99,4 +79,119 @@ document.addEventListener('DOMContentLoaded', function () {
     // Llama a la función para cargar la API de Google Maps
     loadGoogleMapsAPI();
 })
+
+function traerActividadesTodoElTiempo() {
+    setInterval(function () {
+        // Llama a la función para cargar las actividades cada 5 segundos
+        console.log("traemos actividades");
+        traerActividades();
+    }, 5000); // 5000 ms = 5 segundos
+}
+function traerActividades() {
+    fetch('/Actividades/Visibles')
+        .then(response => response.json())
+        .then(recargarActividades)
+        .catch(error => console.error('Error al cargar las actividades:', error));
+}
+function recargarActividades(actividades) {
+    // Aca actualizamos el contador
+    const divContador = document.getElementById('contadorActividades');
+    divContador.innerHTML = actividades.length;
+
+    // Actividades
+    actividades.forEach(function (actividad) {
+        console.log(actividad);
+
+        let marker = new google.maps.Marker({
+            position: { lat: parseFloat(actividad.lat), lng: parseFloat(actividad.lon) },
+            map: MAP,
+            title: actividad.mensajeDelAnfitrion
+        });
+
+        // Agregar evento de clic al marcador
+        marker.addListener('click', function () {
+            // Configurar el contenido del modal dinámicamente
+            document.getElementById('modalTitle').innerText = actividad.tipoActividad;
+            document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
+
+            // Mostrar el modal de Bootstrap
+            let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
+            modal.show();
+        });
+    });
+}
+
+///////////////////////////
+// Implementación mínima
+// del Patrón Observador con Herencia
+///////////////////////////
+
+//// Observador base: garantiza método actualizar
+//class Observador {
+//  constructor(nombre) {
+//    this.nombre = nombre;
+//  }
+
+//  actualizar(datos) {
+//    console.log(`${this.nombre}:`, datos);
+//  }
+//}
+
+//// Ejemplo de herencia: un observador especializado
+//class ObservadorConcreto extends Observador {
+//  constructor(nombre, prefijo) {
+//    super(nombre);
+//    this.prefijo = prefijo;
+//  }
+
+//  actualizar(datos) {
+//    // Lógica propia antes o después de llamar al padre
+//    console.log(`${this.prefijo} ${this.nombre} recibió:`, datos);
+//    // Opcional: llamar al método del padre
+//    super.actualizar(datos);
+//  }
+//}
+
+//// Sujeto (Subject)
+//class Sujeto {
+//  constructor() {
+//    this.observadores = [];
+//  }
+
+//  suscribir(observador) {
+//    if (!(observador instanceof Observador)) {
+//      throw new Error('El observador debe ser una instancia de Observador');
+//    }
+//    this.observadores.push(observador);
+//  }
+
+//  desuscribir(observador) {
+//    this.observadores = this.observadores.filter(o => o !== observador);
+//  }
+
+//  notificar(datos) {
+//    this.observadores.forEach(o => o.actualizar(datos));
+//  }
+//}
+
+//// Uso mínimo:
+//const sujeto = new Sujeto();
+
+//// Instancias de Observador base y ObservadorConcreto
+//const observadorA = new Observador('Observador A');
+//const observadorB = new ObservadorConcreto('Observador B', '[Prefijo]');
+
+//// Registrar observadores
+//sujeto.suscribir(observadorA);
+//sujeto.suscribir(observadorB);
+
+//// Notificar a todos
+//sujeto.notificar('¡Evento con herencia!');
+
+//// Desregistrar uno
+//sujeto.desuscribir(observadorA);
+
+//// Volver a notificar
+//sujeto.notificar('¡Segundo evento!');
+
 
