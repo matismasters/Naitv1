@@ -32,7 +32,7 @@
         styles: customStyles
     });
 
-    traerActividades();
+    traerActividadesTodoElTiempo();
 
     // Comprobar si el navegador soporta Geolocalización
     if (navigator.geolocation) {
@@ -80,6 +80,13 @@ document.addEventListener('DOMContentLoaded', function () {
     loadGoogleMapsAPI();
 })
 
+function traerActividadesTodoElTiempo() {
+    setInterval(function () {
+        // Llama a la función para cargar las actividades cada 5 segundos
+        console.log("traemos actividades");
+        traerActividades();
+    }, 5000); // 5000 ms = 5 segundos
+}
 function traerActividades() {
     fetch('/Actividades/Visibles')
         .then(response => response.json())
@@ -113,4 +120,78 @@ function recargarActividades(actividades) {
         });
     });
 }
+
+///////////////////////////
+// Implementación mínima
+// del Patrón Observador con Herencia
+///////////////////////////
+
+//// Observador base: garantiza método actualizar
+//class Observador {
+//  constructor(nombre) {
+//    this.nombre = nombre;
+//  }
+
+//  actualizar(datos) {
+//    console.log(`${this.nombre}:`, datos);
+//  }
+//}
+
+//// Ejemplo de herencia: un observador especializado
+//class ObservadorConcreto extends Observador {
+//  constructor(nombre, prefijo) {
+//    super(nombre);
+//    this.prefijo = prefijo;
+//  }
+
+//  actualizar(datos) {
+//    // Lógica propia antes o después de llamar al padre
+//    console.log(`${this.prefijo} ${this.nombre} recibió:`, datos);
+//    // Opcional: llamar al método del padre
+//    super.actualizar(datos);
+//  }
+//}
+
+//// Sujeto (Subject)
+//class Sujeto {
+//  constructor() {
+//    this.observadores = [];
+//  }
+
+//  suscribir(observador) {
+//    if (!(observador instanceof Observador)) {
+//      throw new Error('El observador debe ser una instancia de Observador');
+//    }
+//    this.observadores.push(observador);
+//  }
+
+//  desuscribir(observador) {
+//    this.observadores = this.observadores.filter(o => o !== observador);
+//  }
+
+//  notificar(datos) {
+//    this.observadores.forEach(o => o.actualizar(datos));
+//  }
+//}
+
+//// Uso mínimo:
+//const sujeto = new Sujeto();
+
+//// Instancias de Observador base y ObservadorConcreto
+//const observadorA = new Observador('Observador A');
+//const observadorB = new ObservadorConcreto('Observador B', '[Prefijo]');
+
+//// Registrar observadores
+//sujeto.suscribir(observadorA);
+//sujeto.suscribir(observadorB);
+
+//// Notificar a todos
+//sujeto.notificar('¡Evento con herencia!');
+
+//// Desregistrar uno
+//sujeto.desuscribir(observadorA);
+
+//// Volver a notificar
+//sujeto.notificar('¡Segundo evento!');
+
 
