@@ -1,0 +1,34 @@
+﻿@model Naitv1.Helpers.FiltroDashboard
+@{
+    ViewData["Title"] = "Filtrar Actividades";
+}
+
+<h2>Filtrar Actividades</h2>
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+<form method="post" asp-action="ResultadosFiltro">
+    <div class="form-group">
+        <label>Ciudad</label>
+        <select class="form-control" name="Ciudad">
+            @foreach (string ciudad in ViewBag.Ciudades)
+            {
+                <option value="@ciudad">@ciudad</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Fecha Inicio</label>
+        <input type="date" class="form-control" name="FechaInicio" required />
+    </div>
+    <div class="form-group">
+        <label>Fecha Fin</label>
+        <input type="date" class="form-control" name="FechaFin" required />
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Filtrar</button>
+</form>
+
+
+

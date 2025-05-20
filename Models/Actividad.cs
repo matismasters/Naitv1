@@ -5,14 +5,14 @@ namespace Naitv1.Models
     public class Actividad
     {
         public int Id { get; set; }
-        public string MensajeDelAnfitrion { get; set; }
+        public string? MensajeDelAnfitrion { get; set; }
         public int AnfitrionId { get; set; }
         public Usuario? Anfitrion { get; set; }
         public string? TipoActividad { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
         public bool Activa { get; set; } = true;
-        public string Ciudad { get; set; } 
+        public string? Ciudad { get; set; } 
 
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
 

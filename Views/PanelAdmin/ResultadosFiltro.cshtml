@@ -1,0 +1,84 @@
+﻿@model Naitv1.Helpers.DashboardData
+@{
+    ViewData["Title"] = "Resultados del Filtro";
+}
+
+@if (ViewBag.esAdmin)
+{
+    <h2>Resultados del Filtro</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+    else
+    {
+        if (ViewBag.Mensaje != null)
+        {
+            <div class="alert alert-info">@ViewBag.Mensaje</div>
+        }
+
+        <h5>Ciudad: @ViewBag.Ciudad | Desde: @ViewBag.FechaDesde | Hasta: @ViewBag.FechaHasta</h5>
+
+        <canvas id="lineChart"></canvas>
+        <canvas id="barChart" class="mt-5"></canvas>
+
+        <div id="containerMapa">
+            <div id="map" style="z-index:1"></div>
+        </div>
+
+        <script type="text/javascript">
+            const ACTIVIDADES = @Html.Raw(Json.Serialize(ViewBag.actividades));
+            const ES_ADMIN = @Html.Raw(Json.Serialize(ViewBag.esAdmin));
+        </script>
+        <script src="~/js/cargarMapa.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const datosPorHora = @Html.Raw(Json.Serialize(Model.PorHora));
+            const datosPorCiudad = @Html.Raw(Json.Serialize(Model.PorCiudad));
+
+            const ctxLine = document.getElementById('lineChart').getContext('2d');
+            new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: datosPorHora.map(d => d.hora),
+                    datasets: [{
+                        label: 'Actividades por hora',
+                        data: datosPorHora.map(d => d.cantidad),
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { title: { display: true, text: 'Hora' } },
+                        y: { title: { display: true, text: 'Cantidad' }, beginAtZero: true }
+                    }
+                }
+            });
+
+            const ctxBar = document.getElementById('barChart').getContext('2d');
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: datosPorCiudad.map(d => d.ciudad),
+                    datasets: [{
+                        label: 'Actividades por ciudad',
+                        data: datosPorCiudad.map(d => d.cantidad)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y',
+                    scales: {
+                        x: { title: { display: true, text: 'Cantidad' }, beginAtZero: true },
+                        y: { title: { display: true, text: 'Ciudad' } }
+                    }
+                }
+            });
+        </script>
+    }
+} else {
+    <div class="alert alert-danger">¨Mal ahi, no tenes permisos para ver esta página.</div>
+}
