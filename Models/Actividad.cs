@@ -13,6 +13,8 @@ namespace Naitv1.Models
         public float Lon { get; set; }
         public bool Activa { get; set; } = true;
 
+        public DateTime FechCreado { get; set; } = DateTime.Now;
+
         public static List<string> TiposActividad = new List<string>
         {
             "Tomar una",
