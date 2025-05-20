@@ -28,6 +28,7 @@ namespace Naitv1.Controllers
             if (estaLogueado)
             {
                 ViewBag.nombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+                ViewBag.actividad = UsuarioLogueado.Actividad(_context, HttpContext.Session);
 
                 List<Actividad> actividades = _context.Actividades
                     .Include(a => a.Anfitrion)

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Naitv1.Data;
 using Naitv1.Models;
 
 namespace Naitv1.Helpers
@@ -28,6 +30,13 @@ namespace Naitv1.Helpers
             return nombreUsuario;
         }
 
+        public static int idUsuario(ISession sesionActual)
+        {
+            int idUsuario = sesionActual.GetInt32("idUsuario") ?? 0;
+            return idUsuario;
+ 
+        }
+
         public static bool esSuperAdmin(ISession sessionActual)
         {
             string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "basico";
@@ -54,6 +63,18 @@ namespace Naitv1.Helpers
             usuario.TipoUsuario = sesionActual.GetString("tipoUsuario") ?? "basico";
 
             return usuario;
+        }
+
+        public static Actividad? Actividad(AppDbContext dbContext, ISession sesionActual)
+        {
+
+            int idUsuario = UsuarioLogueado.idUsuario(sesionActual);
+
+            Actividad? actividad = dbContext.Actividades
+                .Where(actividad => actividad.AnfitrionId == idUsuario && actividad.Activa == true)
+                .FirstOrDefault();
+
+            return actividad;
         }
     }
 }
