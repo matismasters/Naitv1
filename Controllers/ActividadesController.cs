@@ -19,6 +19,9 @@ namespace Naitv1.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            Actividad? actividad = UsuarioLogueado.Actividad(_context, HttpContext.Session);
+            ViewBag.Actividad = actividad ?? new Actividad();
+
             return View();
         }
 
@@ -34,26 +37,38 @@ namespace Naitv1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string mensajeDelAnfitrion, string tipoActividad, float lat, float lon, float? latSuperAdmin, float? lonSuperAdmin)
+        public IActionResult Index(int idActividad, string mensajeDelAnfitrion, string tipoActividad, float lat, float lon, float? latSuperAdmin, float? lonSuperAdmin, string? submit)
         {
             Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
-            Actividad actividad = new Actividad();
+            Actividad actividad;
 
-            actividad.MensajeDelAnfitrion = mensajeDelAnfitrion;
-            actividad.TipoActividad = tipoActividad;
-            if (latSuperAdmin != null && lonSuperAdmin != null && UsuarioLogueado.esSuperAdmin(HttpContext.Session))
+            if (idActividad != 0)
             {
-                actividad.Lat = (float) latSuperAdmin;
-                actividad.Lon = (float) lonSuperAdmin;
-            }
-            else
-            {
-                actividad.Lat = lat;
-                actividad.Lon = lon;
-            }
-            actividad.AnfitrionId = usuario.Id;
+                actividad = _context.Actividades.Find(idActividad) ?? new Actividad();
+                actividad.MensajeDelAnfitrion = mensajeDelAnfitrion;
+                actividad.TipoActividad = tipoActividad;
 
-            _context.Actividades.Add(actividad);
+                _context.Actividades.Update(actividad);
+            } else
+            {
+                actividad = new Actividad();
+                actividad.MensajeDelAnfitrion = mensajeDelAnfitrion;
+                actividad.TipoActividad = tipoActividad;
+ 
+                if (latSuperAdmin != null && lonSuperAdmin != null && UsuarioLogueado.esSuperAdmin(HttpContext.Session))
+                {
+                    actividad.Lat = (float) latSuperAdmin;
+                    actividad.Lon = (float) lonSuperAdmin;
+                }
+                else
+                {
+                    actividad.Lat = lat;
+                    actividad.Lon = lon;
+                }
+                actividad.AnfitrionId = usuario.Id;
+                _context.Actividades.Add(actividad);
+            }
+
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Home");
