@@ -44,7 +44,7 @@ namespace Naitv1.Controllers
             }
         }
 
-		public IActionResult Registrarse()
+        public IActionResult Registrarse()
         {
             if (UsuarioLogueado.estaLogueado(HttpContext.Session))
             {
