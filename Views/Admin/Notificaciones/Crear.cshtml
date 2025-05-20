@@ -1,0 +1,87 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    @if (ViewBag.Error != null)
+    {
+        <h2 class="text-center container-fluid">
+            Debes estar logeado como Anfitrion para acceder a esta configuracion
+        </h2>
+        <a asp-controller="Home" asp-action="Index">Volver al inicio</a>
+    }
+    else
+    {
+        <div class="form-control align-content-center text-center">
+            <div class="alert-danger">
+                <a class="mb-3">
+                    @ViewBag.Error
+                </a>
+            </div>
+            <form asp-action="Crear" method="post" id="formCrearNotificacion">
+                <div class="mb-3">
+                    <label for="TituloNotificacion" class="form-label">Titulo de la notificacion</label>
+                    <input type="text" id="TituloNotificacion" name="tituloNotificacion" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="MensajeNotificacion" class="form-label">Mensaje de la Notificacion</label>
+                    <input type="text" id="MensajeNotificacion" name="mensajeNotificacion" class="form-control" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Ciudades donde mostrar la notificación</label>
+
+                    <div>
+                        @if (ViewBag.Ciudades != null)
+                        {
+                            foreach (var ciudad in (List<Ciudades>)ViewBag.Ciudades)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="idsCiudades"
+                                           value="@ciudad.Id"
+                                           id="ciudad_@ciudad.Id" />
+
+                                    <label class="form-check-label" for="ciudad_@ciudad.Id">
+                                        @ciudad.Nombre
+                                    </label>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+
+                <div class="mb-3">
+                    <label class="form-label">Roles de usuario a los que aplicar la notificación</label>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="roles" value="anfitrion" id="rol_anfitrion" />
+                        <label class="form-check-label" for="rol_anfitrion">Anfitrión</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="roles" value="superAdmin" id="rol_superAdmin" />
+                        <label class="form-check-label" for="rol_superAdmin">Super Admin</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="roles" value="normal" id="rol_normal" />
+                        <label class="form-check-label" for="rol_normal">Normal</label>
+                    </div>
+                </div>
+
+
+                <div class="mb-3">
+                    <label for="FechaNotificacion" class="form-label">Fecha y hora para la notificacion</label>
+                    <input type="datetime" id="FechaNotificacion" name="fechaProgramadaNotificacion" class="form-control" requiered />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Crear notificacion</button>
+            </form>
+        </div>
+    }
+
+}
+

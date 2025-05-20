@@ -1,0 +1,68 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<div class="container-lg rounded text-center p-3">
+    <h1> 
+        Gestor de notificaciones
+    </h1>
+</div>
+<div class="container-lg rounded">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Titulo</th>
+                <th>Mensaje</th>
+                <th>Id Ciudades</th>
+                <th>Roles</th>
+                <th>Fecha Programada</th>
+                <th>Estado de Notificacion</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.Notificaciones != null) {
+                @foreach (Notificaciones noti in ViewBag.Notificaciones)
+                {
+                    var criterio = Notificaciones.VerCriterio(noti.CriterioSegmento);
+
+                    <tr>
+                        <td>@noti.Titulo</td>
+                        <td>@noti.Mensaje</td>
+                        <td>    
+                            @{
+                                string ids = "- ";
+                                @foreach (int idCiudad in criterio.ciudad)
+                                {
+                                    ids += $"{idCiudad} - " ;
+                                }
+                            }
+                            @ids
+                        </td>
+                        <td>
+                            @{
+                                string roles = "- ";
+                                @foreach (string rol in criterio.tipoUsuario)
+                                {
+                                    roles += $"{rol} - ";
+                                }
+                            }    
+                            @roles
+                        </td>
+                        <td>@noti.FechaHoraProgramada</td>
+                        <td>@noti.EstadoNotificacion</td>
+                    </tr>
+                }
+
+
+            }
+            else
+            {
+                <tr>
+                    <td>
+                        Aun no existen notificaciones
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

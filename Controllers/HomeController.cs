@@ -57,6 +57,13 @@ namespace Naitv1.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            if (UsuarioLogueado.esAnfitrion(HttpContext.Session) == true)
+            {
+                ViewBag.esAnfitrion = true;
+            }
+            else
+            { ViewBag.esAnfitrion = false; }
+
             return View();
         }
 
