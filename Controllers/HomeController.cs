@@ -34,6 +34,10 @@ namespace Naitv1.Controllers
                     .Include(a => a.Anfitrion)
                     .ToList();
 
+                Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
+
+                ViewBag.usuario = usuario;
+
                 ViewBag.actividades = actividades;
             }
 

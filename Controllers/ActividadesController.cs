@@ -20,6 +20,11 @@ namespace Naitv1.Controllers
         public IActionResult Index()
         {
             Actividad? actividad = UsuarioLogueado.Actividad(_context, HttpContext.Session);
+
+            List<Actividad> actividades = _context.Actividades.ToList(); //A mejorar
+
+            ViewBag.Actividades = actividades;
+
             ViewBag.Actividad = actividad ?? new Actividad();
 
             return View();
@@ -35,6 +40,28 @@ namespace Naitv1.Controllers
 
             return Json(actividades);
         }
+
+        [HttpPost]
+        public IActionResult Unirse(int idActividad, int idUsuario)
+            {
+			Usuario usuarioLogueado = UsuarioLogueado.Usuario(HttpContext.Session);   
+            
+            Usuario usuario = _context.Usuarios.Find(usuarioLogueado.Id)!;
+            
+            Actividad? actividad = _context.Actividades.Find(idActividad);
+
+            if (actividad != null)
+                {
+                _context.Actividades
+                    .Find(idActividad)?
+                    .Participantes
+                    .Add(usuario);
+
+                _context.SaveChanges();
+                }
+
+			return RedirectToAction("Index", "Home");
+			}
 
         [HttpPost]
         public IActionResult Index(int idActividad, string mensajeDelAnfitrion, string tipoActividad, float lat, float lon, float? latSuperAdmin, float? lonSuperAdmin, string? submit)
