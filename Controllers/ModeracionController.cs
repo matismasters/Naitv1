@@ -10,7 +10,6 @@ namespace Naitv1.Controllers
     public class ModeracionController : Controller
     {
         private readonly AppDbContext _context;
-
         public ModeracionController(AppDbContext context)
         {
             _context = context;
@@ -20,7 +19,9 @@ namespace Naitv1.Controllers
 			if (UsuarioLogueado.esModerador(HttpContext.Session))
 			{
 				return View();
-			} else {
+			} 
+			else 
+			{
 				return RedirectToAction("Index", "Home");
 			}
 		}
@@ -36,15 +37,17 @@ namespace Naitv1.Controllers
 				ViewBag.notificaciones = notificaciones;
 
 				return View();
-			} else {
+			} 
+			else 
+			{
 				return RedirectToAction("Index", "Home");
 			}
         }
 
 		public IActionResult Reportes(int id)
-			{
+		{
 			if (UsuarioLogueado.esModerador(HttpContext.Session))
-				{
+			{
 				var actividadReportada = _context.
 					RegistroNotificaciones.
 					Find(id);
@@ -52,35 +55,35 @@ namespace Naitv1.Controllers
 				ViewBag.actividadReportada = actividadReportada;
 
 				return View();
-				}
-			else
-				{
-				return RedirectToAction("Index", "Home");
-				}
 			}
-
-		public IActionResult Estadisticas()
-			{
-			if (UsuarioLogueado.esModerador(HttpContext.Session))
-				{
-				return View();
-				}
 			else
-				{
-				return RedirectToAction("Index", "Home");
-				}
-			}
-
-		public IActionResult Mapa()
 			{
-			if (UsuarioLogueado.esModerador(HttpContext.Session))
-				{
-				return View();
-				}
-			else
-				{
 				return RedirectToAction("Index", "Home");
-				}
 			}
 		}
+
+		public IActionResult Estadisticas()
+		{
+			if (UsuarioLogueado.esModerador(HttpContext.Session))
+			{
+				return View();
+			}
+			else
+			{
+				return RedirectToAction("Index", "Home");
+			}
+		}
+
+		public IActionResult Mapa()
+		{
+			if (UsuarioLogueado.esModerador(HttpContext.Session))
+			{
+				return View();
+			}
+			else
+			{
+				return RedirectToAction("Index", "Home");
+			}
+		}
+	}
 }

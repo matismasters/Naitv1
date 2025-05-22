@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 namespace Naitv1.Models
-    {
+{
     public class RegistroNotificacion
-        {
+    {
         public int Id { get; set; }
 
         public int ActividadId { get; set; }
@@ -25,8 +25,8 @@ namespace Naitv1.Models
         public DateTime FechaNotificacion { get; set; } = DateTime.Now;
 
         public static List<string> Motivos = new List<string>
-            {
-            "Peligroso", "Fraude", "Actividad Politica", "Engañoso", "Otros"
-            };
-        }
+        {
+        "Peligroso", "Fraude", "Actividad Politica", "Engañoso", "Otros"
+        };
     }
+}
