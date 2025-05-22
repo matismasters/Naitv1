@@ -44,7 +44,14 @@ namespace Naitv1.Helpers
             return esSuperAdmin;
         }
 
-        public static void loguearUsuario(ISession sesionActual, Usuario usuario)
+		public static bool esModerador(ISession sessionActual)
+		{
+		    string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "basico";
+		    bool esModerador = tipoUsuarioString == "moderador";
+		    return esModerador;
+		}
+
+		public static void loguearUsuario(ISession sesionActual, Usuario usuario)
         {
             sesionActual.SetString("estaLogueado", "true");
 
@@ -67,7 +74,6 @@ namespace Naitv1.Helpers
 
         public static Actividad? Actividad(AppDbContext dbContext, ISession sesionActual)
         {
-
             int idUsuario = UsuarioLogueado.idUsuario(sesionActual);
 
             Actividad? actividad = dbContext.Actividades
