@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Naitv1.Migrations;
+using System.ComponentModel;
 
 namespace Naitv1.Models
 {
@@ -25,6 +26,7 @@ namespace Naitv1.Models
             "Asado",
             "Trabajar"
         };
+        public static List<ActividadesUsuarios> ActividadUsuarios { get; set; }
 
         public string ToJson()
         {

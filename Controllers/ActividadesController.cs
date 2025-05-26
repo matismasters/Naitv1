@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Naitv1.Models;
 using Naitv1.Data;
 using Naitv1.Helpers;
+using Naitv1.Migrations;
 
 namespace Naitv1.Controllers
 {
@@ -59,5 +60,34 @@ namespace Naitv1.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+        public IActionResult AgregarParticipante(int IdActividad)
+        {
+            ActividadesUsuarios reunion = new ActividadesUsuarios();
+            Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
+
+            if (usuario == null)
+            {
+                Console.WriteLine("anda  a la concha de tu madre");
+            }
+
+            Actividad? actividad = _context.Actividades.Find(IdActividad);
+            if (actividad == null)
+            {
+                Console.WriteLine("anda  a la concha de tu madre");
+            }
+
+            reunion.IdActividad = actividad.Id;
+            reunion.IdUsuario = usuario.Id;
+
+            _context.ActividadesUsuarios.Add(reunion);
+            _context.SaveChanges();
+
+
+            return RedirectToAction("Index", "Home");
+        }
     }
+
+   
+
+
 }

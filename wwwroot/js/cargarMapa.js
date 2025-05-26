@@ -113,6 +113,8 @@ function recargarActividades(actividades) {
             // Configurar el contenido del modal dinámicamente
             document.getElementById('modalTitle').innerText = actividad.tipoActividad;
             document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
+            document.getElementById('modalActividad').innerText = actividad.Id;
+
 
             // Mostrar el modal de Bootstrap
             let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
