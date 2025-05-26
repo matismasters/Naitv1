@@ -1,74 +1,13 @@
 ﻿let MAP; // Variable global para el mapa
- function initMap() {
-    var customStyles = [
-      {
-        featureType: "poi",
-        elementType: "all",
-        stylers: [
-          { visibility: "off" }
-        ]
-      },
-      {
-        featureType: "transit",
-        elementType: "all",
-        stylers: [
-          { visibility: "off" }
-        ]
-      },
-      {
-        featureType: "road.highway",
-        elementType: "labels.icon",
-        stylers: [
-          { visibility: "off" }
-        ]
-      }
-    ];
+function initMap() {
+}
 
-    // Inicialización del mapa, centrado en Madrid como ejemplo
-    MAP = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: -34.471388888889, lng: -57.844166666667},
-        zoom: 14,
-        disableDefaultUI: true,
-        styles: customStyles
-    });
-
-    traerActividadesTodoElTiempo();
-
-    // Comprobar si el navegador soporta Geolocalización
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          // Obtenemos la posición actual del usuario
-          var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-
-          // Centra el mapa en la ubicación actual
-          MAP.setCenter(pos);
-
-          // Coloca un marcador (pin) en la ubicación actual
-          new google.maps.Marker({
-            position: pos,
-            map: MAP
-          });
-        },
-        function() {
-          handleLocationError(true, MAP.getCenter());
-        }
-      );
-    } else {
-      // El navegador no soporta Geolocalización
-      handleLocationError(false, MAP.getCenter());
-    }
-  }
-
-  // Función para cargar la API de Google Maps de forma programática
+// Función para cargar la API de Google Maps de forma programática
 function loadGoogleMapsAPI() {
     var apiKey = GOOGLE_MAPS_API_KEY; // Reemplaza con tu clave de API
     var script = document.createElement('script');
     // Se construye la URL incluyendo la clave y el callback que llama a initMap
-    script.src = "https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&callback=initMap";
+    script.src = "https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&callback=initMap&libraries=marker";
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
@@ -80,48 +19,89 @@ document.addEventListener('DOMContentLoaded', function () {
     loadGoogleMapsAPI();
 })
 
-function traerActividadesTodoElTiempo() {
-    setInterval(function () {
-        // Llama a la función para cargar las actividades cada 5 segundos
-        console.log("traemos actividades");
-        traerActividades();
-    }, 5000); // 5000 ms = 5 segundos
-}
-function traerActividades() {
-    fetch('/Actividades/Visibles')
-        .then(response => response.json())
-        .then(recargarActividades)
-        .catch(error => console.error('Error al cargar las actividades:', error));
-}
-function recargarActividades(actividades) {
-    // Aca actualizamos el contador
-    const divContador = document.getElementById('contadorActividades');
-    divContador.innerHTML = actividades.length;
+class Observado {
+    constructor() {
+        this.observadores = [];
+        this.actividades = [];
+    }
 
-    // Actividades
-    actividades.forEach(function (actividad) {
-        console.log(actividad);
+    notificarObservadores(actividades) {
+        this.observadores.forEach(
+            (observador) => observador.recargarActividades(actividades)
+        );
+    }
 
-        let marker = new google.maps.Marker({
-            position: { lat: parseFloat(actividad.lat), lng: parseFloat(actividad.lon) },
-            map: MAP,
-            title: actividad.mensajeDelAnfitrion
+    agregarObservador(observador) {
+        this.observadores.push(observador)
+    }
+
+    traerActividades() {
+        fetch('/Actividades/Visibles')
+            .then(response => response.json())
+            .then((datos) => {
+                this.actividades = datos;
+                this.notificarObservadores(datos);
+            })
+            .catch(error => console.error('Error al cargar las actividades:', error));
+    }
+
+    traerActividadesTodoElTiempo() {
+        setInterval(() => {
+            this.traerActividades();
+        }, 5000); // 5000 ms = 5 segundos
+    }
+}
+
+class ObservadorContador {
+    constructor(idDivContador) {
+        this.idDivContador = idDivContador;
+    }
+
+    recargarActividades(actividades) {
+        // Aca actualizamos el contador
+        const divContador = document.getElementById(this.idDivContador);
+        divContador.innerHTML = actividades.length;
+    }
+}
+
+class ObservadorMapa {
+    constructor(mapa) {
+        this.mapa = mapa;
+        this.markers = [];
+    }
+
+    recargarActividades(actividades) {
+        this.borrarMarcadores();
+        // Actividades
+        actividades.forEach((actividad) => {
+            let marker = new google.maps.marker.AdvancedMarkerElement({
+                position: { lat: parseFloat(actividad.lat), lng: parseFloat(actividad.lon) },
+                map: this.mapa,
+                title: actividad.mensajeDelAnfitrion
+            });
+
+            // Agregar evento de clic al marcador
+            marker.addListener('gmp-click', function () {
+                // Configurar el contenido del modal dinámicamente
+                document.getElementById('modalTitle').innerText = actividad.tipoActividad;
+                document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
+
+                // Mostrar el modal de Bootstrap
+                let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
+                modal.show();
+            });
+
+            this.markers.push(marker);
         });
+    }
 
-        // Agregar evento de clic al marcador
-        marker.addListener('click', function () {
-            // Configurar el contenido del modal dinámicamente
-            document.getElementById('modalTitle').innerText = actividad.tipoActividad;
-            document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
-            document.getElementById('modalActividad').innerText = actividad.Id;
-
-
-            // Mostrar el modal de Bootstrap
-            let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
-            modal.show();
-        });
-    });
+    borrarMarcadores() {
+        this.markers.forEach((marker) => marker.setMap(null));
+        this.markers = [];
+    }
 }
+
+
 
 ///////////////////////////
 // Implementación mínima
@@ -195,5 +175,3 @@ function recargarActividades(actividades) {
 
 //// Volver a notificar
 //sujeto.notificar('¡Segundo evento!');
-
-
