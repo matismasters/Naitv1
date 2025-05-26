@@ -16,13 +16,35 @@ namespace Naitv1.Services
             _context = context;
         }
 
-        public async Task<Dictionary<int, int>> ObtenerMetrics()
+        public async Task<MetricasDashboard> ObtenerMetrics() // Devuelvo un objeto del tripo MetricasDashboard que es un dto, que me sirve para mandar varios datos 
         {
 
-            var actividades = await ActividadesPorHora();            
+            MetricasDashboard? datos = new MetricasDashboard
 
-            return actividades;
+            {
+                ActividadesPorHora = await ActividadesPorHora(),
+                ActividadesPorCiudad = await ActividadesPorCiudad(),
+
+            };                        
+
+            return datos;
             
+        }
+
+        private async Task<Dictionary<string, int>> ActividadesPorCiudad()
+        {
+            DateTime desde = DateTime.Now.AddDays(-7);
+
+            List<Actividad> actividades = await _context.Actividades
+                .Include(a => a.Ciudad)
+                .Where(a => a.FechCreado >= desde)
+                .ToListAsync();
+
+            Dictionary<string, int> resultado = actividades
+                .GroupBy(a => a.Ciudad.Nombre)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            return resultado;
         }
 
         private async Task<Dictionary<int, int>> ActividadesPorHora()

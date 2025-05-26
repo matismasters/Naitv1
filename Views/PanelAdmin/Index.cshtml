@@ -1,6 +1,16 @@
-﻿<h3>Actividades por hora (últimas 24 h)</h3>
+﻿
+<div class="mt-2">
+    <h3>Actividades por hora (últimas 24 h)</h3>
 
-<canvas id="graficoHoras"></canvas>
+    
+    <canvas id="graficoHoras"></canvas>
+
+    <canvas id="graficoActividadesPorCiudad"></canvas>
+   
+    
+
+</div>
+
 
 
 
@@ -37,6 +47,38 @@
             }
         }
     });
+</script>
+
+<script>
+    
+    const actividadesPorCiudad = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ActividadesPorCiudad));
+
+    const labelsCiudad = Object.keys(actividadesPorCiudad);
+    const dataCiudad = labelsCiudad.map(c => actividadesPorCiudad[c]);
+
+    const ctxCiudad = document.getElementById('graficoActividadesPorCiudad').getContext('2d');
+    new Chart(ctxCiudad, {
+        type: 'bar',
+        data: {
+            labels: labelsCiudad,
+            datasets: [{
+                label: 'Actividades por ciudad',
+                data: dataCiudad,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+
+
 </script>
 
 @* <div id="map" style="height: 100px;"></div>

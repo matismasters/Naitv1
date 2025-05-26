@@ -29,8 +29,8 @@
         center: {lat: -34.471388888889, lng: -57.844166666667},
         zoom: 14,
         disableDefaultUI: true,
-        styles: customStyles,
-        mapId: 'mainMap'
+        /*styles: customStyles,*/
+        /*mapId: 'mainMap'*/
     });
 
     // Iniciamos observación
@@ -57,7 +57,7 @@
           MAP.setCenter(pos);
 
           // Coloca un marcador (pin) en la ubicación actual
-          new google.maps.marker.AdvancedMarkerElement({
+          new google.maps.Marker({
             position: pos,
             map: MAP,
             title: 'Aqui estoy'
@@ -110,6 +110,7 @@ class Observado {
         fetch('/Actividades/Visibles')
             .then(response => response.json())
             .then((datos) => {
+                console.log('Actividades recibidas:', datos);
                 this.actividades = datos;
                 this.notificarObservadores(datos);
             })
@@ -145,14 +146,14 @@ class ObservadorMapa {
         this.borrarMarcadores();
         // Actividades
         actividades.forEach((actividad) => {
-            let marker = new google.maps.marker.AdvancedMarkerElement({
+            let marker = new google.maps.Marker({
                 position: { lat: parseFloat(actividad.lat), lng: parseFloat(actividad.lon) },
                 map: this.mapa,
                 title: actividad.mensajeDelAnfitrion
             });
 
             // Agregar evento de clic al marcador
-            marker.addListener('gmp-click', function () {
+            marker.addListener('click', () => {
                 // Configurar el contenido del modal dinámicamente
                 document.getElementById('modalTitle').innerText = actividad.tipoActividad;
                 document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;

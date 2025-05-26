@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Naitv1.Data;
 using Naitv1.Models;
 using Naitv1.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Naitv1.Controllers
 {
@@ -22,9 +23,13 @@ namespace Naitv1.Controllers
         public async Task<ActionResult> Index()
         {
             var actividadesPorHora = await _servicioDashboard.ObtenerMetrics();
-
             ViewBag.ActividadesPorHora = actividadesPorHora;
-            /*ViewBag.ActividadesActivas = datos.ActividadesActivas;*/
+
+            var datos = await _servicioDashboard.ObtenerMetrics();
+
+            ViewBag.ActividadesPorHora = datos.ActividadesPorHora;
+            ViewBag.ActividadesPorCiudad = datos.ActividadesPorCiudad;
+
 
             return View();
         }
