@@ -1,17 +1,38 @@
 ﻿@{
-    ViewData["Title"] = "Crear Actividad";
+    if (ViewBag.Actividad.Id == 0)
+    {
+        ViewData["Title"] = "Crear Actividad";
+    } else
+    {
+        ViewData["Title"] = "Editar Actividad";
+    }
 }
 
 <div class="container mt-5">
-    <h1>Crear Actividad</h1>
+    @if(ViewBag.Actividad.Id == 0)
+    {
+        <h1>Crear Actividad</h1>
+    } else
+    {
+        <h1>Editar Actividad</h1>
+    }
 
     <form method="post" action="/Actividades" id="formCrearActividad">
+        <input type="hidden" name="idActividad" value="@ViewBag.Actividad.Id" />
+
         <div class="error">
             <span>@ViewBag.errors</span>
         </div>
         <div class="mb-3">
-            <label for="MensajeDelAnfitrion" class="form-label">Nombre</label>
-            <input type="text" id="MensajeDelAnfitrion" name="mensajeDelAnfitrion" class="form-control" required />
+            <label for="MensajeDelAnfitrion" class="form-label">Mensaje del Anfitrion</label>
+            <input 
+            type="text" 
+            id="MensajeDelAnfitrion" 
+            name="mensajeDelAnfitrion" 
+            value="@ViewBag.Actividad.MensajeDelAnfitrion" 
+            class="form-control" 
+            required 
+            />
         </div>
         <div class="mb-3">
             <label for="TipoActividad" class="form-label">Tipo Actividad</label>
@@ -19,7 +40,13 @@
                 <option selected disabled>Seleccione Tipo de Actividad</option>
                 @foreach (string actividad in Actividad.TiposActividad)
                 {
-                    <option value="@actividad">@actividad</option>
+                    @if(actividad == ViewBag.Actividad.TipoActividad)
+                    {
+                        <option selected="selected" value="@actividad">@actividad</option>
+                    } else
+                    {
+                        <option value="@actividad">@actividad</option>
+                    }
                 }
             </select>
         </div>
@@ -40,7 +67,13 @@
             </div>
         }
 
-        <button type="submit" class="btn btn-primary">Crear Actividad</button>
+        @if(ViewBag.Actividad.Id != 0)
+        {
+            <button type="submit" class="btn btn-primary">Editar Actividad</button>
+        } else
+        {
+            <button type="submit" class="btn btn-primary">Crear Actividad</button>
+        }
     </form>
 </div>
 

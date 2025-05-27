@@ -1,8 +1,79 @@
 ﻿let MAP; // Variable global para el mapa
-function initMap() {
-}
+ function initMap() {
+    var customStyles = [
+      {
+        featureType: "poi",
+        elementType: "all",
+        stylers: [
+          { visibility: "off" }
+        ]
+      },
+      {
+        featureType: "transit",
+        elementType: "all",
+        stylers: [
+          { visibility: "off" }
+        ]
+      },
+      {
+        featureType: "road.highway",
+        elementType: "labels.icon",
+        stylers: [
+          { visibility: "off" }
+        ]
+      }
+    ];
 
-// Función para cargar la API de Google Maps de forma programática
+    // Inicialización del mapa, centrado en Madrid como ejemplo
+    MAP = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: -34.471388888889, lng: -57.844166666667},
+        zoom: 14,
+        disableDefaultUI: true,
+        styles: customStyles,
+        mapId: 'mainMap'
+    });
+
+    // Iniciamos observación
+    const actividadesVisibles = new Observado();
+    const obsContador = new ObservadorContador('contadorActividades');
+    const obsMapa = new ObservadorMapa(MAP);
+
+    actividadesVisibles.agregarObservador(obsContador);
+    actividadesVisibles.agregarObservador(obsMapa);
+    actividadesVisibles.traerActividades();
+    actividadesVisibles.traerActividadesTodoElTiempo();
+
+    // Comprobar si el navegador soporta Geolocalización
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          // Obtenemos la posición actual del usuario
+          var pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          // Centra el mapa en la ubicación actual
+          MAP.setCenter(pos);
+
+          // Coloca un marcador (pin) en la ubicación actual
+          new google.maps.marker.AdvancedMarkerElement({
+            position: pos,
+            map: MAP,
+            title: 'Aqui estoy'
+          });
+        },
+        function() {
+          handleLocationError(true, MAP.getCenter());
+        }
+      );
+    } else {
+      // El navegador no soporta Geolocalización
+      handleLocationError(false, MAP.getCenter());
+    }
+  }
+
+  // Función para cargar la API de Google Maps de forma programática
 function loadGoogleMapsAPI() {
     var apiKey = GOOGLE_MAPS_API_KEY; // Reemplaza con tu clave de API
     var script = document.createElement('script');
@@ -175,3 +246,5 @@ class ObservadorMapa {
 
 //// Volver a notificar
 //sujeto.notificar('¡Segundo evento!');
+
+
