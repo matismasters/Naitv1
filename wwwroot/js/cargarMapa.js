@@ -156,6 +156,7 @@ class ObservadorMapa {
                 // Configurar el contenido del modal dinámicamente
                 document.getElementById('modalTitle').innerText = actividad.tipoActividad;
                 document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
+                document.getElementById('modalIdActividad').value = actividad.id;
 
                 // Mostrar el modal de Bootstrap
                 let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
