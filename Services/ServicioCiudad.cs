@@ -19,6 +19,10 @@ namespace Naitv1.Services
 
         public async Task<Ciudad> ObtenerCiudad(float lat, float lon)
         {
+            Console.WriteLine($"%%%%%%%%%%%%%%%%%en servicio ciudad%%%%%%%%%%%%%");
+            Console.WriteLine($"latitud: {lat}");
+            Console.WriteLine($"longi: {lon}");
+            Console.WriteLine($"%%%%%%%%%%%%%%%%%en servicio ciudad%%%%%%%%%%%%%");
 
             string nombreCiudad = await LlamarApiReverseGeocoding(lat, lon);
 
@@ -42,9 +46,9 @@ namespace Naitv1.Services
         }
 
 
-        private async Task<string> LlamarApiReverseGeocoding(double lat, double lon)
+        private async Task<string> LlamarApiReverseGeocoding(float lat, float lon)
         {
-            /*using var http = new HttpClient();
+            using var http = new HttpClient();
 
             var url = $"https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={lat}&lon={lon}";
             http.DefaultRequestHeaders.UserAgent.ParseAdd("NaitApp/1.0 (fernandobonilla832@gmail.com)");
@@ -54,55 +58,17 @@ namespace Naitv1.Services
             if (!response.IsSuccessStatusCode)
             {
                 return "Desconocida";
-            }               
+            }
 
             var json = await response.Content.ReadAsStringAsync();
             var data = JsonSerializer.Deserialize<NominatimResponse>(json);
 
-            Console.WriteLine(json);
+            //Console.WriteLine(json);
 
             return data?.address?.city
                 ?? data?.address?.town
                 ?? data?.address?.village
-                ?? "Desconocida";*/
-
-            using var http = new HttpClient();
-
-            // Formatear los floats para asegurar que usan punto decimal, no coma
-            string latStr = lat.ToString("F8", CultureInfo.InvariantCulture);
-            string lonStr = lon.ToString("F8", CultureInfo.InvariantCulture);
-            Console.WriteLine($"===========================================================");
-            Console.WriteLine($"lat: {lat}");
-            Console.WriteLine($"long: {lat}");
-
-            var url = $"https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={lat}&lon={lon}";
-            http.DefaultRequestHeaders.UserAgent.ParseAdd("NaitApp/1.0 (mailto:fernandobonilla832@gmail.com)");
-
-            var response = await http.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"❌ HTTP ERROR {(int)response.StatusCode}: {response.ReasonPhrase}");
-                Console.WriteLine($"Respuesta: {error}");
-                return "Desconocida";
-            }
-
-            var json = await response.Content.ReadAsStringAsync();
-            Console.WriteLine("✅ JSON Recibido:");
-            Console.WriteLine(json);
-
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-
-            if (root.TryGetProperty("address", out var address))
-            {
-                if (address.TryGetProperty("city", out var city)) return city.GetString();
-                if (address.TryGetProperty("town", out var town)) return town.GetString();
-                if (address.TryGetProperty("village", out var village)) return village.GetString();
-            }
-
-            return "Desconocida";
+                ?? "Desconocida";           
         }
 
 

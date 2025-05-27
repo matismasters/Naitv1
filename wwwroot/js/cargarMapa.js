@@ -112,6 +112,7 @@ class Observado {
             .then((datos) => {
                 console.log('Actividades recibidas:', datos);
                 this.actividades = datos;
+                //console.log(datos);
                 this.notificarObservadores(datos);
             })
             .catch(error => console.error('Error al cargar las actividades:', error));

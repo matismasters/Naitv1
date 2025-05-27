@@ -32,7 +32,7 @@ namespace Naitv1.Controllers
         public IActionResult Visibles()
         {
             List<Actividad> actividades = _context.Actividades
-                /*.Include(a => a.Ciudad)*/
+                .Include(a => a.Ciudad)
                 .Include(a => a.Anfitrion)
                 .Where(a => a.Activa == true)                            
                 .ToList();
@@ -43,12 +43,14 @@ namespace Naitv1.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(int idActividad, string mensajeDelAnfitrion, string tipoActividad, float lat, float lon, float? latSuperAdmin, float? lonSuperAdmin, string? submit)
         {
+            Console.WriteLine($"==================================== en metodo crear");
             Console.WriteLine($"lat: {lat}, lon: {lon}");
+            Console.WriteLine($"==================================== en metodo crear");
 
             Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
             Actividad actividad;
 
-            var ciudad =  await _servicioCiudad.ObtenerCiudad(lat, lon);
+            var ciudad = await _servicioCiudad.ObtenerCiudad(lat, lon);
 
             if (idActividad != 0)
             {
@@ -65,18 +67,27 @@ namespace Naitv1.Controllers
                 actividad.TipoActividad = tipoActividad;
 
                 //Ahora tengo Ciudad en Actividad
-                actividad.Ciudad = ciudad;
+                //actividad.Ciudad = ciudad;
  
                 if (latSuperAdmin != null && lonSuperAdmin != null && UsuarioLogueado.esSuperAdmin(HttpContext.Session))
-                {
+                {                                      
+
                     actividad.Lat = (float) latSuperAdmin;
                     actividad.Lon = (float) lonSuperAdmin;
+
+                    ciudad = await _servicioCiudad.ObtenerCiudad((float)latSuperAdmin, (float)lonSuperAdmin);
+
                 }
                 else
                 {
                     actividad.Lat = lat;
                     actividad.Lon = lon;
+
+                    ciudad = await _servicioCiudad.ObtenerCiudad(lat, lon);
                 }
+
+                actividad.Ciudad = ciudad;
+
                 actividad.AnfitrionId = usuario.Id;
                 _context.Actividades.Add(actividad);
             }

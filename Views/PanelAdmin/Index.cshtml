@@ -1,21 +1,14 @@
 ﻿
 <div class="mt-2">
-    <h3>Actividades por hora (últimas 24 h)</h3>
-
-    
+    <h3>Actividades por hora (ultimas 24 h)</h3>    
     <canvas id="graficoHoras"></canvas>
 
-    <canvas id="graficoActividadesPorCiudad"></canvas>
-   
+    <h3 class="mt-2">Actividades por Ciudad (ultimas 7 dias)</h3>
+    <canvas id="graficoActividadesPorCiudad"></canvas> 
     
-
 </div>
 
-
-
-
 @* <script src="~/js/api_key.js"></script> *@
-
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -26,8 +19,8 @@
     const labels = Object.keys(actividadesPorHora).sort((a, b) => a - b);
     const data = labels.map(hora => actividadesPorHora[hora]);
 
-    const ctx = document.getElementById('graficoHoras').getContext('2d');
-    new Chart(ctx, {
+    const graficoHoras = document.getElementById('graficoHoras').getContext('2d');
+    new Chart(graficoHoras, {
         type: 'line',
         data: {
             labels: labels.map(h => `${h}:00`),
@@ -56,8 +49,8 @@
     const labelsCiudad = Object.keys(actividadesPorCiudad);
     const dataCiudad = labelsCiudad.map(c => actividadesPorCiudad[c]);
 
-    const ctxCiudad = document.getElementById('graficoActividadesPorCiudad').getContext('2d');
-    new Chart(ctxCiudad, {
+    const graficoPorCiudad = document.getElementById('graficoActividadesPorCiudad').getContext('2d');
+    new Chart(graficoPorCiudad, {
         type: 'bar',
         data: {
             labels: labelsCiudad,
