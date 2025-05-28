@@ -10,6 +10,16 @@ namespace Naitv1.Data
         {
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseSqlServer(
+                "Server=localhost\\SQLEXPRESS;Database=naitv1;Trusted_Connection=True;TrustServerCertificate=True;",
+                x => x.UseNetTopologySuite()
+            );
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Usuario>().ToTable("Usuarios");
@@ -27,6 +37,13 @@ namespace Naitv1.Data
                 .WithOne(registroParticipacion => registroParticipacion.Actividad)
                 .HasForeignKey(registroParticipacion => registroParticipacion.ActividadId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Actividad>(entity =>
+            {
+                entity.Property(actividad => actividad.Ubicacion)
+                    .HasColumnType("geography");
+            });
+
        }
 
         public DbSet<Usuario> Usuarios { get; set; }

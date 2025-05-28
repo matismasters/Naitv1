@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NetTopologySuite.Geometries;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace Naitv1.Models
 {
@@ -12,6 +14,9 @@ namespace Naitv1.Models
         public string? TipoActividad { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
+
+        [JsonIgnore]
+        public Point Ubicacion { get; set; } = new Point(0, 0) { SRID = 4326 };
         public bool Activa { get; set; } = true;
         public List<RegistroParticipacion> RegistrosParticipacion { get; set; } = new List<RegistroParticipacion>();
 

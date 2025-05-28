@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Naitv1.Data;
 using Naitv1.Helpers;
 using Naitv1.Models;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
 using System.Diagnostics;
 
 namespace Naitv1.Controllers

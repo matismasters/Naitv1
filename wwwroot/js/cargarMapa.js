@@ -46,7 +46,6 @@
     actividadesVisibles.traerActividades();
     actividadesVisibles.traerActividadesTodoElTiempo();
 
-
     // Comprobar si el navegador soporta Geolocalización
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -56,6 +55,9 @@
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
+
+          document.getElementById('modalLatUsuario').value = position.coords.latitude;
+          document.getElementById('modalLonUsuario').value = position.coords.longitude;
 
           // Centra el mapa en la ubicación actual
           MAP.setCenter(pos);

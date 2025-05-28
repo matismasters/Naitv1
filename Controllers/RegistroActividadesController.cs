@@ -55,12 +55,19 @@ namespace Naitv1.Controllers
 
 
         [HttpPost]
-        public IActionResult Participar(int idActividad)
+        public IActionResult Participar(int idActividad, float latUsuario, float lonUsuario)
         {
             if (UsuarioLogueado.estaLogueado(HttpContext.Session) == false)
             {
                 return RedirectToAction("Index", "Sesion");
             }
+
+            List<Actividad> actividadesCercanas = Geolocalizacion.ActividadesCercanas(
+                latUsuario: latUsuario,
+                lonUsuario: lonUsuario,
+                radioEnMetros: 50,
+                context: _context
+            );
 
             Actividad? actividad = _context.Actividades.Find(idActividad);
             Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
@@ -70,6 +77,14 @@ namespace Naitv1.Controllers
             if (actividad == null)
             {
                 return NotFound("Actividad no encontrada.");
+            }
+
+            Actividad? actividadCercana = actividadesCercanas
+                .FirstOrDefault(a => a.Id == idActividad);
+
+            if (actividadCercana == null)
+            {
+                return NotFound("No hay actividades cercanas con ese ID.");
             }
 
             RegistroParticipacion registro = new RegistroParticipacion
