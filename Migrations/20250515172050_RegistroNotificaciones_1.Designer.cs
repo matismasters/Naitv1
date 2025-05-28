@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Naitv1.Data;
 
@@ -11,9 +12,11 @@ using Naitv1.Data;
 namespace Naitv1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250515172050_RegistroNotificaciones_1")]
+    partial class RegistroNotificaciones_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,33 +56,7 @@ namespace Naitv1.Migrations
 
                     b.HasIndex("AnfitrionId");
 
-                    b.ToTable("Actividades", (string)null);
-                });
-
-            modelBuilder.Entity("Naitv1.Models.RegistroParticipacion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActividadId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FechaRegistro")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ParticipanteId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActividadId");
-
-                    b.HasIndex("ParticipanteId");
-
-                    b.ToTable("RegistrosParticipacion", (string)null);
+                    b.ToTable("Actividades");
                 });
 
             modelBuilder.Entity("Naitv1.Models.RegistroNotificacion", b =>
@@ -150,7 +127,7 @@ namespace Naitv1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios", (string)null);
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("Naitv1.Models.Actividad", b =>
@@ -164,65 +141,25 @@ namespace Naitv1.Migrations
                     b.Navigation("Anfitrion");
                 });
 
-
-        modelBuilder.Entity("Naitv1.Models.Actividad", b =>
-            {
-                b.HasOne("Naitv1.Models.Usuario", "Anfitrion")
-                    .WithMany()
-                    .HasForeignKey("AnfitrionId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
-
-                b.Navigation("Anfitrion");
-            });
-
-        modelBuilder.Entity("Naitv1.Models.RegistroParticipacion", b =>
-            {
-                b.HasOne("Naitv1.Models.Actividad", "Actividad")
-                    .WithMany("RegistrosParticipacion")
-                    .HasForeignKey("ActividadId")
-                    .OnDelete(DeleteBehavior.NoAction)
-                    .IsRequired();
-
-                b.HasOne("Naitv1.Models.Usuario", "Participante")
-                    .WithMany("RegistrosParticipacion")
-                    .HasForeignKey("ParticipanteId")
-                    .OnDelete(DeleteBehavior.NoAction)
-                    .IsRequired();
-
-                b.Navigation("Actividad");
-                b.Navigation("Participante");
-            });
-
             modelBuilder.Entity("Naitv1.Models.RegistroNotificacion", b =>
-            {
-                b.HasOne("Naitv1.Models.Actividad", "Actividad")
-                    .WithMany()
-                    .HasForeignKey("ActividadId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
+                {
+                    b.HasOne("Naitv1.Models.Actividad", "Actividad")
+                        .WithMany()
+                        .HasForeignKey("ActividadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                b.HasOne("Naitv1.Models.Usuario", "Usuario")
-                    .WithMany()
-                    .HasForeignKey("UsuarioId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
+                    b.HasOne("Naitv1.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                b.Navigation("Actividad");
-                b.Navigation("Usuario");
-            });
+                    b.Navigation("Actividad");
 
-            modelBuilder.Entity("Naitv1.Models.Actividad", b =>
-            {
-                b.Navigation("RegistrosParticipacion");
-            });
-
-            modelBuilder.Entity("Naitv1.Models.Usuario", b =>
-            {
-                b.Navigation("RegistrosParticipacion");
-            });
-
-#pragma warning disable 612, 618
+                    b.Navigation("Usuario");
+                });
+#pragma warning restore 612, 618
         }
     }
 }
