@@ -33,6 +33,9 @@
         mapId: 'mainMap'
     });
 
+    const registroParticipacionController = new RegistroParticipacionController();
+    registroParticipacionController.registrarParticipacionTodoElTiempo();
+
     // Iniciamos observación
     const actividadesVisibles = new Observado();
     const obsContador = new ObservadorContador('contadorActividades');
@@ -42,6 +45,7 @@
     actividadesVisibles.agregarObservador(obsMapa);
     actividadesVisibles.traerActividades();
     actividadesVisibles.traerActividadesTodoElTiempo();
+
 
     // Comprobar si el navegador soporta Geolocalización
     if (navigator.geolocation) {
@@ -89,6 +93,51 @@ document.addEventListener('DOMContentLoaded', function () {
     // Llama a la función para cargar la API de Google Maps
     loadGoogleMapsAPI();
 })
+
+class RegistroParticipacionController {
+    registrarParticipacionTodoElTiempo() {
+        this.registrarParticipacion(); // Llamada inicial
+        setInterval(() => {
+            this.registrarParticipacion();
+        }, 20000); // 20000 ms = 20 segundos
+    }
+
+    registrarParticipacion() {
+        console.log('registrarParticipacion() llamado');
+
+        fetch('/RegistroActividades/Participar2?lat=0&lon=1', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then((datos) => {
+            console.log('Participación registrada:', datos);
+        })
+        .catch(error => console.error('Error al registrar la participacion:', error));
+      //  // Comprobar si el navegador soporta Geolocalización
+      //  if (navigator.geolocation) {
+      //    navigator.geolocation.getCurrentPosition(
+      //      function(position) {
+      //        // Obtenemos la posición actual del usuario
+      //        var pos = {
+      //          lat: position.coords.latitude,
+      //          lng: position.coords.longitude
+      //        };
+
+      //      },
+      //      function() {
+      //        handleLocationError(true, MAP.getCenter());
+      //      }
+      //    );
+      //  } else {
+      //    // El navegador no soporta Geolocalización
+      //    handleLocationError(false, MAP.getCenter());
+      //  }
+      //}
+    }
+}
 
 class Observado {
     constructor() {
