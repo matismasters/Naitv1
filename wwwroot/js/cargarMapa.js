@@ -56,9 +56,6 @@
             lng: position.coords.longitude
           };
 
-          document.getElementById('modalLatUsuario').value = position.coords.latitude;
-          document.getElementById('modalLonUsuario').value = position.coords.longitude;
-
           // Centra el mapa en la ubicación actual
           MAP.setCenter(pos);
 
@@ -101,43 +98,37 @@ class RegistroParticipacionController {
         this.registrarParticipacion(); // Llamada inicial
         setInterval(() => {
             this.registrarParticipacion();
-        }, 20000); // 20000 ms = 20 segundos
+        }, 3000); // 20000 ms = 20 segundos
     }
 
     registrarParticipacion() {
         console.log('registrarParticipacion() llamado');
 
-        fetch('/RegistroActividades/Participar2?lat=0&lon=1', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then((datos) => {
-            console.log('Participación registrada:', datos);
-        })
-        .catch(error => console.error('Error al registrar la participacion:', error));
-      //  // Comprobar si el navegador soporta Geolocalización
-      //  if (navigator.geolocation) {
-      //    navigator.geolocation.getCurrentPosition(
-      //      function(position) {
-      //        // Obtenemos la posición actual del usuario
-      //        var pos = {
-      //          lat: position.coords.latitude,
-      //          lng: position.coords.longitude
-      //        };
+        
+        // Comprobar si el navegador soporta Geolocalización
+        if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(function(position) {
+                    // Obtenemos la posición actual del usuario
+                    var pos = {
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude
+                    };
 
-      //      },
-      //      function() {
-      //        handleLocationError(true, MAP.getCenter());
-      //      }
-      //    );
-      //  } else {
-      //    // El navegador no soporta Geolocalización
-      //    handleLocationError(false, MAP.getCenter());
-      //  }
-      //}
+                    fetch(`/RegistroActividades/Participar?latUsuario=${pos.lat}&lonUsuario=${pos.lon}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then((datos) => {
+                        console.log('Participación registrada:', datos);
+                    })
+                    .catch(error => console.error('Error al registrar la participacion:', error));
+
+                    console.log(pos);
+              });
+        } 
     }
 }
 
