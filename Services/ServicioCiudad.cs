@@ -19,10 +19,10 @@ namespace Naitv1.Services
 
         public async Task<Ciudad> ObtenerCiudad(float lat, float lon)
         {
-            Console.WriteLine($"%%%%%%%%%%%%%%%%%en servicio ciudad%%%%%%%%%%%%%");
+            Console.WriteLine($"%%%%%%%%%%%%%%%%%en servicio ciudad %%%%%%%%%%%%%");
             Console.WriteLine($"latitud: {lat}");
             Console.WriteLine($"longi: {lon}");
-            Console.WriteLine($"%%%%%%%%%%%%%%%%%en servicio ciudad%%%%%%%%%%%%%");
+            Console.WriteLine($"%%%%%%%%%%%%%%%%%en servicio ciudad %%%%%%%%%%%%%");
 
             string nombreCiudad = await LlamarApiReverseGeocoding(lat, lon);
 
@@ -61,14 +61,9 @@ namespace Naitv1.Services
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            var data = JsonSerializer.Deserialize<NominatimResponse>(json);
-
-            //Console.WriteLine(json);
-
-            return data?.address?.city
-                ?? data?.address?.town
-                ?? data?.address?.village
-                ?? "Desconocida";           
+            var data = JsonSerializer.Deserialize<NominatimResponse>(json);            
+            
+            return data?.address?.city ?? "Desconocida";           
         }
 
 
@@ -78,11 +73,10 @@ namespace Naitv1.Services
         }
 
         public class Address
-        {
-            [JsonPropertyName("city")]
+        {   
+            // Aca tambien me sirve para despues si quiero pasarle mas datos de la ciudad como codigo postal etc
             public string city { get; set; }
-            public string town { get; set; }
-            public string village { get; set; }
+            
         }
     }
 }

@@ -33,12 +33,6 @@ namespace Naitv1.Controllers
 
             return View();
         }
-
-        /*[HttpGet]
-        public async Task<IActionResult> ActividadesActivas()
-        {
-            var actividades = await _servicioDashboard.ActividadesActivas();
-            return Json(actividades);
-        }*/
+       
     }
 }

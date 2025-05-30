@@ -60,7 +60,7 @@ namespace Naitv1.Services
                 .GroupBy(a => a.FechCreado.Hour)
                 .ToDictionary(g => g.Key, g => g.Count());
 
-            // Asegurar que existan todas las horas del 0 al 23, sino queda vacio y no se muestra correctamente la grafica
+            // Asegura que existan todas las horas del 0 al 23, sino queda vacio y no se muestra correctamente la grafica
             for (int h = 0; h < 24; h++)
             {
                 if (!resultado.ContainsKey(h))

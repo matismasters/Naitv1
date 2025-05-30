@@ -1,21 +1,26 @@
 ﻿
-<div class="mt-2 p-2">
+<div class="mt-5 p-2" style="">
     <h3>Actividades por hora (ultimas 24 h)</h3>    
     <canvas id="graficoHoras"></canvas>
 
-    <h3 class="mt-2">Actividades por Ciudad (ultimas 7 dias)</h3>
+    <h3 class="mt-2">Actividades por Ciudad (ultimos 7 dias)</h3>
     <canvas id="graficoActividadesPorCiudad"></canvas> 
+
+    <div id="map" style="height: 500px; width: 100%;">
+    </div>
     
 </div>
 
-@* <script src="~/js/api_key.js"></script> *@
+
+<script src="~/js/dashboardMapa.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Convertir ViewBag a objeto JS
+
+    // Convierto ViewBag a objeto JS
     const actividadesPorHora = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ActividadesPorHora));
 
-    // Preparar arrays ordenados
+    // Armo los arrays ordenados
     const labels = Object.keys(actividadesPorHora).sort((a, b) => a - b);
     const data = labels.map(hora => actividadesPorHora[hora]);
 
@@ -74,5 +79,3 @@
 
 </script>
 
-@* <div id="map" style="height: 100px;"></div>
-<script src="~/js/cargarMapa.js"></script> *@
