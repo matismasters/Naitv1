@@ -5,11 +5,18 @@ using DinkToPdf;
 using DinkToPdf.Contracts;
 using Naitv1.wkhtmltox;
 using Quartz;
-using Quartz.Impl;
 using Naitv1.Jobs;
 using Naitv1.Data.Repositories;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Set the JSON serializer options globally
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals;
+});
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

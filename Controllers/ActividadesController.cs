@@ -4,6 +4,7 @@ using Naitv1.Models;
 using Naitv1.Data;
 using Naitv1.Helpers;
 using System.Net.Http.Json;
+using NetTopologySuite.Geometries;
 
 namespace Naitv1.Controllers
 {
@@ -65,6 +66,7 @@ namespace Naitv1.Controllers
                     actividad.Lat = lat;
                     actividad.Lon = lon;
                 }
+                actividad.Ubicacion = new Point(actividad.Lon, actividad.Lat) { SRID = 4326 };
                 actividad.AnfitrionId = usuario.Id;
                 _context.Actividades.Add(actividad);
             }
