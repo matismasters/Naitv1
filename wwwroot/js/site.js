@@ -1,6 +1,1 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-// LA API KEY DE GOOGLE MAPS ESTA EN EL ARCHIVO api_key.js
-// const GOOGLE_MAPS_API_KEY
+﻿// Agregar archivo de API Key
