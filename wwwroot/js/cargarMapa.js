@@ -33,6 +33,9 @@
         mapId: 'mainMap'
     });
 
+    const registroParticipacionController = new RegistroParticipacionController();
+    registroParticipacionController.registrarParticipacionTodoElTiempo();
+
     // Iniciamos observación
     const actividadesVisibles = new Observado();
     const obsContador = new ObservadorContador('contadorActividades');
@@ -91,6 +94,45 @@ document.addEventListener('DOMContentLoaded', function () {
     // Llama a la función para cargar la API de Google Maps
     loadGoogleMapsAPI();
 })
+
+class RegistroParticipacionController {
+    registrarParticipacionTodoElTiempo() {
+        this.registrarParticipacion(); // Llamada inicial
+        setInterval(() => {
+            this.registrarParticipacion();
+        }, 3000); // 20000 ms = 20 segundos
+    }
+
+    registrarParticipacion() {
+        console.log('registrarParticipacion() llamado');
+
+        
+        // Comprobar si el navegador soporta Geolocalización
+        if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(function(position) {
+                    // Obtenemos la posición actual del usuario
+                    var pos = {
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude
+                    };
+
+                    fetch(`/RegistroActividades/Participar?latUsuario=${pos.lat}&lonUsuario=${pos.lon}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then((datos) => {
+                        console.log('Participación registrada:', datos);
+                    })
+                    .catch(error => console.error('Error al registrar la participacion:', error));
+
+                    console.log(pos);
+              });
+        } 
+    }
+}
 
 class Observado {
     constructor() {
@@ -158,6 +200,7 @@ class ObservadorMapa {
                 // Configurar el contenido del modal dinámicamente
                 document.getElementById('modalTitle').innerText = actividad.tipoActividad;
                 document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
+                document.getElementById('modalIdActividad').value = actividad.id;
 
                 // Mostrar el modal de Bootstrap
                 let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
