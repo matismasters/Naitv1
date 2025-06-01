@@ -2,17 +2,22 @@
 using Naitv1.Services;
 using Naitv1.Helpers;
 using Naitv1.Data.Repositories;
+using Naitv1.Data;
+using Naitv1.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Naitv1.Controllers
 {
     public class ReporteController : Controller
     {
+        private readonly AppDbContext _context;
         private readonly GeneradorReportesService _reporteService;
         private readonly pdfServices _pdfServices;
         private readonly IEmailServices _emailServices;
         private readonly IActividadRepository _actividadRepository;
-        public ReporteController(GeneradorReportesService reporteService, pdfServices pdfServices, IEmailServices emailServices, IActividadRepository actividadRepository)
+        public ReporteController(AppDbContext context,GeneradorReportesService reporteService, pdfServices pdfServices, IEmailServices emailServices, IActividadRepository actividadRepository)
         {
+            _context = context;
             _reporteService = reporteService;
             _pdfServices = pdfServices;
             _emailServices = emailServices;
@@ -30,6 +35,12 @@ namespace Naitv1.Controllers
 
         public IActionResult VerGrafico()
         {
+            int actividades = _context.Actividades.Count();
+            int usuarios = _context.Usuarios.Count();
+            ViewBag.Actividad = actividades;
+            ViewBag.Usuarios = usuarios;
+            
+
             if (UsuarioLogueado.esSuperAdmin(HttpContext.Session) == false)
             {
                 return RedirectToAction("RestriccionAcceso", "Reporte");
@@ -88,6 +99,7 @@ namespace Naitv1.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+      
 
 
         public class ImagenDto

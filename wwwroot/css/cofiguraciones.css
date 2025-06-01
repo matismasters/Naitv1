@@ -1,0 +1,54 @@
+﻿body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f6f8;
+}
+
+.config-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    header h1 {
+        font-size: 28px;
+        color: #333;
+    }
+
+.salir-btn {
+    background-color: #d9534f;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+    .salir-btn:hover {
+        background-color: #c9302c;
+    }
+
+.funcionalidades {
+    margin-top: 30px;
+}
+
+    .funcionalidades h2 {
+        font-size: 22px;
+        color: #444;
+    }
+
+    .funcionalidades p {
+        color: #666;
+        font-size: 16px;
+    }

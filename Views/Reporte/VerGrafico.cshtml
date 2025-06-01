@@ -12,16 +12,16 @@
     <h2>Generando gráfico...</h2>
     <canvas id="graficoKpis" width="400" height="200"></canvas>
     <a href="/Reporte/Imprimir" class="btn btn-primary">Descargar PDF</a>
-
+    <p>Total de actividades: @ViewBag.Actividad</p>
     <script>
         const ctx = document.getElementById('graficoKpis').getContext('2d');
         const chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Usuarios', 'Actividades'],
+                labels: ['Actividades', 'Usuarios'],
                 datasets: [{
                     label: 'KPIs',
-                    data: [124, 3200],
+                    data: [@ViewBag.Actividad, @ViewBag.Usuarios],
                     backgroundColor: [
                         'rgba(54, 162, 235, 0.5)',
                         'rgba(255, 206, 86, 0.5)',
