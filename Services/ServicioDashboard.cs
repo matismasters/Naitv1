@@ -16,14 +16,14 @@ namespace Naitv1.Services
             _context = context;
         }
 
-        public async Task<MetricasDashboard> ObtenerMetrics() // Devuelvo un objeto del tripo MetricasDashboard que es un dto, que me sirve para mandar varios datos 
+        public async Task<MetricasDashboard> ObtenerMetrics(FiltroDashboard? filtro) // Devuelvo un objeto del tripo MetricasDashboard que es un dto, que me sirve para mandar varios datos 
         {
 
             MetricasDashboard? datos = new MetricasDashboard
 
             {
-                ActividadesPorHora = await ActividadesPorHora(),
-                ActividadesPorCiudad = await ActividadesPorCiudad(),
+                ActividadesPorHora = await ActividadesPorHora(filtro),
+                ActividadesPorCiudad = await ActividadesPorCiudad(filtro),
 
             };                        
 
@@ -31,7 +31,7 @@ namespace Naitv1.Services
             
         }
 
-        private async Task<Dictionary<string, int>> ActividadesPorCiudad()
+        private async Task<Dictionary<string, int>> ActividadesPorCiudad(FiltroDashboard? filtro)
         {
             DateTime desde = DateTime.Now.AddDays(-7);
 
@@ -47,20 +47,32 @@ namespace Naitv1.Services
             return resultado;
         }
 
-        private async Task<Dictionary<int, int>> ActividadesPorHora()
+        private async Task<Dictionary<int, int>> ActividadesPorHora(FiltroDashboard? filtro)
         {
 
-            DateTime desde = DateTime.Now.AddHours(-24);
+            Console.WriteLine("====Fechas en el metodo Actividades por hora");
+            Console.WriteLine($"Fecha ini: {filtro.FechaInicio}");
+            Console.WriteLine($"Fecha End: {filtro.FechaFin}");
+            Console.WriteLine("====Fechas en el metodo Actividades por hora");
+
+            DateTime desde = filtro?.FechaInicio ?? DateTime.Now.AddHours(-24); // Si vienen vacios tomo valores por defecto 
+            DateTime hasta = (filtro?.FechaFin?.Date.AddDays(1).AddMilliseconds(-1)) ?? DateTime.Now; //le tengo que sumar un dia mas y restarle un milisec asi toma todas las actividades hasta las 11:59:59 pm
 
             List<Actividad> actividades = await _context.Actividades
-                .Where(a => a.FechCreado >= desde)
+                .Where(a => a.FechCreado >= desde && a.FechCreado <= hasta)
                 .ToListAsync();
 
-            Dictionary<int, int> resultado = actividades
-                .GroupBy(a => a.FechCreado.Hour)
-                .ToDictionary(g => g.Key, g => g.Count());
+            if (filtro?.CiudadId.HasValue == true)
+            {
+                actividades = actividades
+                    .Where(a => a.CiudadId == filtro.CiudadId.Value)
+                    .ToList();
+            }
 
-            // Asegura que existan todas las horas del 0 al 23, sino queda vacio y no se muestra correctamente la grafica
+            Dictionary<int, int> resultado = actividades
+                    .GroupBy(a => a.FechCreado.Hour)
+                    .ToDictionary(g => g.Key, g => g.Count());
+
             for (int h = 0; h < 24; h++)
             {
                 if (!resultado.ContainsKey(h))
@@ -69,7 +81,8 @@ namespace Naitv1.Services
                 }
             }
 
-            return resultado;
+            return resultado; 
+
         }
 
         public async Task ActividadesActivas()

@@ -1,10 +1,45 @@
 ﻿
 <div class="mt-5 p-2" style="">
-    <h3>Actividades por hora (ultimas 24 h)</h3>    
-    <canvas id="graficoHoras"></canvas>
+    <div>      
+        <h3 id="tituloGraficoHoras">
+            Actividades por hora (ultimas 24 h)
+        </h3>       
+           
+        <canvas id="graficoHoras"></canvas>
 
-    <h3 class="mt-2">Actividades por Ciudad (ultimos 7 dias)</h3>
-    <canvas id="graficoActividadesPorCiudad"></canvas> 
+        <form id="formFiltro">
+            <div class="row">
+                <div class="col">
+                    <label>Fecha Inicio</label>
+                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" value="@ViewBag.fechaInicio" />
+                </div>
+                <div class="col">
+                    <label>Fecha Fin</label>
+                    <input type="date" id="fechaFin" name="fechaFin" class="form-control" value="@ViewBag.fechaFin" />
+                </div>
+                <div class="col">
+                    <label>Ciudad</label>
+                    <select id="ciudadId" name="ciudadId" class="form-control">
+                        <option value="">-- Ciudad --</option>
+                        @foreach (Ciudad ciudad in (List<Naitv1.Models.Ciudad>)ViewBag.Ciudades)
+                        {
+                            <option value="@ciudad.Id">@ciudad.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col d-flex align-items-end mt-1">
+                    <button type="button" id="btnFiltrar" class="btn btn-primary w-100">Filtrar</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <div class="mt-4">
+        <h3 class="">Actividades por Ciudad (ultimos 7 dias)</h3>
+        <canvas id="graficoActividadesPorCiudad"></canvas> 
+
+    </div>
 
     <div id="map" style="height: 500px; width: 100%;">
     </div>
@@ -16,6 +51,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    let graficoHoras;
 
     // Convierto ViewBag a objeto JS
     const actividadesPorHora = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ActividadesPorHora));
@@ -24,8 +60,9 @@
     const labels = Object.keys(actividadesPorHora).sort((a, b) => a - b);
     const data = labels.map(hora => actividadesPorHora[hora]);
 
-    const graficoHoras = document.getElementById('graficoHoras').getContext('2d');
-    new Chart(graficoHoras, {
+    const graficaPorHoras = document.getElementById('graficoHoras').getContext('2d');
+    
+    graficoHoras = new Chart(graficaPorHoras, {
         type: 'line',
         data: {
             labels: labels.map(h => `${h}:00`),
@@ -78,4 +115,85 @@
 
 
 </script>
+
+<script>
+
+    document.getElementById("btnFiltrar").addEventListener("click", async () => {
+
+        const filtro = {
+            FechaInicio: document.getElementById("fechaInicio").value || null,
+            FechaFin: document.getElementById("fechaFin").value || null,
+            CiudadId: parseInt(document.getElementById("ciudadId").value) || null,
+        };
+
+        const response = await fetch('/PanelAdmin/Filtrar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(filtro)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            alert(error.error);
+            return;
+        }
+
+        const datos = await response.json();
+
+        console.log("========= datos traidos de filtro=========");
+        console.log(datos.actividadesPorHora);
+        console.log("========= Fin datos traidos de filtro=========");
+
+        actualizarGraficoHoras(datos.actividadesPorHora);
+    });    
+
+    function actualizarGraficoHoras(actividadesPorHora) {
+
+        const labels = Object.keys(actividadesPorHora).sort((a, b) => a - b);
+        const data = labels.map(hora => actividadesPorHora[hora]);
+
+        // Si ya existe, destruyo el gráfico anterior
+        if (graficoHoras){
+            graficoHoras.destroy();
+        } 
+
+        graficoHoras = new Chart(document.getElementById('graficoHoras'), {
+            type: 'line',
+            data: {
+                labels: labels.map(h => `${h}:00`),
+                datasets: [{
+                    label: 'Actividades por hora',
+                    data: data,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, precision: 0 }
+                }
+            }
+        });
+
+        const tituloGrafico = document.getElementById("tituloGraficoHoras");
+        const fechaIni = document.getElementById("fechaInicio").value;
+        const fechaFin = document.getElementById("fechaFin").value;
+
+        const ciudadSelect = document.getElementById("ciudadId");
+        const ciudadId = ciudadSelect.value;
+        const ciudadNombre = ciudadSelect.options[ciudadSelect.selectedIndex].text
+        
+
+        if (fechaIni && fechaFin) {
+            tituloGrafico.textContent = `Actividades por hora (${fechaIni} a ${fechaFin})`;
+            if(ciudadId) {
+                tituloGrafico.textContent = `Actividades por hora (${fechaIni} a ${fechaFin} en ${ciudadNombre})`;
+            }
+        } else {
+            tituloGrafico.textContent = "Actividades por hora (últimas 24 h)";
+        }
+    }
+    
+</script>
+
 
