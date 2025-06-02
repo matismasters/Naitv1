@@ -102,14 +102,18 @@
 
                 <span>Super Admin 🌑</span>
             }
-            @if (UsuarioLogueado.esAnfitrion(Context.Session))
-            {
-                <a href="@Url.Action("Crear", "Partners")" class="btn btn-primary">Registrar partner</a>
-               
-            }
+      
+
             @if (UsuarioLogueado.estaLogueado(Context.Session))
 			{
-                <a class="nav-link text-white"> Logueado Como Anfitrion </a>
+                <a class="nav-link text-white"> Logueado Correctamente </a>
+            }
+
+            @if (UsuarioLogueado.esPartner(Context.Session))
+            {
+                <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="EditarMiPerfil">Editar Info de Partner</a>
+
+                <span> Editar Partner</span>
             }
 
             else {

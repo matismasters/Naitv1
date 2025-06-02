@@ -20,6 +20,14 @@ namespace Naitv1.Helpers
             return esAnfitrion;
         }
 
+        public static bool esPartner(ISession sesionActual)
+        {
+
+            string tipoUsuarioString = sesionActual.GetString("tipoUsuario") ?? "false";
+            bool esPartner = tipoUsuarioString == "partner";
+
+            return esPartner;
+        }
         public static string nombreUsuario(ISession sessionActual)
         {
             string nombreUsuario = sessionActual.GetString("nombreUsuario") ?? "";

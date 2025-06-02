@@ -1,62 +1,69 @@
-﻿@page
-@model Naitv1.Views.Partners.IndexModel
+﻿<div class="container mt-5">
+    <h1>Registro de Partner</h1>
 
-<div class="container mt-5"> 
-	<h1>Crear Partner</h1>
-	<form method= "post"  action="/Partners"  id="formCrearPartner">
-		<div class="mb-3" >
-			<label for="Nombre" class=" form-label" >Nombre</label>
-			<input type="text" id="Nombre" name="nombre" class="form-control" required />
-		</div>
-		
-		<div class="mb-3">
-			<label for="Pais" class=" form-label">Pais</label>
-			<input type="text" id="Pais" name="pais" class="form-control" required />
-		</div>
+    <form method="post" asp-action="CrearUsuarioPartner" asp-controller="Sesion">
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre completo del usuario</label>
+            <input name="nombre" id="nombre" class="form-control" required />
+        </div>
 
-		<div class="mb-3">
-			<label for="Ciudad" class=" form-label">Ciudad</label>
-			<input type="text" id="Ciudad" name="ciudad" class="form-control" required />
-		</div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input name="email" id="email" type="email" class="form-control" required />
+        </div>
 
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input name="password" id="password" type="password" class="form-control" required />
+        </div>
 
-		<div class="mb-3">
-			<label for="Departamento" class=" form-label">Departamento</label>
-			<input type="text" id="Departamento" name="departamento" class="form-control" required />
-		</div>
+        <div class="mb-3">
+            <label for="passwordConfirmation" class="form-label">Confirmar contraseña</label>
+            <input name="passwordConfirmation" id="passwordConfirmation" type="password" class="form-control" required />
+        </div>
 
-		<div class="mb-3">
-			<label for="Direccion" class=" form-label">Direccion</label>
-			<input type="text" id="Direccion" name="direccion" class="form-control" required />
-		</div>
+        <hr />
 
-		<div class="mb-3">
-			<label for="Email" class=" form-label">Email</label>
-			<input type="email" id="Email" name="email" class="form-control" required />
-		</div>
+        <div class="mb-3">
+            <label for="nombrePartner" class="form-label">Nombre del Partner</label>
+            <input name="nombrePartner" id="nombrePartner" class="form-control" required />
+        </div>
 
-		<div class="mb-3">
-			<label for="Telefono" class=" form-label">Telefono</label>
-			<input type="number" id="Telefono" name="telefono" class="form-control" required />
-		</div>
-			
-		
+        <div class="mb-3">
+            <label for="pais" class="form-label">País</label>
+            <input name="pais" id="pais" class="form-control" required />
+        </div>
 
-		<div class="mb-3">
-			<label for="Email" class=" form-label">LogoUrl</label>
-			<input type="url" id="LogoUrl" name="logoUrl" class="form-control" required />
-		</div>
+        <div class="mb-3">
+            <label for="ciudad" class="form-label">Ciudad</label>
+            <input name="ciudad" id="ciudad" class="form-control" required />
+        </div>
 
-		<div class="mb-3">
-			<label for="Descripcion" class=" form-label">Descripion </label>
-			<input type="text" id="Descripcion" name="descripcion" class="form-control" required />
-		</div>
+        <div class="mb-3">
+            <label for="departamento" class="form-label">Departamento</label>
+            <input name="departamento" id="departamento" class="form-control" required />
+        </div>
 
-		<button type="submit" class="btn btn-primary">Crear Partner</button>
+        <div class="mb-3">
+            <label for="direccion" class="form-label">Dirección</label>
+            <input name="direccion" id="direccion" class="form-control" />
+        </div>
 
-	</form>
+        <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input name="telefono" id="telefono" type="number" class="form-control" required />
+        </div>
 
+        <div class="mb-3">
+            <label for="logoUrl" class="form-label">Logo (URL)</label>
+            <input name="logoUrl" id="logoUrl" type="url" class="form-control" required />
+        </div>
 
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <input name="descripcion" id="descripcion" class="form-control" />
+        </div>
 
-
+        <button type="submit" class="btn btn-primary">Registrarse como Partner</button>
+    </form>
 </div>

@@ -109,6 +109,9 @@ namespace Naitv1.Migrations
 
                     b.HasIndex("CreadorId");
 
+                    b.HasIndex("Telefono")
+                        .IsUnique();
+
                     b.ToTable("Partners");
                 });
 
@@ -122,7 +125,7 @@ namespace Naitv1.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -137,6 +140,9 @@ namespace Naitv1.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Usuarios");
                 });

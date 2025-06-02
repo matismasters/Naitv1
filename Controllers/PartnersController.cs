@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Naitv1.Data;
 using Naitv1.Helpers;
 using Naitv1.Models;
@@ -36,29 +37,7 @@ namespace Naitv1.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult Index(string nombre, string? direccion, string logoUrl, string? descripcion, int telefono, string email, string ciudad, string pais, string departamento)
-        {
-            Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
-            Partner partner = new Partner();
-
-            partner.Nombre = nombre;
-            partner.Direccion = direccion;
-            partner.LogoUrl = logoUrl;
-            partner.Descripcion = descripcion;
-            partner.Telefono = telefono;
-            partner.Email = email;
-            partner.Estado = EstadoPartner.Pendiente;
-            partner.Ciudad = ciudad;
-            partner.Pais = ciudad;
-            partner.Departamento = departamento;
-            partner.EsVerificado = false;
-            partner.CreadorId = usuario.Id;
-            _context.Partners.Add(partner);
-            _context.SaveChanges();
-            return RedirectToAction("Index", "Home");
-        }
-
+     
         [HttpGet]
         public IActionResult Eliminar(int id)
         {
@@ -76,16 +55,58 @@ namespace Naitv1.Controllers
         [HttpGet]
         public IActionResult Aprobar(int id)
         {
+
+           var partner = _context.Partners.FirstOrDefault(p => p.Id == id);
+            if (partner == null)
+            {
+                return NotFound(); 
+            }
+            var usuarioAmodificar = _context.Usuarios.FirstOrDefault(u => u.Id == partner.CreadorId);
+            if (usuarioAmodificar != null)
+            {
+                usuarioAmodificar.TipoUsuario = "partner";
+            }
+            partner.Estado = EstadoPartner.Aceptado;
+            partner.EsVerificado = true;
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult EditarMiPerfil()
+        {
+            var idUsuario = HttpContext.Session.GetInt32("idUsuario");
+            var partnerEditar = _context.Partners.FirstOrDefault(p => p.CreadorId == idUsuario);
+            if (partnerEditar == null)
+            {
+                return RedirectToAction("Index", "Home"); // O mostrar error que no existe
+            } 
+
+            return View("Editar", partnerEditar);
+        }
+
+
+        [HttpPost]
+        public IActionResult Editar(int id, string nombre, string? direccion, string logoUrl, string? descripcion, int telefono, string email, string ciudad, string pais, string departamento)
+        {
             var partner = _context.Partners.FirstOrDefault(p => p.Id == id);
             if (partner == null)
             {
                 return NotFound();
             }
 
-            partner.Estado = EstadoPartner.Aceptado;
-            partner.EsVerificado = true;
-            _context.SaveChanges();
+                       partner.Nombre = nombre;
+            partner.Direccion = direccion;
+            partner.LogoUrl = logoUrl;
+            partner.Descripcion = descripcion;
+            partner.Telefono = telefono;
+            partner.Email = email;
+            partner.Ciudad = ciudad;
+            partner.Pais = pais;
+            partner.Departamento = departamento;
 
+            _context.SaveChanges();
             return RedirectToAction("Index", "Home");
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Naitv1.Models
 {
@@ -22,6 +23,7 @@ namespace Naitv1.Models
 
         [Required(ErrorMessage = "El campo Email es obligatorio")]
         [EmailAddress(ErrorMessage = "El campo Email no es una dirección de correo válida")]
+        
         public string Email { get; set; }
 
         public string LogoUrl { get; set; }

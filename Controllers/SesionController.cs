@@ -60,6 +60,17 @@ namespace Naitv1.Controllers
             return View();
         }
 
+        public IActionResult RegistroPartner()
+        {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View();
+        }
+
+ 
         public IActionResult ErrorDeRegistro()
         {
             if (UsuarioLogueado.estaLogueado(HttpContext.Session))
@@ -92,15 +103,7 @@ namespace Naitv1.Controllers
             return View();
         }
 
-        public IActionResult Salir()
-        {
-            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
-            {
-                HttpContext.Session.Clear();
-            }
-
-            return Redirect("/");
-        }
+       
 
         [HttpPost]
         public IActionResult CrearUsuario(string nombre, string email, string password, string passwordConfirmation)
@@ -149,6 +152,8 @@ namespace Naitv1.Controllers
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
 
+                //
+
                 UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
 
                 return Redirect("/Sesion/CuentaCreadaConExito");
@@ -158,5 +163,63 @@ namespace Naitv1.Controllers
                 return Redirect("/Sesion/ErrorDeRegistro");
             }
         }
+
+        public IActionResult CrearUsuarioPartner(string nombre, string email, string password, string passwordConfirmation, string nombrePartner, string? direccion, string logoUrl, string? descripcion, int telefono, string ciudad, string pais, string departamento)
+        {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (password == passwordConfirmation)
+            {
+                Usuario usuario = new Usuario();
+                usuario.Email = email;
+                usuario.Nombre = nombre;
+                usuario.Password = MD5Libreria.Encriptar(password);
+                usuario.TipoUsuario = "partner";
+
+                _context.Usuarios.Add(usuario);
+                _context.SaveChanges();
+
+                Partner partner = new Partner();
+                partner.Email = usuario.Email;
+                partner.Nombre = nombrePartner;
+                partner.Direccion = direccion;
+                partner.LogoUrl = logoUrl;
+                partner.Descripcion = descripcion;
+                partner.Telefono = telefono;
+                partner.Estado = EstadoPartner.Pendiente;
+                partner.Ciudad = ciudad;
+                partner.Pais = pais;
+                partner.Departamento = departamento;
+                partner.EsVerificado = false;
+                partner.CreadorId = usuario.Id;
+                _context.Partners.Add(partner);
+                _context.SaveChanges();
+
+                //
+
+                UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
+
+                return Redirect("/Sesion/CuentaCreadaConExito");
+            }
+            else
+            {
+                return Redirect("/Sesion/ErrorDeRegistro");
+            }
+        }
+
+        public IActionResult Salir()
+        {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
+                HttpContext.Session.Clear();
+            }
+
+            return Redirect("/");
+        }
     }
+
 }
+

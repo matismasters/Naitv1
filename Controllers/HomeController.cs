@@ -23,11 +23,10 @@ namespace Naitv1.Controllers
             Actividad actividad = new Actividad();
 
             bool estaLogueado = UsuarioLogueado.estaLogueado(HttpContext.Session);
-            ViewBag.estaLogueado = estaLogueado;
-
-            if (estaLogueado)
+                if(estaLogueado)
             {
                 ViewBag.nombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+            
 
                 List<Actividad> actividades = _context.Actividades
                     .Include(a => a.Anfitrion)
@@ -46,6 +45,7 @@ namespace Naitv1.Controllers
                     .Any(p => p.CreadorId == usuarioId.Value && p.EsVerificado);
             }
             ViewBag.HayPartnerVerificado = tienePartnerVerificado;
+            ViewBag.estalogueado = estaLogueado;
             return View();
         }
 
