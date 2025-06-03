@@ -31,7 +31,13 @@ namespace Naitv1.Controllers
                 Usuario usuario = resultado.First();
                 UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
 
-                return Redirect("/");
+                if (usuario.TipoUsuario == "moderador")
+				{
+					return RedirectToAction("Index", "Moderacion");
+				} else {
+					return Redirect("/");
+				}
+
             } else
             {
                 return Redirect("/Sesion/ErrorDeInicio");
