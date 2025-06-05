@@ -14,6 +14,8 @@ namespace Naitv1.Models
         public string? TipoActividad { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
+        public DateTime FechCreación { get; set; } = DateTime.UtcNow;
+        public DateTime? FechaFinal { get; set; }
 
         [JsonIgnore]
         public Point Ubicacion { get; set; } = new Point(0, 0) { SRID = 4326 };

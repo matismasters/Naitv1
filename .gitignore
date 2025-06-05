@@ -366,7 +366,7 @@ FodyWeavers.xsd
 wwwroot/js/api_key.js
 
 # Ignoramos imagenes de graficos
-wwwroot/graficos/*
+wwwroot/graficos/*.*
 
 # Ignoramos appsettings.json porque es local para cada uno
 appsettings.json

@@ -84,7 +84,9 @@ function loadGoogleMapsAPI() {
     script.src = "https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&callback=initMap&libraries=marker";
     script.async = true;
     script.defer = true;
+    console.log("Script URL:", script.src);
     document.head.appendChild(script);
+    console.log("esta corriendo2222")
 }
 
 document.addEventListener('DOMContentLoaded', function () {

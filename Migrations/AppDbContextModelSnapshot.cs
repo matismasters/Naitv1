@@ -37,6 +37,12 @@ namespace Naitv1.Migrations
                     b.Property<int>("AnfitrionId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("FechCreación")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaFinal")
+                        .HasColumnType("datetime2");
+
                     b.Property<float>("Lat")
                         .HasColumnType("real");
 
@@ -59,6 +65,41 @@ namespace Naitv1.Migrations
                     b.HasIndex("AnfitrionId");
 
                     b.ToTable("Actividades", (string)null);
+                });
+
+            modelBuilder.Entity("Naitv1.Models.RegistroEmail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Asunto")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CuerpoHtml")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Destinatario")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaProgramada")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RegistroEmails");
                 });
 
             modelBuilder.Entity("Naitv1.Models.RegistroNotificacion", b =>
