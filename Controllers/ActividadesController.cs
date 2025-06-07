@@ -42,11 +42,7 @@ namespace Naitv1.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Index(int idActividad, string mensajeDelAnfitrion, string tipoActividad, float lat, float lon, float? latSuperAdmin, float? lonSuperAdmin, string? submit)
-        {
-            Console.WriteLine($"==================================== en metodo crear");
-            Console.WriteLine($"lat: {lat}, lon: {lon}");
-            Console.WriteLine($"==================================== en metodo crear");
-
+        {           
             Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
             Actividad actividad;
 

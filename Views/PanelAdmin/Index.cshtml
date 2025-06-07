@@ -139,7 +139,12 @@
             return;
         }
 
-        const datos = await response.json();
+        const datos = await response.json();        
+
+        if (datos.mensaje) {
+            alert(datos.mensaje);      
+            return;
+        }
 
         console.log("========= datos traidos de filtro=========");
         console.log(datos.actividadesPorHora);

@@ -56,7 +56,7 @@ namespace Naitv1.Controllers
 
             var datos = await _servicioDashboard.ObtenerMetrics(filtro);
 
-            if (datos.ActividadesPorHora == null && datos.ActividadesPorCiudad == null)
+            if (!datos.ActividadesPorHora.Any(kvp => kvp.Value > 0) && !datos.ActividadesPorCiudad.Any(kvp => kvp.Value > 0))
             {
                 return Ok(new { mensaje = "No hay datos para mostrar con este filtro" });
             }
