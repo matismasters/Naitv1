@@ -187,9 +187,22 @@ class ObservadorMapa {
         this.borrarMarcadores();
         // Actividades
         actividades.forEach((actividad) => {
+              // 2) Crea un <img> y ajusta sus atributos (src, tamaño, posición CSS, etc.)
+              const imgIcon = document.createElement("img");
+              imgIcon.src = actividad.urlImagenMarcador;
+              imgIcon.style.width = "100px";   // Ancho en px
+              imgIcon.style.height = "100px";  // Alto en px
+              // Si quieres que el “pico” quede centrado en la base de la imagen, puedes
+              // usar margin o position absoluta; pero AdvancedMarker te ancla el elemento
+              // completo en el centro de su caja, así que si la punta está abajo, puedes
+              // desplazarlo con CSS. Por ejemplo:
+              imgIcon.style.transform = "translate(-50%, -100%)";
+              imgIcon.style.position  = "absolute"; // para que el transform funcione bien
+
             let marker = new google.maps.marker.AdvancedMarkerElement({
                 position: { lat: parseFloat(actividad.lat), lng: parseFloat(actividad.lon) },
                 map: this.mapa,
+                content: imgIcon,
                 title: actividad.mensajeDelAnfitrion
             });
 
@@ -198,7 +211,6 @@ class ObservadorMapa {
                 // Configurar el contenido del modal dinámicamente
                 document.getElementById('modalTitle').innerText = actividad.tipoActividad;
                 document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
-                document.getElementById('modalIdActividad').value = actividad.id;
 
                 // Mostrar el modal de Bootstrap
                 let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
