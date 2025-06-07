@@ -19,9 +19,9 @@
                 </div>
                 <div class="col">
                     <label>Ciudad</label>
-                    <select id="ciudadId" name="ciudadId" class="form-control">
+                    <select id="ciudadId" name="ciudadId" class="form-select">
                         <option value="">-- Ciudad --</option>
-                        @foreach (Ciudad ciudad in (List<Naitv1.Models.Ciudad>)ViewBag.Ciudades)
+                        @foreach (Ciudad ciudad in ViewBag.Ciudades) /*(List<Naitv1.Models.Ciudad>)*/
                         {
                             <option value="@ciudad.Id">@ciudad.Nombre</option>
                         }
@@ -36,7 +36,7 @@
     </div>
 
     <div class="mt-4">
-        <h3 class="">Actividades por Ciudad (ultimos 7 dias)</h3>
+        <h3 id="tituloGraficoCiudad" class="">Actividades por Ciudad (ultimos 7 dias)</h3>
         <canvas id="graficoActividadesPorCiudad"></canvas> 
 
     </div>
@@ -51,7 +51,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    let graficoHoras;
+    let graficoHoras;    
 
     // Convierto ViewBag a objeto JS
     const actividadesPorHora = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ActividadesPorHora));
@@ -85,14 +85,15 @@
 </script>
 
 <script>
+    let graficoPorCiudad;
     
     const actividadesPorCiudad = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ActividadesPorCiudad));
 
     const labelsCiudad = Object.keys(actividadesPorCiudad);
     const dataCiudad = labelsCiudad.map(c => actividadesPorCiudad[c]);
 
-    const graficoPorCiudad = document.getElementById('graficoActividadesPorCiudad').getContext('2d');
-    new Chart(graficoPorCiudad, {
+    ContainerGraficoPorCiudad = document.getElementById('graficoActividadesPorCiudad').getContext('2d');
+    graficoPorCiudad = new Chart(ContainerGraficoPorCiudad, {
         type: 'bar',
         data: {
             labels: labelsCiudad,
@@ -142,9 +143,14 @@
 
         console.log("========= datos traidos de filtro=========");
         console.log(datos.actividadesPorHora);
+
+        console.log("========= datos ciudad de filtro=========");
+        console.log(datos.actividadesPorCiudad);
         console.log("========= Fin datos traidos de filtro=========");
 
-        actualizarGraficoHoras(datos.actividadesPorHora);
+        // Este bloque tendria que llamar a un solo metodo y ese que llame a estos, pero queda para despues
+        actualizarGraficoHoras(datos.actividadesPorHora); 
+        actualizarGraficoCiudad(datos.actividadesPorCiudad);
     });    
 
     function actualizarGraficoHoras(actividadesPorHora) {
@@ -187,13 +193,68 @@
         if (fechaIni && fechaFin) {
             tituloGrafico.textContent = `Actividades por hora (${fechaIni} a ${fechaFin})`;
             if(ciudadId) {
-                tituloGrafico.textContent = `Actividades por hora (${fechaIni} a ${fechaFin} en ${ciudadNombre})`;
+                tituloGrafico.textContent = `Actividades por hora (${fechaIni} a ${fechaFin}) en ${ciudadNombre}`;
             }
         } else {
             tituloGrafico.textContent = "Actividades por hora (últimas 24 h)";
         }
     }
-    
+
+    function actualizarGraficoCiudad(actividadesPorCiudad) {
+
+        const labelsCiudad = Object.keys(actividadesPorCiudad);
+        const dataCiudad = labelsCiudad.map(c => actividadesPorCiudad[c]);
+
+        // Si ya existe, destruyo el gráfico anterior
+        if (graficoPorCiudad){
+            graficoPorCiudad.destroy();
+        }        
+
+        ContainerGraficoPorCiudad = document.getElementById('graficoActividadesPorCiudad').getContext('2d');
+        graficoPorCiudad = new Chart(ContainerGraficoPorCiudad, {
+            type: 'bar',
+            data: {
+                labels: labelsCiudad,
+                datasets: [{
+                    label: 'Actividades por ciudad',
+                    data: dataCiudad,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }
+            }
+        });
+
+        const tituloGraficoCiudad = document.getElementById("tituloGraficoCiudad");
+        const fechaIni = document.getElementById("fechaInicio").value;
+        const fechaFin = document.getElementById("fechaFin").value;
+
+        const ciudadSelect = document.getElementById("ciudadId");
+        const ciudadId = ciudadSelect.value;
+        const ciudadNombre = ciudadSelect.options[ciudadSelect.selectedIndex].text
+
+
+        if (fechaIni && fechaFin) {
+            tituloGraficoCiudad.textContent = `Actividades por Ciudad (${fechaIni} a ${fechaFin})`;
+            if(ciudadId) {
+                tituloGraficoCiudad.textContent = `Actividades En ${ciudadNombre} (${fechaIni} a ${fechaFin}) en ${ciudadNombre}`;
+            }
+        } else {
+            tituloGraficoCiudad.textContent = "Actividades por Ciudad (ultimos 7 dias)";
+        }
+        if(ciudadId){
+            tituloGraficoCiudad.textContent = `Actividades En ${ciudadNombre}`;
+        }
+    }
+
+
 </script>
 
 

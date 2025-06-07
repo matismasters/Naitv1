@@ -33,12 +33,20 @@ namespace Naitv1.Services
 
         private async Task<Dictionary<string, int>> ActividadesPorCiudad(FiltroDashboard? filtro)
         {
-            DateTime desde = DateTime.Now.AddDays(-7);
+            DateTime desde = filtro?.FechaInicio ?? DateTime.Now.AddDays(-7); // Si vienen vacios tomo valores por defecto
+            DateTime hasta = (filtro?.FechaFin?.Date.AddDays(1).AddMilliseconds(-1)) ?? DateTime.Now;
 
             List<Actividad> actividades = await _context.Actividades
                 .Include(a => a.Ciudad)
-                .Where(a => a.FechCreado >= desde)
+                .Where(a => a.FechCreado >= desde && a.FechCreado <= hasta)
                 .ToListAsync();
+
+            if(filtro.CiudadId.HasValue)
+            {
+                actividades = actividades
+                    .Where(a => a.CiudadId == filtro.CiudadId)
+                    .ToList();
+            }
 
             Dictionary<string, int> resultado = actividades
                 .GroupBy(a => a.Ciudad.Nombre)
