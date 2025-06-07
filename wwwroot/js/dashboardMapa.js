@@ -1,6 +1,9 @@
 ﻿let MAPA_ADMIN;
 let marcadores = [];
 
+window.refresco = true;  // me indica por defecto que sí tiene que haber refresh automático del mapa.
+window.intervaloMapa = null; // va a guardar el ID del setInterval para poder frenarlo después.
+
 function initMap() {    
 
     MAPA_ADMIN = new google.maps.Map(document.getElementById('map'), {
@@ -38,16 +41,47 @@ function initMap() {
         // El navegador no soporta Geolocalización
         handleLocationError(false, MAPA_ADMIN.getCenter());
     }
-
-
+    
+    
     traerYActualizarActividades(); // carga por primera vez
-    setInterval(traerYActualizarActividades, 10000); // hace refresh cada 10 seg
+
+    if (window.refresco) { // al inicio refresco es true, entonces entra al refresh
+        window.intervaloMapa = setInterval(() => { // intervaloMapa va a guardar el ID del setInterval para poder frenarlo después.
+            traerYActualizarActividades();
+        }, 10000);
+    }
+    
+    //setInterval(traerYActualizarActividades, 10000); // hace refresh cada 10 seg
+    
+    
 }  
 
-async function traerYActualizarActividades() {
+/*async function traerYActualizarActividades(filtro = null) {
     try {
         const response = await fetch('/Actividades/Visibles');
         const actividades = await response.json();
+        //console.log(actividades);
+
+        actualizarMarcadores(actividades);
+
+    } catch (error) {
+        console.error('Error al traer actividades:', error);
+    }   
+
+}*/
+
+async function traerYActualizarActividades(filtro = null) {
+    try {
+
+        //const response = await fetch('/Actividades/Visibles');
+        const response = await fetch('/PanelAdmin/ActividadesFiltradas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(filtro)
+        });
+
+        const actividades = await response.json();
+        console.log("DEsde funcion para mostra en mapa===========");
         console.log(actividades);
 
         actualizarMarcadores(actividades);

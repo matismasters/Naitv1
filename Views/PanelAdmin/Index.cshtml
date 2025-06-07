@@ -60,9 +60,9 @@
     const labels = Object.keys(actividadesPorHora).sort((a, b) => a - b);
     const data = labels.map(hora => actividadesPorHora[hora]);
 
-    const graficaPorHoras = document.getElementById('graficoHoras').getContext('2d');
+    const ContainergraficaPorHoras = document.getElementById('graficoHoras').getContext('2d');
     
-    graficoHoras = new Chart(graficaPorHoras, {
+    graficoHoras = new Chart(ContainergraficaPorHoras, {
         type: 'line',
         data: {
             labels: labels.map(h => `${h}:00`),
@@ -151,6 +151,16 @@
         // Este bloque tendria que llamar a un solo metodo y ese que llame a estos, pero queda para despues
         actualizarGraficoHoras(datos.actividadesPorHora); 
         actualizarGraficoCiudad(datos.actividadesPorCiudad);
+
+        window.refresco = false; // Si hay filtro detenemos el refresh del mapa
+
+        if (window.intervaloMapa) {
+            clearInterval(window.intervaloMapa); // detiene el refresh
+            window.intervaloMapa = null; // limpia el ID del intervalo
+        }
+
+        // llamo a funcion para actualizar el mapa ahora con los filtros
+        await traerYActualizarActividades(filtro);
     });    
 
     function actualizarGraficoHoras(actividadesPorHora) {

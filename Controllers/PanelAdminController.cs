@@ -21,10 +21,7 @@ namespace Naitv1.Controllers
 
         /*[Authorize(Roles = "Admin")]*/
         public async Task<ActionResult> Index()
-        {
-
-            /*var actividadesPorHora = await _servicioDashboard.ObtenerMetrics();
-            ViewBag.ActividadesPorHora = actividadesPorHora;*/
+        {            
 
             FiltroDashboard filtro = new FiltroDashboard();
 
@@ -70,6 +67,55 @@ namespace Naitv1.Controllers
 
             return Json(datos);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ActividadesFiltradas([FromBody] FiltroDashboard filtro)
+        {
+            //DateTime desde = filtro?.FechaInicio ?? DateTime.Now; // Si vienen vacios tomo valores por defecto
+            //DateTime hasta = (filtro?.FechaFin?.Date.AddDays(1).AddMilliseconds(-1)) ?? DateTime.Now;
+
+            if (filtro == null)
+            {
+                filtro = new FiltroDashboard();
+            }
+
+            // Rango de fechas por defecto si no vienen
+            DateTime desde = filtro.FechaInicio ?? DateTime.Now.AddDays(-7);
+            DateTime hasta = filtro.FechaFin?.Date.AddDays(1).AddMilliseconds(-1) ?? DateTime.Now;
+
+            // Empiezo desde IQueryable para construir la consulta progresivamente, gracias a esto entendí el uso de IQueryable
+            IQueryable<Actividad> consulta = _context.Actividades
+                .Include(a => a.Ciudad)
+                .Include(a => a.Anfitrion);
+
+            // Si no hay ningún filtro, muestro solo las actividades activas
+            /*if (!filtro.FechaInicio.HasValue && !filtro.FechaFin.HasValue && !filtro.CiudadId.HasValue)
+            {
+                consulta = consulta.Where(a => a.Activa == true);
+            }*/
+
+            if (!filtro.FechaInicio.HasValue && !filtro.FechaFin.HasValue && !filtro.CiudadId.HasValue)
+            {
+                consulta = consulta.Where(a => a.Activa == true);
+            }
+
+            // Agrego filtro por fechas si vienen
+            if (filtro.FechaInicio.HasValue && filtro.FechaFin.HasValue)
+            {
+                consulta = consulta.Where(a => a.FechCreado >= desde && a.FechCreado <= hasta);
+            }
+
+            // Agrego filtro por ciudad si viene
+            if (filtro.CiudadId.HasValue)
+            {
+                consulta = consulta.Where(a => a.CiudadId == filtro.CiudadId.Value);
+            }
+
+            List<Actividad> actividades = await consulta.ToListAsync();
+
+            return Json(actividades);
+        }
+
 
     }
 }
