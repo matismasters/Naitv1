@@ -78,25 +78,17 @@ namespace Naitv1.Controllers
 
                 actividad.MensajeDelAnfitrion = mensajeDelAnfitrion;
                 actividad.TipoActividad = tipoActividad;
-
-                //Ahora tengo Ciudad en Actividad
-                //actividad.Ciudad = ciudad;
  
                 if (latSuperAdmin != null && lonSuperAdmin != null && UsuarioLogueado.esSuperAdmin(HttpContext.Session))
                 {                                      
 
                     actividad.Lat = (float) latSuperAdmin;
                     actividad.Lon = (float) lonSuperAdmin;
-
-                    ciudad = await _servicioCiudad.ObtenerCiudad((float)latSuperAdmin, (float)lonSuperAdmin);
-
                 }
                 else
                 {
                     actividad.Lat = lat;
                     actividad.Lon = lon;
-
-                    ciudad = await _servicioCiudad.ObtenerCiudad(lat, lon);
                 }
 
                 ciudad = await _servicioCiudad.ObtenerCiudad(actividad.Lat, actividad.Lon);
