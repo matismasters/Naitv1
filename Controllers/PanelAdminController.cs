@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Naitv1.Data;
 using Naitv1.Models;
 using Naitv1.Services;
+
+using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Naitv1.Controllers
@@ -12,26 +14,20 @@ namespace Naitv1.Controllers
     {        
         private readonly AppDbContext _context;
         private readonly ServicioDashboard _servicioDashboard;
+        private readonly ServicioExportadorCsv _servicioExportadorCsv;
 
-        public PanelAdminController(AppDbContext context, ServicioDashboard servicioDashboard)
+        public PanelAdminController(AppDbContext context, ServicioDashboard servicioDashboard, ServicioExportadorCsv servicioExportadorCsv)
         {            
             _context = context;
             _servicioDashboard = servicioDashboard;
+            _servicioExportadorCsv = servicioExportadorCsv;
         }
 
         /*[Authorize(Roles = "Admin")]*/
         public async Task<ActionResult> Index()
         {            
 
-            FiltroDashboard filtro = new FiltroDashboard();
-
-            // Para testear el metodo a ver si anda con filtros
-            /*FiltroDashboard filtro = new FiltroDashboard
-            {
-                FechaInicio = new DateTime(2025, 5, 26),
-                FechaFin = DateTime.Now,
-                CiudadId = 10 // Montevideo
-            };*/
+            FiltroDashboard filtro = new FiltroDashboard();            
 
             var datos = await _servicioDashboard.ObtenerMetrics(filtro); //le paso un filtro vacio
             List<Ciudad> ciudades = await _context.Ciudades.ToListAsync();
@@ -45,10 +41,6 @@ namespace Naitv1.Controllers
 
         public async Task<IActionResult> Filtrar([FromBody] FiltroDashboard filtro)
         {
-
-            Console.WriteLine("=== Filtro recibido ===");
-            Console.WriteLine($"Inicio: {filtro.FechaInicio}, Fin: {filtro.FechaFin}, CiudadId: {filtro.CiudadId}");
-
             if (filtro.FechaInicio.HasValue && filtro.FechaFin.HasValue && (filtro.FechaFin - filtro.FechaInicio)?.TotalDays > 90)
             {
                 return BadRequest(new { error = "El rango maximo es de 90 dias" });
@@ -56,14 +48,10 @@ namespace Naitv1.Controllers
 
             var datos = await _servicioDashboard.ObtenerMetrics(filtro);
 
-            if (datos.ActividadesPorHora == null && datos.ActividadesPorCiudad == null)
+            if (!datos.ActividadesPorHora.Any(kvp => kvp.Value > 0) && !datos.ActividadesPorCiudad.Any(kvp => kvp.Value > 0))
             {
                 return Ok(new { mensaje = "No hay datos para mostrar con este filtro" });
-            }
-
-            // asi conservo los datos de los filtros cuando se refresquen las graficas y mapa
-            //ViewBag.FechaInicio = fechaInicio?.ToString("yyyy-MM-dd");
-            //ViewBag.FechaFin = fechaFin?.ToString("yyyy-MM-dd");
+            }            
 
             return Json(datos);
         }
@@ -114,8 +102,26 @@ namespace Naitv1.Controllers
             List<Actividad> actividades = await consulta.ToListAsync();
 
             return Json(actividades);
+        }        
+
+        [HttpGet]
+        public async Task<IActionResult> ExportarCsv(int? ciudadId, DateTime? fechaInicio, DateTime? fechaFin)
+        {            
+
+            FiltroDashboard filtro = new FiltroDashboard
+            {
+                CiudadId = ciudadId,
+                FechaInicio = fechaInicio,
+                FechaFin = fechaFin
+            };
+
+            string csvString = await _servicioExportadorCsv.GenerarCsv(filtro);
+
+            byte[] csvBytes = Encoding.UTF8.GetBytes(csvString);
+
+            FileContentResult archivoCsv = File(csvBytes, "text/csv", "dashboard.csv");
+
+            return archivoCsv;
         }
-
-
     }
 }
