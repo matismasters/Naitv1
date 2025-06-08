@@ -5,6 +5,7 @@ using Naitv1.Data;
 using Naitv1.Helpers;
 using System.Net.Http.Json;
 using NetTopologySuite.Geometries;
+using System.Text.Json.Nodes;
 
 namespace Naitv1.Controllers
 {
@@ -34,7 +35,23 @@ namespace Naitv1.Controllers
                 .Include(a => a.Anfitrion)
                 .ToList();
 
-            return Json(actividades);
+            List<JsonObject> jsonMarcadores = new List<JsonObject>();
+
+            foreach (var actividad in actividades)
+            {
+                IMarcadorDeMapa marcador = FactoryMarcadoresMapa.CrearMarcador(actividad);
+                jsonMarcadores.Add(new JsonObject
+                {
+                    ["lat"] = marcador.lat(),
+                    ["lon"] = marcador.lon(),
+                    ["mensajeDelAnfitrion"] = marcador.mensajeDelAnfitrion(),
+                    ["urlImagenMarcador"] = marcador.urlImagenMarcador(),
+                    ["tipoActividad"] = marcador.tipoActividad(),
+                    ["id"] = marcador.idActividad()
+                });
+            }
+
+            return Json(jsonMarcadores);
         }
 
         [HttpPost]

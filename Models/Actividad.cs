@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Naitv1.Models
 {
-    public class Actividad
+    public class Actividad : IMarcadorDeMapa
     {
         public int Id { get; set; }
         public string MensajeDelAnfitrion { get; set; }
@@ -32,5 +32,37 @@ namespace Naitv1.Models
             "Asado",
             "Trabajar"
         };
+
+        // IMarcadorDeMapa 
+
+        public float lat()
+        {
+            return Lat;
+        }
+
+        public float lon()
+        {
+            return Lon;
+        }
+
+        public string mensajeDelAnfitrion()
+        {
+            return MensajeDelAnfitrion;
+        }
+
+        public string urlImagenMarcador()
+        {
+            return "/assets/marcadorNormal.png";
+        }
+
+        public string tipoActividad()
+        {
+            return TipoActividad ?? "Actividad sin tipo definido";
+        }
+
+        public int idActividad()
+        {
+            return Id;
+        }
     }
 }
