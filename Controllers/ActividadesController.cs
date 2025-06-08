@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Naitv1.Models;
 using Naitv1.Data;
 using Naitv1.Helpers;
-using System.Net.Http.Json;
+using Naitv1.Models;
 using Naitv1.Services;
+using NetTopologySuite.Geometries;
+using System.Text.Json.Nodes;
 
 namespace Naitv1.Controllers
 {
@@ -37,7 +38,23 @@ namespace Naitv1.Controllers
                 .Where(a => a.Activa == true)                            
                 .ToList();
 
-            return Json(actividades);
+            List<JsonObject> jsonMarcadores = new List<JsonObject>();
+
+            foreach (var actividad in actividades)
+            {
+                IMarcadorDeMapa marcador = FactoryMarcadoresMapa.CrearMarcador(actividad);
+                jsonMarcadores.Add(new JsonObject
+                {
+                    ["lat"] = marcador.lat(),
+                    ["lon"] = marcador.lon(),
+                    ["mensajeDelAnfitrion"] = marcador.mensajeDelAnfitrion(),
+                    ["urlImagenMarcador"] = marcador.urlImagenMarcador(),
+                    ["tipoActividad"] = marcador.tipoActividad(),
+                    ["id"] = marcador.idActividad()
+                });
+            }
+
+            return Json(jsonMarcadores);
         }
 
         [HttpPost]
@@ -83,7 +100,7 @@ namespace Naitv1.Controllers
                 }
 
                 actividad.Ciudad = ciudad;
-
+                actividad.Ubicacion = new Point(actividad.Lon, actividad.Lat) { SRID = 4326 };
                 actividad.AnfitrionId = usuario.Id;
                 _context.Actividades.Add(actividad);
             }
