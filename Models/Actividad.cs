@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
-using System.ComponentModel;
 using System.Text.Json.Serialization;
 
-namespace Naitv1.Models
+﻿namespace Naitv1.Models
 {
     public class Actividad : IMarcadorDeMapa
     {

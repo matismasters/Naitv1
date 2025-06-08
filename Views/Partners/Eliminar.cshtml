@@ -1,0 +1,16 @@
+﻿ @model Naitv1.Models.Partner
+
+ <h2 class="text-center mb-4">Eliminar Partner</h2>
+ <hr />
+ <h3>Estas seguro que quieres eliminar este resultado?</h3>
+ <br/>
+
+ <form method="post" >
+	 <input type ="hidden" asp-for= "Id" />
+	 <button typr="submit" class="btn btn-danger">Eliminar</button>
+	 <a asp-action="Index" clsss="btn btn-secondary ms-2">Volver al Listado</a>
+
+ </form>
+
+
+
