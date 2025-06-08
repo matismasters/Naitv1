@@ -59,7 +59,7 @@ namespace Naitv1.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Index(int idActividad, string mensajeDelAnfitrion, string tipoActividad, float lat, float lon, float? latSuperAdmin, float? lonSuperAdmin, string? submit)
-        {           
+        {
             Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
             Actividad actividad;
 
@@ -99,7 +99,9 @@ namespace Naitv1.Controllers
                     ciudad = await _servicioCiudad.ObtenerCiudad(lat, lon);
                 }
 
+                ciudad = await _servicioCiudad.ObtenerCiudad(actividad.Lat, actividad.Lon);
                 actividad.Ciudad = ciudad;
+
                 actividad.Ubicacion = new Point(actividad.Lon, actividad.Lat) { SRID = 4326 };
                 actividad.AnfitrionId = usuario.Id;
                 _context.Actividades.Add(actividad);

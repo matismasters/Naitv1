@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Naitv1.Data;
 using Naitv1.Models;
 using Naitv1.Services;
+
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -39,8 +40,7 @@ namespace Naitv1.Controllers
         }
 
         public async Task<IActionResult> Filtrar([FromBody] FiltroDashboard filtro)
-        {            
-
+        {
             if (filtro.FechaInicio.HasValue && filtro.FechaFin.HasValue && (filtro.FechaFin - filtro.FechaInicio)?.TotalDays > 90)
             {
                 return BadRequest(new { error = "El rango maximo es de 90 dias" });
@@ -123,7 +123,5 @@ namespace Naitv1.Controllers
 
             return archivoCsv;
         }
-
-
     }
 }

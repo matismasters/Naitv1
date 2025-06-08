@@ -150,7 +150,9 @@ class Observado {
         fetch('/Actividades/Visibles')
             .then(response => response.json())
             .then((datos) => {
+                console.log('Actividades recibidas:', datos);
                 this.actividades = datos;
+                //console.log(datos);
                 this.notificarObservadores(datos);
             })
             .catch(error => console.error('Error al cargar las actividades:', error));
@@ -206,7 +208,7 @@ class ObservadorMapa {
             });
 
             // Agregar evento de clic al marcador
-            marker.addListener('gmp-click', function () {
+            marker.addListener('click', () => {
                 // Configurar el contenido del modal dinámicamente
                 document.getElementById('modalTitle').innerText = actividad.tipoActividad;
                 document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;

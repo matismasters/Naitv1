@@ -36,9 +36,7 @@
                          CSV
                     </button>
                 </div>
-                
-
-            </div>
+           </div>
         </form>
 
     </div>
@@ -121,8 +119,6 @@
             }
         }
     });
-
-
 </script>
 
 <script>
@@ -146,7 +142,7 @@
             alert(error.error);
             return;
         }
-
+      
         const datos = await response.json();        
 
         if (datos.mensaje) {
@@ -179,12 +175,9 @@
         const url = `/PanelAdmin/ExportarCsv?ciudadId=${ciudadId}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
 
         window.location.href = url; //hago que el navegador vaya a esta direccion y ese endpoint devuelve un archivo (con return File() de la controller) y el navegador interpreta la respuesta como una descarga y muestra el diálogo para guardar el archivo CSV, o lo descarga directamente
-
     });
 
-
     function actualizarGraficoHoras(actividadesPorHora) {
-
         const labels = Object.keys(actividadesPorHora).sort((a, b) => a - b);
         const data = labels.map(hora => actividadesPorHora[hora]);
 
@@ -283,8 +276,6 @@
             tituloGraficoCiudad.textContent = `Actividades En ${ciudadNombre}`;
         }
     }
-
-
 </script>
 
 
