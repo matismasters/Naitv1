@@ -47,6 +47,10 @@ namespace Naitv1.Data
                 .IsUnique();
 
             modelBuilder.Entity<Partner>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Partner>()
                 .HasIndex(u => u.Telefono)
                 .IsUnique();
        }
