@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Naitv1.styles.css" asp-append-version="true" />
-    
+
 </head>
 <body>
     <!--
@@ -43,18 +43,18 @@
             -->
     <header class="navbar fixed-top navbar-dark bg-dark">
         <div class="container-fluid text-end mb-0 pb-0">
-            <p class="text-white pb-0 mb-0"> 
+            <p class="text-white pb-0 mb-0 m-auto">
                 <span class="text-white">
                     @UsuarioLogueado.nombreUsuario(Context.Session)
                 </span>
- 
+
                 @if (UsuarioLogueado.esAnfitrion(Context.Session))
                 {
-                        <span>Anfitrión ☆ ★</span>
+                    <span>Anfitrión ☆ ★</span>
                 }
                 @if (UsuarioLogueado.esSuperAdmin(Context.Session))
                 {
-                        <span>Super Admin 🌑</span>
+                    <span>Super Admin 🌑</span>
                 }
                 @if (ViewBag.HayPartnerVerificado != null && ViewBag.HayPartnerVerificado == true)
                 {
@@ -67,7 +67,7 @@
                 {
                     <span>Moderador 🌚</span>
                 }
-           </p>
+            </p>
         </div>
     </header>
     <div class="container nait mt-4">
@@ -77,78 +77,64 @@
     </div>
 
     <div class="modal fade" id="actividadModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalTitle"></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body" id="modalBody">
-            <!-- Contenido dinámico -->
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          </div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Contenido dinámico -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
-<<<<<<< HEAD
     <footer class="navbar fixed-bottom navbar-dark bg-dark">
-       <div class="container-fluid justify-content-around">
-            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">H</a>
-            <a class="nav-link text-white" asp-area="" asp-controller="Actividades" asp-action="Index">CA</a>
-            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Configuracion">Conf</a>
-            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Ayuda">?</a>
-            @if (UsuarioLogueado.esSuperAdmin(Context.Session))
+        <div class="container-fluid justify-content-around">
+            @if (UsuarioLogueado.esModerador(Context.Session))
             {
-                <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="Index">Admin Partners</a>
-
-                <span>Super Admin 🌑</span>
-            }
-      
-
-            @if (UsuarioLogueado.estaLogueado(Context.Session))
-			{
-                <a class="nav-link text-white"> Logueado Correctamente </a>
-            }
-
-            @if (UsuarioLogueado.esPartner(Context.Session))
-            {
-                <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="EditarMiPerfil">Editar Info de Partner</a>
-
-                <span> Editar Partner</span>
-            }
-
-            else {
-				<a> Logueado Como Usuario </a>
-			}
-            
-        </div>
-    </footer>
-=======
-    @if (UsuarioLogueado.esModerador(Context.Session))
-    {
-        <footer class="navbar fixed-bottom navbar-dark bg-dark">
-            <div class="container-fluid justify-content-around">
                 <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Index">H</a>
                 <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Notificaciones">N</a>
                 <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Mapa">M</a>
                 <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Estadisticas">E</a>
-            </div>
-        </footer>
-    }
-    else {
-        <footer class="navbar fixed-bottom navbar-dark bg-dark">
-            <div class="container-fluid justify-content-around">
+            }
+            else
+            {
+
                 <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">H</a>
                 <a class="nav-link text-white" asp-area="" asp-controller="Actividades" asp-action="Index">CA</a>
                 <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Configuracion">Conf</a>
                 <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Ayuda">?</a>
-            </div>
-        </footer>
-    }
->>>>>>> master
+                @if (UsuarioLogueado.esSuperAdmin(Context.Session))
+                {
+                    <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="Index">Admin Partners</a>
+
+                    <span>Super Admin 🌑</span>
+                }
+
+
+                @if (UsuarioLogueado.estaLogueado(Context.Session))
+                {
+                    <a class="nav-link text-white"> Logueado Correctamente </a>
+                }
+
+                @if (UsuarioLogueado.esPartner(Context.Session))
+                {
+                    <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="EditarMiPerfil">Editar Info de Partner</a>
+
+                    <span> Editar Partner</span>
+                }
+                else
+                {
+                    <a> Logueado Como Usuario </a>
+                }
+            }
+        </div>
+    </footer>
 
     <script src="~/js/api_key.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
