@@ -37,6 +37,12 @@ namespace Naitv1.Migrations
                     b.Property<int>("AnfitrionId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CiudadId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechCreado")
+                        .HasColumnType("datetime2");
+
                     b.Property<float>("Lat")
                         .HasColumnType("real");
 
@@ -58,6 +64,9 @@ namespace Naitv1.Migrations
 
                     b.HasIndex("AnfitrionId");
 
+                    b.HasIndex("CiudadId");
+
+                    b.ToTable("Actividades");
                     b.ToTable("Actividades", (string)null);
                 });
 
@@ -192,6 +201,22 @@ namespace Naitv1.Migrations
                     b.ToTable("RegistrosParticipacion", (string)null);
                 });
 
+            modelBuilder.Entity("Naitv1.Models.Ciudad", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ciudades");
+                });
+
             modelBuilder.Entity("Naitv1.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -232,7 +257,20 @@ namespace Naitv1.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Naitv1.Models.Ciudad", "Ciudad")
+                        .WithMany("Actividades")
+                        .HasForeignKey("CiudadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Anfitrion");
+
+                    b.Navigation("Ciudad");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.Ciudad", b =>
+                {
+                    b.Navigation("Actividades");
                 });
 
             modelBuilder.Entity("Naitv1.Models.Partner", b =>

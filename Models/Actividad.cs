@@ -18,6 +18,11 @@ using System.Text.Json.Serialization;
         public bool Activa { get; set; } = true;
         public List<RegistroParticipacion> RegistrosParticipacion { get; set; } = new List<RegistroParticipacion>();
 
+        public int CiudadId { get; set; }
+        public Ciudad? Ciudad { get; set; }
+
+        public DateTime FechCreado { get; set; } = DateTime.Now;
+
         public static List<string> TiposActividad = new List<string>
         {
             "Tomar una",

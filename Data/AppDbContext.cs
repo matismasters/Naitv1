@@ -57,6 +57,7 @@ namespace Naitv1.Data
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Actividad> Actividades { get; set; }
+        public DbSet<Ciudad> Ciudades { get; set; }
         public DbSet<RegistroParticipacion> RegistrosParticipacion { get; set; }
         public DbSet<RegistroNotificacion> RegistroNotificaciones { get; set; }
         public DbSet<Partner> Partners { get; set; }
