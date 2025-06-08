@@ -28,8 +28,8 @@ function initMap() {
         center: { lat: -34.471388888889, lng: -57.844166666667 },
         zoom: 14,
         disableDefaultUI: true,
-        /*styles: customStyles,*/
-        /*mapId: 'mainMap'*/
+        styles: customStyles,
+        mapId: 'mainMap'
     });
 
     const registroParticipacionController = new RegistroParticipacionController();
