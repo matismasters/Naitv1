@@ -1,9 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Naitv1.Data;
 using Naitv1.Services;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Establecer cultura por defecto a en-US (usa punto como separador decimal)
+var cultureInfo = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Set the JSON serializer options globally
 builder.Services.AddControllers().AddJsonOptions(options =>
