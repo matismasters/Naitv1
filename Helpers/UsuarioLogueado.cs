@@ -1,4 +1,7 @@
-﻿using Naitv1.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Naitv1.Data;
+using Naitv1.Models;
 
 namespace Naitv1.Helpers
 {
@@ -34,14 +37,21 @@ namespace Naitv1.Helpers
             return nombreUsuario;
         }
 
-        public static bool esSuperAdmin(ISession sessionActual) //MODIFICADO EL FALSE PARA QUE ENTRE EN EL IF.
+        public static bool esSuperAdmin(ISession sessionActual)
         {
             string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "false";
             bool esSuperAdmin = tipoUsuarioString == "superadmin";
             return esSuperAdmin;
         }
 
-        public static void loguearUsuario(ISession sesionActual, Usuario usuario)
+		public static bool esModerador(ISession sessionActual)
+		{
+		    string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "basico";
+		    bool esModerador = tipoUsuarioString == "moderador";
+		    return esModerador;
+		}
+
+		public static void loguearUsuario(ISession sesionActual, Usuario usuario)
         {
             sesionActual.SetString("estaLogueado", "true");
 
@@ -60,6 +70,17 @@ namespace Naitv1.Helpers
             usuario.TipoUsuario = sesionActual.GetString("tipoUsuario") ?? "basico";
 
             return usuario;
+        }
+
+        public static Actividad? Actividad(AppDbContext dbContext, ISession sesionActual)
+        {
+            int idUsuario = UsuarioLogueado.Usuario(sesionActual).Id;
+
+            Actividad? actividad = dbContext.Actividades
+                .Where(actividad => actividad.AnfitrionId == idUsuario && actividad.Activa == true)
+                .FirstOrDefault();
+
+            return actividad;
         }
     }
 }

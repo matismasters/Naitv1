@@ -4,6 +4,17 @@
 <div class="text-center">
     @if (ViewBag.estaLogueado)
     {
+        <div id="contadorActividades" class="position-fixed fs-4 text-white p-2 rounded" style="z-index:10; top:50px; left:20px; background-color: mediumpurple; min-width:50px;">
+            0
+        </div>
+
+        @if (ViewBag.actividad != null)
+        {
+            <div id="indicadorActividad" class="position-fixed fs-4 text-white p-2 rounded" style="z-index:10; top:100px; left:20px; background-color: mediumpurple; min-width:50px;">
+                Act
+            </div>
+        }
+
         <div id="map" style="z-index:1"></div>
 
         <script type="text/javascript">
@@ -15,7 +26,7 @@
     {
         <a href="/Sesion">Iniciar Sesion</a>
         <span>o</span>
-        <a href = "/Sesion/Registrarse" > Registrarse </a>
+        <a href="/Sesion/Registrarse" > Registrarse </a>
         <span>o</span>
         <a href="/Sesion/RegistroAnfitrion"> Registrate como anfitrion </a>
         <span>o</span>

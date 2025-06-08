@@ -56,13 +56,16 @@
                 {
                         <span>Super Admin 🌑</span>
                 }
-
                 @if (ViewBag.HayPartnerVerificado != null && ViewBag.HayPartnerVerificado == true)
                 {
                     <div class="insignia-partner">
 
                         <span style="color: green; font-size: 12px;">Partner Verificado ✓</span>
                     </div>
+                }
+                @if (UsuarioLogueado.esModerador(Context.Session))
+                {
+                    <span>Moderador 🌚</span>
                 }
            </p>
         </div>
@@ -90,6 +93,7 @@
       </div>
     </div>
 
+<<<<<<< HEAD
     <footer class="navbar fixed-bottom navbar-dark bg-dark">
        <div class="container-fluid justify-content-around">
             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">H</a>
@@ -122,6 +126,29 @@
             
         </div>
     </footer>
+=======
+    @if (UsuarioLogueado.esModerador(Context.Session))
+    {
+        <footer class="navbar fixed-bottom navbar-dark bg-dark">
+            <div class="container-fluid justify-content-around">
+                <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Index">H</a>
+                <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Notificaciones">N</a>
+                <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Mapa">M</a>
+                <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Estadisticas">E</a>
+            </div>
+        </footer>
+    }
+    else {
+        <footer class="navbar fixed-bottom navbar-dark bg-dark">
+            <div class="container-fluid justify-content-around">
+                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">H</a>
+                <a class="nav-link text-white" asp-area="" asp-controller="Actividades" asp-action="Index">CA</a>
+                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Configuracion">Conf</a>
+                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Ayuda">?</a>
+            </div>
+        </footer>
+    }
+>>>>>>> master
 
     <script src="~/js/api_key.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
