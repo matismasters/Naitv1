@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Naitv1.Data;
 using Naitv1.Helpers;
 using Naitv1.Models;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
 using System.Diagnostics;
 
 namespace Naitv1.Controllers
@@ -18,16 +20,15 @@ namespace Naitv1.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index() //Chequear con el profe
         {
             Actividad actividad = new Actividad();
 
             bool estaLogueado = UsuarioLogueado.estaLogueado(HttpContext.Session);
-            ViewBag.estaLogueado = estaLogueado;
-
-            if (estaLogueado)
+                if(estaLogueado)
             {
                 ViewBag.nombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+                ViewBag.actividad = UsuarioLogueado.Actividad(_context, HttpContext.Session);
 
                 List<Actividad> actividades = _context.Actividades
                     .Include(a => a.Anfitrion)
@@ -36,6 +37,17 @@ namespace Naitv1.Controllers
                 ViewBag.actividades = actividades;
             }
 
+            var usuarioId = HttpContext.Session.GetInt32("idUsuario");
+
+            bool tienePartnerVerificado = false;
+
+            if (usuarioId != null) //cambio realizado
+            {
+                tienePartnerVerificado = _context.Partners
+                    .Any(p => p.CreadorId == usuarioId.Value && p.EsVerificado);
+            }
+            ViewBag.HayPartnerVerificado = tienePartnerVerificado;
+            ViewBag.estalogueado = estaLogueado;
             return View();
         }
 

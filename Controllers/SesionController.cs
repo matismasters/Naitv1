@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Naitv1.Data;
 using Naitv1.Helpers;
 using Naitv1.Models;
-using Naitv1.Data;
 
 namespace Naitv1.Controllers
 {
@@ -9,7 +9,8 @@ namespace Naitv1.Controllers
     {
         private readonly AppDbContext _context;
 
-        public SesionController(AppDbContext context) {
+        public SesionController(AppDbContext context)
+        {
             _context = context;
         }
 
@@ -31,7 +32,13 @@ namespace Naitv1.Controllers
                 Usuario usuario = resultado.First();
                 UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
 
-                return Redirect("/");
+                if (usuario.TipoUsuario == "moderador")
+				{
+					return RedirectToAction("Index", "Moderacion");
+				} else {
+					return Redirect("/");
+				}
+
             } else
             {
                 return Redirect("/Sesion/ErrorDeInicio");
@@ -58,6 +65,17 @@ namespace Naitv1.Controllers
             return View();
         }
 
+        public IActionResult RegistroPartner()
+        {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View();
+        }
+
+ 
         public IActionResult ErrorDeRegistro()
         {
             if (UsuarioLogueado.estaLogueado(HttpContext.Session))
@@ -70,42 +88,37 @@ namespace Naitv1.Controllers
 
         public IActionResult ErrorDeInicio()
         {
-           if(UsuarioLogueado.estaLogueado(HttpContext.Session)) {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
                 return RedirectToAction("Index", "Home");
-           }
+            }
 
-           return View();
+            return View();
         }
 
         public IActionResult CuentaCreadaConExito()
         {
-           if(UsuarioLogueado.estaLogueado(HttpContext.Session) == false) {
-                return RedirectToAction("Index", "Home");
-           }
-
-           ViewBag.NombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
-
-           return View();
-        }
-        
-        public IActionResult Salir()
-        {
-            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session) == false)
             {
-                HttpContext.Session.Clear();
+                return RedirectToAction("Index", "Home");
             }
 
-            return Redirect("/");
+            ViewBag.NombreUsuario = HttpContext.Session.GetString("nombreUsuario") ?? "";
+
+            return View();
         }
+
+       
 
         [HttpPost]
         public IActionResult CrearUsuario(string nombre, string email, string password, string passwordConfirmation)
         {
-            if(UsuarioLogueado.estaLogueado(HttpContext.Session)) {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
                 return RedirectToAction("Index", "Home");
             }
 
-            if ( password == passwordConfirmation)
+            if (password == passwordConfirmation)
             {
                 Usuario usuario = new Usuario();
                 usuario.Email = email;
@@ -119,7 +132,8 @@ namespace Naitv1.Controllers
                 UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
 
                 return Redirect("/Sesion/CuentaCreadaConExito");
-            } else
+            }
+            else
             {
                 return Redirect("/Sesion/ErrorDeRegistro");
             }
@@ -143,6 +157,8 @@ namespace Naitv1.Controllers
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
 
+                //
+
                 UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
 
                 return Redirect("/Sesion/CuentaCreadaConExito");
@@ -152,5 +168,63 @@ namespace Naitv1.Controllers
                 return Redirect("/Sesion/ErrorDeRegistro");
             }
         }
+
+        public IActionResult CrearUsuarioPartner(string nombre, string email, string password, string passwordConfirmation, string nombrePartner, string? direccion, string logoUrl, string? descripcion, int telefono, string ciudad, string pais, string departamento)
+        {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (password == passwordConfirmation)
+            {
+                Usuario usuario = new Usuario();
+                usuario.Email = email;
+                usuario.Nombre = nombre;
+                usuario.Password = MD5Libreria.Encriptar(password);
+                usuario.TipoUsuario = "partner";
+
+                _context.Usuarios.Add(usuario);
+                _context.SaveChanges();
+
+                Partner partner = new Partner();
+                partner.Email = usuario.Email;
+                partner.Nombre = nombrePartner;
+                partner.Direccion = direccion;
+                partner.LogoUrl = logoUrl;
+                partner.Descripcion = descripcion;
+                partner.Telefono = telefono;
+                partner.Estado = EstadoPartner.Pendiente;
+                partner.Ciudad = ciudad;
+                partner.Pais = pais;
+                partner.Departamento = departamento;
+                partner.EsVerificado = false;
+                partner.CreadorId = usuario.Id;
+                _context.Partners.Add(partner);
+                _context.SaveChanges();
+
+                //
+
+                UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
+
+                return Redirect("/Sesion/CuentaCreadaConExito");
+            }
+            else
+            {
+                return Redirect("/Sesion/ErrorDeRegistro");
+            }
+        }
+
+        public IActionResult Salir()
+        {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+            {
+                HttpContext.Session.Clear();
+            }
+
+            return Redirect("/");
+        }
     }
+
 }
+

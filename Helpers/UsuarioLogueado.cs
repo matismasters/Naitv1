@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Naitv1.Data;
 using Naitv1.Models;
 
 namespace Naitv1.Helpers
 {
     public class UsuarioLogueado
     {
-
         public static bool estaLogueado(ISession sesionActual)
         {
             string estaLogueadoString = sesionActual.GetString("estaLogueado") ?? "false";
@@ -16,12 +17,20 @@ namespace Naitv1.Helpers
 
         public static bool esAnfitrion(ISession sesionActual)
         {
-            string tipoUsuarioString = sesionActual.GetString("tipoUsuario") ?? "basico";
+            string tipoUsuarioString = sesionActual.GetString("tipoUsuario") ?? "false";
             bool esAnfitrion = tipoUsuarioString == "anfitrion";
 
             return esAnfitrion;
         }
 
+        public static bool esPartner(ISession sesionActual)
+        {
+
+            string tipoUsuarioString = sesionActual.GetString("tipoUsuario") ?? "false";
+            bool esPartner = tipoUsuarioString == "partner";
+
+            return esPartner;
+        }
         public static string nombreUsuario(ISession sessionActual)
         {
             string nombreUsuario = sessionActual.GetString("nombreUsuario") ?? "";
@@ -30,12 +39,19 @@ namespace Naitv1.Helpers
 
         public static bool esSuperAdmin(ISession sessionActual)
         {
-            string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "basico";
+            string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "false";
             bool esSuperAdmin = tipoUsuarioString == "superadmin";
             return esSuperAdmin;
         }
 
-        public static void loguearUsuario(ISession sesionActual, Usuario usuario)
+		public static bool esModerador(ISession sessionActual)
+		{
+		    string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "basico";
+		    bool esModerador = tipoUsuarioString == "moderador";
+		    return esModerador;
+		}
+
+		public static void loguearUsuario(ISession sesionActual, Usuario usuario)
         {
             sesionActual.SetString("estaLogueado", "true");
 
@@ -54,6 +70,17 @@ namespace Naitv1.Helpers
             usuario.TipoUsuario = sesionActual.GetString("tipoUsuario") ?? "basico";
 
             return usuario;
+        }
+
+        public static Actividad? Actividad(AppDbContext dbContext, ISession sesionActual)
+        {
+            int idUsuario = UsuarioLogueado.Usuario(sesionActual).Id;
+
+            Actividad? actividad = dbContext.Actividades
+                .Where(actividad => actividad.AnfitrionId == idUsuario && actividad.Activa == true)
+                .FirstOrDefault();
+
+            return actividad;
         }
     }
 }
