@@ -11,46 +11,6 @@ namespace Naitv1.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Usuarios",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TipoUsuario = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Usuarios", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Actividades",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MensajeDelAnfitrion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AnfitrionId = table.Column<int>(type: "int", nullable: false),
-                    TipoActividad = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Lat = table.Column<float>(type: "real", nullable: false),
-                    Lon = table.Column<float>(type: "real", nullable: false),
-                    Activa = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Actividades", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Actividades_Usuarios_AnfitrionId",
-                        column: x => x.AnfitrionId,
-                        principalTable: "Usuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Partners",
                 columns: table => new
                 {
@@ -81,11 +41,6 @@ namespace Naitv1.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Actividades_AnfitrionId",
-                table: "Actividades",
-                column: "AnfitrionId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Partners_CreadorId",
                 table: "Partners",
                 column: "CreadorId");
@@ -95,13 +50,7 @@ namespace Naitv1.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Actividades");
-
-            migrationBuilder.DropTable(
                 name: "Partners");
-
-            migrationBuilder.DropTable(
-                name: "Usuarios");
         }
     }
 }
