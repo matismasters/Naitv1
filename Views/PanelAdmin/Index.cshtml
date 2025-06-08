@@ -30,6 +30,14 @@
                 <div class="col d-flex align-items-end mt-1">
                     <button type="button" id="btnFiltrar" class="btn btn-primary w-100">Filtrar</button>
                 </div>
+
+                <div class="col d-flex align-items-end mt-1">
+                    <button type="button" id="exportarCsv" class="btn btn-secondary w-100">
+                         CSV
+                    </button>
+                </div>
+                
+
             </div>
         </form>
 
@@ -144,14 +152,7 @@
         if (datos.mensaje) {
             alert(datos.mensaje);      
             return;
-        }
-
-        console.log("========= datos traidos de filtro=========");
-        console.log(datos.actividadesPorHora);
-
-        console.log("========= datos ciudad de filtro=========");
-        console.log(datos.actividadesPorCiudad);
-        console.log("========= Fin datos traidos de filtro=========");
+        }        
 
         // Este bloque tendria que llamar a un solo metodo y ese que llame a estos, pero queda para despues
         actualizarGraficoHoras(datos.actividadesPorHora); 
@@ -166,7 +167,21 @@
 
         // llamo a funcion para actualizar el mapa ahora con los filtros
         await traerYActualizarActividades(filtro);
-    });    
+    });
+
+    // Boton Exportar Csv
+    document.getElementById("exportarCsv").addEventListener("click", () => {
+
+        const fechaInicio = document.getElementById("fechaInicio").value || null;
+        const fechaFin = document.getElementById("fechaFin").value || null;
+        const ciudadId = parseInt(document.getElementById("ciudadId").value) || null;
+
+        const url = `/PanelAdmin/ExportarCsv?ciudadId=${ciudadId}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+
+        window.location.href = url; //hago que el navegador vaya a esta direccion y ese endpoint devuelve un archivo (con return File() de la controller) y el navegador interpreta la respuesta como una descarga y muestra el diálogo para guardar el archivo CSV, o lo descarga directamente
+
+    });
+
 
     function actualizarGraficoHoras(actividadesPorHora) {
 

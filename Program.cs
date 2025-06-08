@@ -20,6 +20,7 @@ builder.Services.AddSession();
 
 builder.Services.AddScoped<ServicioDashboard>(); //Agregando el servicio nuevo creado Dashboard
 builder.Services.AddScoped<ServicioCiudad>(); //Agregado el servicio para poder obtener la ciudad con la lat y long
+builder.Services.AddScoped<ServicioExportadorCsv>(); //Agregado servicio generador de Csv
 
 var app = builder.Build();
 
