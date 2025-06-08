@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Naitv1.Data;
+using NetTopologySuite.Geometries;
 
 #nullable disable
 
@@ -55,6 +56,10 @@ namespace Naitv1.Migrations
                     b.Property<string>("TipoActividad")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Point>("Ubicacion")
+                        .IsRequired()
+                        .HasColumnType("geography");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AnfitrionId");
@@ -62,6 +67,138 @@ namespace Naitv1.Migrations
                     b.HasIndex("CiudadId");
 
                     b.ToTable("Actividades");
+                    b.ToTable("Actividades", (string)null);
+                });
+
+            modelBuilder.Entity("Naitv1.Models.Partner", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Ciudad")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CreadorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Departamento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direccion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("EsVerificado")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LogoUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Pais")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Telefono")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreadorId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Telefono")
+                        .IsUnique();
+
+                    b.ToTable("Partners");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.RegistroNotificacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActividadId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EstadoNotificacion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaNotificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Motivo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActividadId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("RegistroNotificaciones");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.RegistroParticipacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActividadId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ParticipanteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActividadId");
+
+                    b.HasIndex("ParticipanteId");
+
+                    b.ToTable("RegistrosParticipacion", (string)null);
                 });
 
             modelBuilder.Entity("Naitv1.Models.Ciudad", b =>
@@ -90,7 +227,7 @@ namespace Naitv1.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -106,7 +243,10 @@ namespace Naitv1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios");
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("Naitv1.Models.Actividad", b =>
@@ -131,6 +271,65 @@ namespace Naitv1.Migrations
             modelBuilder.Entity("Naitv1.Models.Ciudad", b =>
                 {
                     b.Navigation("Actividades");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.Partner", b =>
+                {
+                    b.HasOne("Naitv1.Models.Usuario", "Creador")
+                        .WithMany()
+                        .HasForeignKey("CreadorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creador");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.RegistroNotificacion", b =>
+                {
+                    b.HasOne("Naitv1.Models.Actividad", "Actividad")
+                        .WithMany()
+                        .HasForeignKey("ActividadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Naitv1.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Actividad");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.RegistroParticipacion", b =>
+                {
+                    b.HasOne("Naitv1.Models.Actividad", "Actividad")
+                        .WithMany("RegistrosParticipacion")
+                        .HasForeignKey("ActividadId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Naitv1.Models.Usuario", "Participante")
+                        .WithMany("RegistrosParticipacion")
+                        .HasForeignKey("ParticipanteId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Actividad");
+
+                    b.Navigation("Participante");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.Actividad", b =>
+                {
+                    b.Navigation("RegistrosParticipacion");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.Usuario", b =>
+                {
+                    b.Navigation("RegistrosParticipacion");
                 });
 #pragma warning restore 612, 618
         }

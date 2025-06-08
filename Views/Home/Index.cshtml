@@ -17,14 +17,19 @@
 
         <div id="map" style="z-index:1"></div>
 
+        <script type="text/javascript">
+            const ACTIVIDADES = @Html.Raw(Json.Serialize(ViewBag.actividades))
+        </script>
         <script src="~/js/cargarMapa.js"></script>
     }
     else
     {
         <a href="/Sesion">Iniciar Sesion</a>
         <span>o</span>
-        <a href = "/Sesion/Registrarse" > Registrarse </a>
+        <a href="/Sesion/Registrarse" > Registrarse </a>
         <span>o</span>
         <a href="/Sesion/RegistroAnfitrion"> Registrate como anfitrion </a>
+        <span>o</span>
+        <a href="/Partners/Crear"> Registrate como Partner </a>
     }
 </div>
