@@ -1,9 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Naitv1.Data;
-using System.Text.Json;
+using Naitv1.Services;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Establecer cultura por defecto a en-US (usa punto como separador decimal)
+var cultureInfo = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Set the JSON serializer options globally
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -11,14 +17,18 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals;
 });
 
-
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(); 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddSession(); 
+builder.Services.AddSession();
+
+builder.Services.AddScoped<ServicioDashboard>(); //Agregando el servicio nuevo creado Dashboard
+builder.Services.AddScoped<ServicioCiudad>(); //Agregado el servicio para poder obtener la ciudad con la lat y long
+builder.Services.AddScoped<ServicioExportadorCsv>(); //Agregado servicio generador de Csv
+
 
 var app = builder.Build();
 

@@ -7,7 +7,6 @@ namespace Naitv1.Helpers
 {
     public class UsuarioLogueado
     {
-
         public static bool estaLogueado(ISession sesionActual)
         {
             string estaLogueadoString = sesionActual.GetString("estaLogueado") ?? "false";
@@ -18,28 +17,29 @@ namespace Naitv1.Helpers
 
         public static bool esAnfitrion(ISession sesionActual)
         {
-            string tipoUsuarioString = sesionActual.GetString("tipoUsuario") ?? "basico";
+            string tipoUsuarioString = sesionActual.GetString("tipoUsuario") ?? "false";
             bool esAnfitrion = tipoUsuarioString == "anfitrion";
 
             return esAnfitrion;
         }
 
+        public static bool esPartner(ISession sesionActual)
+        {
+
+            string tipoUsuarioString = sesionActual.GetString("tipoUsuario") ?? "false";
+            bool esPartner = tipoUsuarioString == "partner";
+
+            return esPartner;
+        }
         public static string nombreUsuario(ISession sessionActual)
         {
             string nombreUsuario = sessionActual.GetString("nombreUsuario") ?? "";
             return nombreUsuario;
         }
 
-        public static int idUsuario(ISession sesionActual)
-        {
-            int idUsuario = sesionActual.GetInt32("idUsuario") ?? 0;
-            return idUsuario;
- 
-        }
-
         public static bool esSuperAdmin(ISession sessionActual)
         {
-            string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "basico";
+            string tipoUsuarioString = sessionActual.GetString("tipoUsuario") ?? "false";
             bool esSuperAdmin = tipoUsuarioString == "superadmin";
             return esSuperAdmin;
         }
@@ -74,7 +74,7 @@ namespace Naitv1.Helpers
 
         public static Actividad? Actividad(AppDbContext dbContext, ISession sesionActual)
         {
-            int idUsuario = UsuarioLogueado.idUsuario(sesionActual);
+            int idUsuario = UsuarioLogueado.Usuario(sesionActual).Id;
 
             Actividad? actividad = dbContext.Actividades
                 .Where(actividad => actividad.AnfitrionId == idUsuario && actividad.Activa == true)

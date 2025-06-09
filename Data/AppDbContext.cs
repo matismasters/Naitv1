@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Naitv1.Models;
 
-
 namespace Naitv1.Data
 {
     public class AppDbContext : DbContext
@@ -9,7 +8,6 @@ namespace Naitv1.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
@@ -44,11 +42,25 @@ namespace Naitv1.Data
                     .HasColumnType("geography");
             });
 
+            modelBuilder.Entity<Usuario>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Partner>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Partner>()
+                .HasIndex(u => u.Telefono)
+                .IsUnique();
        }
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Actividad> Actividades { get; set; }
+        public DbSet<Ciudad> Ciudades { get; set; }
         public DbSet<RegistroParticipacion> RegistrosParticipacion { get; set; }
         public DbSet<RegistroNotificacion> RegistroNotificaciones { get; set; }
+        public DbSet<Partner> Partners { get; set; }
     }
 }
+
