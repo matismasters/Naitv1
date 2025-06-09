@@ -4,7 +4,7 @@ using Naitv1.Helpers;
 using Naitv1.Data.Repositories;
 using Naitv1.Data;
 using Naitv1.Models;
-using Microsoft.EntityFrameworkCore;
+using Naitv1.Models.Dto;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
 
@@ -92,10 +92,8 @@ namespace Naitv1.Controllers
         }
 
         [HttpPost]
-        public IActionResult CrearCrearRegistroEmailManual(string destinatario, string asunto)
+        public IActionResult CrearCrearRegistroEmailManual(string destinatario, string asunto, DateTime fechaProgramada)
         {
-            DateTime fechaProgramada = DateTime.Now;
-
             _reporteService.CrearRegistro(fechaProgramada, destinatario, asunto);
             TempData["Mensaje"] = "Mensaje programado correctamente.";
             return RedirectToAction("Index", "Home");
@@ -111,7 +109,11 @@ namespace Naitv1.Controllers
 		[HttpPost]
 		public IActionResult FormularioCsvCiudad(Actividad model)
 		{
-			ViewBag.CiudadId = new SelectList(_context.Ciudades, "Id", "Nombre");
+            if (UsuarioLogueado.esSuperAdmin(HttpContext.Session) == false)
+            {
+                return RedirectToAction("RestriccionAcceso", "Reporte");
+            }
+            ViewBag.CiudadId = new SelectList(_context.Ciudades, "Id", "Nombre");
 
 			int ciudadId = model.CiudadId;
 			DateTime fechaInicio = model.FechCreación;
@@ -129,14 +131,23 @@ namespace Naitv1.Controllers
 							a.FechCreación <= fechaFinal.Value)
 				.ToList();
 
-			var csvBytes = CsvHelper.ConvertirAFormatoCSV(actividades); // Ya es byte[]
+            var resumen = new
+            {
+                CiudadId = ciudadId,
+                FechaInicio = fechaInicio.ToString("yyyy-MM-dd"),
+                FechaFinal = fechaFinal.Value.ToString("yyyy-MM-dd"),
+                CantidadActividades = _context.Actividades.Count(a =>
+                    a.CiudadId == ciudadId &&
+                    a.FechCreación >= fechaInicio &&
+                    a.FechCreación <= fechaFinal.Value)
+            };
+
+
+            var csvBytes = CsvHelper.ConvertirAFormatoCSV(new[] { resumen }); // Ya es byte[]
 			return File(csvBytes, "text/csv", "actividades_filtradas.csv");
 		}
 
-		public class ImagenDto
-        {
-            public string Base64 { get; set; }
-        }
+		
 
     }
 

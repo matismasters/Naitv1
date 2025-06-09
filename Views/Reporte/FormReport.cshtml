@@ -23,6 +23,13 @@
                             <input asp-for="Asunto" class="form-control" />
                             <span asp-validation-for="Asunto" class="text-danger"></span>
                         </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="FechaProgramada" class="form-label">Fecha</label>
+                            <input asp-for="FechaProgramada" class="form-control" type="date" />
+                            <span asp-validation-for="FechaProgramada" class="text-danger"></span>
+                        </div>
+
 
                         <button type="submit" class="btn btn-success w-100">Enviar reporte</button>
                     </form>
