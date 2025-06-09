@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Naitv1.Data;
 using Naitv1.Helpers;
@@ -37,7 +38,7 @@ namespace Naitv1.Controllers
             return View("Notificaciones/Index");
         }
 
-        public IActionResult Crear()
+        public IActionResult Crear(string? asunto, string? cuerpo)
         {
             if (UsuarioLogueado.esAnfitrion(HttpContext.Session) == false)
             {
@@ -46,11 +47,17 @@ namespace Naitv1.Controllers
             else { ViewBag.Error = null; }
 
             List<Ciudades> Ciudades = _context.Ciudades.ToList();
+            
+           
 
             if (Ciudades.Count > 0)
             {
                 ViewBag.Ciudades = Ciudades;
             }
+            PlantillaNotificacion vacia = new PlantillaNotificacion();
+            ViewBag.Planilla = vacia;
+            ViewBag.Planilla.AsuntoTemplate = asunto;
+            ViewBag.Planilla.CuerpoTemplate = cuerpo;
             return View("Notificaciones/Crear");
         }
 
@@ -71,6 +78,51 @@ namespace Naitv1.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Home");
+        }
+        public IActionResult VerPlanillas()
+        {
+            if (UsuarioLogueado.esAnfitrion(HttpContext.Session) == false)
+            {
+                ViewBag.Error = "No es Anfitrion";
+            }
+            else { ViewBag.Error = null; }
+
+            List<PlantillaNotificacion> plantillas = _context.PlantillaNotificacion?.ToList();
+
+            if (plantillas.Count > 0)
+            {
+                ViewBag.Plantillas = plantillas;
+            }
+            else
+            {
+                ViewBag.Plantillas = null;
+            }
+
+                return View("Notificaciones/PlantillaNotificacion");
+        }
+
+        [HttpPost]
+        public IActionResult VerPlanillas(string OpcionSeleccionada, string Titulo, string Asunto, string Cuerpo, string accion)
+        {
+            PlantillaNotificacion nueva = new PlantillaNotificacion
+            {
+                NombrePlanilla = Titulo,
+                AsuntoTemplate = Asunto,
+                CuerpoTemplate = Cuerpo
+            };
+
+            ViewBag.Planilla = nueva;
+
+            if (accion == "crear")
+            {
+                _context.PlantillaNotificacion.Add(nueva);
+                _context.SaveChanges();
+                return RedirectToAction("Crear");
+            }
+            else
+            {
+                return RedirectToAction("Crear");
+            }
         }
     }
 }

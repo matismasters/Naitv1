@@ -1,0 +1,81 @@
+﻿@{
+    var plantillas = ViewBag.Plantillas as List<Naitv1.Models.PlantillaNotificacion>;
+    var plantillasJson = System.Text.Json.JsonSerializer.Serialize(plantillas);
+}
+
+<div class="text-center m-5">
+    <form method="post">
+        <label>Selecciona la plantilla</label>
+        <select class="form-select" name="OpcionSeleccionada" id="OpcionSeleccionada">
+            <option value="crear">Crear plantilla</option>
+            @if(ViewBag.Plantillas != null){
+                @foreach (PlantillaNotificacion plantilla in ViewBag.Plantillas)
+                {
+                    <option value="@plantilla.Id">@plantilla.NombrePlanilla</option>
+                }
+            }
+        </select>
+
+        <div class="mt-4" id="formCampos" style="display: none;">
+            <div class="mb-3">
+                <label for="Titulo">Título</label>
+                <input type="text" name="Titulo" id="Titulo" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="Asunto">Asunto</label>
+                <input type="text" name="Asunto" id="Asunto" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="Cuerpo">Cuerpo</label>
+                <textarea name="Cuerpo" id="Cuerpo" class="form-control"></textarea>
+            </div>
+        </div>
+
+        <div id="botones" style="margin-top: 1rem;">
+            <button type="submit" asp-action="Crear" formmethod="get" name="accion" value="usar" id="btnUsar" class="btn btn-primary">Usar plantilla</button>
+            <button type="submit" asp-action="Crear" formmethod="get" name="accion" value="crear" id="btnCrear" class="btn btn-success" style="display: none;">Crear nueva</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const select = document.getElementById("OpcionSeleccionada");
+    const btnCrear = document.getElementById("btnCrear");
+    const btnUsar = document.getElementById("btnUsar");
+    const camposForm = document.getElementById("formCampos");
+
+    const titulo = document.getElementById("Titulo");
+    const asunto = document.getElementById("Asunto");
+    const cuerpo = document.getElementById("Cuerpo");
+
+    const plantillasData = @Html.Raw(plantillasJson);
+
+    function mostrarOpciones() {
+        const selectedValue = select.value;
+
+        if (selectedValue === "crear") {
+            // Mostrar campos vacíos para nueva plantilla
+            btnCrear.style.display = "inline-block";
+            btnUsar.style.display = "none";
+            camposForm.style.display = "block";
+            titulo.value = "";
+            asunto.value = "";
+            cuerpo.value = "";
+        } else {
+            // Mostrar botón Usar y cargar datos de plantilla
+            btnCrear.style.display = "none";
+            btnUsar.style.display = "inline-block";
+            camposForm.style.display = "block";
+
+            const plantilla = plantillasData.find(p => p.Id == selectedValue);
+            if (plantilla) {
+                titulo.value = plantilla.NombrePlanilla; // mismo que título
+                asunto.value = plantilla.AsuntoTemplate;
+                cuerpo.value = plantilla.CuerpoTemplate;
+            }
+        }
+    }
+
+    select.addEventListener("change", mostrarOpciones);
+    window.addEventListener("DOMContentLoaded", mostrarOpciones);
+</script>

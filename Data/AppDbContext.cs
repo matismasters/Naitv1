@@ -16,5 +16,7 @@ namespace Naitv1.Data
         public DbSet<Notificaciones> Notificaciones { get; set; }
 
         public DbSet<Ciudades> Ciudades { get; set; }
+
+        public DbSet<PlantillaNotificacion> PlantillaNotificacion { get; set; }
     }
 }
