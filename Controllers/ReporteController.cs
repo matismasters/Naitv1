@@ -5,6 +5,8 @@ using Naitv1.Data.Repositories;
 using Naitv1.Data;
 using Naitv1.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text;
 
 namespace Naitv1.Controllers
 {
@@ -99,10 +101,39 @@ namespace Naitv1.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-      
+		[HttpGet]
+		public IActionResult FormularioCsvCiudad()
+		{
+			ViewBag.CiudadId = new SelectList(_context.Ciudades, "Id", "Nombre");
+			return View();
+		}
 
+		[HttpPost]
+		public IActionResult FormularioCsvCiudad(Actividad model)
+		{
+			ViewBag.CiudadId = new SelectList(_context.Ciudades, "Id", "Nombre");
 
-        public class ImagenDto
+			int ciudadId = model.CiudadId;
+			DateTime fechaInicio = model.FechCreación;
+			DateTime? fechaFinal = model.FechaFinal;
+
+			if (!fechaFinal.HasValue)
+			{
+				ModelState.AddModelError("FechaFinal", "Debe ingresar una fecha final.");
+				return View(model);
+			}
+
+			var actividades = _context.Actividades
+				.Where(a => a.CiudadId == ciudadId &&
+							a.FechCreación >= fechaInicio &&
+							a.FechCreación <= fechaFinal.Value)
+				.ToList();
+
+			var csvBytes = CsvHelper.ConvertirAFormatoCSV(actividades); // Ya es byte[]
+			return File(csvBytes, "text/csv", "actividades_filtradas.csv");
+		}
+
+		public class ImagenDto
         {
             public string Base64 { get; set; }
         }

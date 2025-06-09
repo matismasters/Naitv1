@@ -12,8 +12,8 @@ using Naitv1.Data;
 namespace Naitv1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250521230906_RelacionUserActivity")]
-    partial class RelacionUserActivity
+    [Migration("20250608203850_primeraMigracion")]
+    partial class primeraMigracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,15 @@ namespace Naitv1.Migrations
                     b.Property<int>("AnfitrionId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CiudadId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechCreación")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaFinal")
+                        .HasColumnType("datetime2");
+
                     b.Property<float>("Lat")
                         .HasColumnType("real");
 
@@ -56,6 +65,8 @@ namespace Naitv1.Migrations
 
                     b.HasIndex("AnfitrionId");
 
+                    b.HasIndex("CiudadId");
+
                     b.ToTable("Actividades");
                 });
 
@@ -67,25 +78,37 @@ namespace Naitv1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ActividadId")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdActividad")
                         .HasColumnType("int");
 
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
-                    b.Property<int>("UsuarioId")
+                    b.HasKey("Id");
+
+                    b.ToTable("ActividadesUsuarios");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.Ciudad", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("lat")
+                        .HasColumnType("real");
+
+                    b.Property<float>("lon")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActividadId");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("ActividadesUsuarios");
+                    b.ToTable("Ciudades");
                 });
 
             modelBuilder.Entity("Naitv1.Models.RegistroEmail", b =>
@@ -160,26 +183,20 @@ namespace Naitv1.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Naitv1.Models.Ciudad", "Ciudad")
+                        .WithMany("ListActividades")
+                        .HasForeignKey("CiudadId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Anfitrion");
+
+                    b.Navigation("Ciudad");
                 });
 
-            modelBuilder.Entity("Naitv1.Models.ActividadesUsuarios", b =>
+            modelBuilder.Entity("Naitv1.Models.Ciudad", b =>
                 {
-                    b.HasOne("Naitv1.Models.Actividad", "Actividad")
-                        .WithMany()
-                        .HasForeignKey("ActividadId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Naitv1.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Actividad");
-
-                    b.Navigation("Usuario");
+                    b.Navigation("ListActividades");
                 });
 #pragma warning restore 612, 618
         }

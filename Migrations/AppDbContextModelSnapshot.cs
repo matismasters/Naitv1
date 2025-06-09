@@ -36,6 +36,15 @@ namespace Naitv1.Migrations
                     b.Property<int>("AnfitrionId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CiudadId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechCreación")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaFinal")
+                        .HasColumnType("datetime2");
+
                     b.Property<float>("Lat")
                         .HasColumnType("real");
 
@@ -52,6 +61,8 @@ namespace Naitv1.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AnfitrionId");
+
+                    b.HasIndex("CiudadId");
 
                     b.ToTable("Actividades");
                 });
@@ -73,6 +84,28 @@ namespace Naitv1.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ActividadesUsuarios");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.Ciudad", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("lat")
+                        .HasColumnType("real");
+
+                    b.Property<float>("lon")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ciudades");
                 });
 
             modelBuilder.Entity("Naitv1.Models.RegistroEmail", b =>
@@ -147,7 +180,20 @@ namespace Naitv1.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Naitv1.Models.Ciudad", "Ciudad")
+                        .WithMany("ListActividades")
+                        .HasForeignKey("CiudadId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Anfitrion");
+
+                    b.Navigation("Ciudad");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.Ciudad", b =>
+                {
+                    b.Navigation("ListActividades");
                 });
 #pragma warning restore 612, 618
         }

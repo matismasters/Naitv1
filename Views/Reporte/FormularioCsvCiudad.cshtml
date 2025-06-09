@@ -1,0 +1,41 @@
+﻿@model Naitv1.Models.Actividad
+@{
+    ViewData["Title"] = "Reporte por ciudad";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        FormularioCsvCiudad
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Reporte CSV por ciudad</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="FormularioCsvCiudad" asp-controller="Reporte" method="post">
+                        <div class="form-group">
+                            <label asp-for="CiudadId" class="control-label">Ciudad</label>
+                            <select asp-for="CiudadId" class="form-select" asp-items="ViewBag.CiudadId"></select>
+                            <span asp-validation-for="CiudadId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="FechCreación" class="form-label">Fecha inicio</label>
+                            <input asp-for="FechCreación" class="form-control" type="date" />
+                            <span asp-validation-for="FechCreación" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="FechaFinal" class="form-label">Fecha final</label>
+                            <input asp-for="FechaFinal" class="form-control" type="date" />
+                            <span asp-validation-for="FechaFinal" class="text-danger"></span>
+                        </div>
+
+
+                        <button type="submit" href="" class="btn btn-success w-100">Enviar reporte</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Naitv1.Models
 {
@@ -11,7 +12,14 @@ namespace Naitv1.Models
         public string? TipoActividad { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
-        public bool Activa { get; set; } = true;
+        public bool Activa { get; set; } = true; 
+        public DateTime FechCreación { get; set; } = DateTime.UtcNow;
+        public DateTime? FechaFinal { get; set; }
+
+        [ForeignKey("Ciudad")]
+        public int CiudadId { get; set; }
+        public Ciudad? Ciudad { get; set; }
+
 
         public static List<string> TiposActividad = new List<string>
         {
