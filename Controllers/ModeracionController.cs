@@ -71,7 +71,9 @@ namespace Naitv1.Controllers
 				List<Usuario> usuarios = _context.Usuarios
 					.ToList();
 
-				ViewBag.usuarios = usuarios;
+                usuarios.RemoveAll(usuario => usuario.Id == UsuarioLogueado.Usuario(HttpContext.Session).Id);
+
+                ViewBag.usuarios = usuarios;
 
 				return View();
 				}
@@ -86,7 +88,7 @@ namespace Naitv1.Controllers
                 Usuario usuario = _context.Usuarios
                 .Find(id)!;
 
-                if (usuario != null)
+                if (usuario != null && id != UsuarioLogueado.Usuario(HttpContext.Session).Id)
                     {
                     usuario.Estado = "Bloqueado";
                     _context.SaveChanges();

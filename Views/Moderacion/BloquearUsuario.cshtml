@@ -1,5 +1,5 @@
 ﻿@{
-	ViewData["Title"] = "Notificaciones";
+	ViewData["Title"] = "Moderación";
 }
 
 ﻿<div class="px-2">
@@ -13,7 +13,7 @@
 
 	@foreach (Usuario usuario in ViewBag.usuarios)
 		{
-		if (usuario.Estado == "Activo")
+        if (usuario.Estado == "Activo")
 			{
             <div class="card mb-2 text-decoration-none text-reset">
                 <div class="d-flex flex-column justify-content-between card-body text-info bg-dark rounded">

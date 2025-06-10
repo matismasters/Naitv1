@@ -1,0 +1,281 @@
+﻿
+<div class="mt-5 p-2" style="">
+    <div>      
+        <h3 id="tituloGraficoHoras">
+            Actividades por hora (ultimas 24 h)
+        </h3>       
+           
+        <canvas id="graficoHoras"></canvas>
+
+        <form id="formFiltro">
+            <div class="row">
+                <div class="col">
+                    <label>Fecha Inicio</label>
+                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" value="@ViewBag.fechaInicio" />
+                </div>
+                <div class="col">
+                    <label>Fecha Fin</label>
+                    <input type="date" id="fechaFin" name="fechaFin" class="form-control" value="@ViewBag.fechaFin" />
+                </div>
+                <div class="col">
+                    <label>Ciudad</label>
+                    <select id="ciudadId" name="ciudadId" class="form-select">
+                        <option value="">-- Ciudad --</option>
+                        @foreach (Ciudad ciudad in ViewBag.Ciudades) /*(List<Naitv1.Models.Ciudad>)*/
+                        {
+                            <option value="@ciudad.Id">@ciudad.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col d-flex align-items-end mt-1">
+                    <button type="button" id="btnFiltrar" class="btn btn-primary w-100">Filtrar</button>
+                </div>
+
+                <div class="col d-flex align-items-end mt-1">
+                    <button type="button" id="exportarCsv" class="btn btn-secondary w-100">
+                         CSV
+                    </button>
+                </div>
+           </div>
+        </form>
+
+    </div>
+
+    <div class="mt-4">
+        <h3 id="tituloGraficoCiudad" class="">Actividades por Ciudad (ultimos 7 dias)</h3>
+        <canvas id="graficoActividadesPorCiudad"></canvas> 
+
+    </div>
+
+    <div id="map" style="height: 500px; width: 100%;">
+    </div>
+    
+</div>
+
+
+<script src="~/js/dashboardMapa.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let graficoHoras;    
+
+    // Convierto ViewBag a objeto JS
+    const actividadesPorHora = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ActividadesPorHora));
+
+    // Armo los arrays ordenados
+    const labels = Object.keys(actividadesPorHora).sort((a, b) => a - b);
+    const data = labels.map(hora => actividadesPorHora[hora]);
+
+    const ContainergraficaPorHoras = document.getElementById('graficoHoras').getContext('2d');
+    
+    graficoHoras = new Chart(ContainergraficaPorHoras, {
+        type: 'line',
+        data: {
+            labels: labels.map(h => `${h}:00`),
+            datasets: [{
+                label: 'Actividades por hora',
+                data: data,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    let graficoPorCiudad;
+    
+    const actividadesPorCiudad = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ActividadesPorCiudad));
+
+    const labelsCiudad = Object.keys(actividadesPorCiudad);
+    const dataCiudad = labelsCiudad.map(c => actividadesPorCiudad[c]);
+
+    ContainerGraficoPorCiudad = document.getElementById('graficoActividadesPorCiudad').getContext('2d');
+    graficoPorCiudad = new Chart(ContainerGraficoPorCiudad, {
+        type: 'bar',
+        data: {
+            labels: labelsCiudad,
+            datasets: [{
+                label: 'Actividades por ciudad',
+                data: dataCiudad,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+
+    document.getElementById("btnFiltrar").addEventListener("click", async () => {
+
+        const filtro = {
+            FechaInicio: document.getElementById("fechaInicio").value || null,
+            FechaFin: document.getElementById("fechaFin").value || null,
+            CiudadId: parseInt(document.getElementById("ciudadId").value) || null,
+        };
+
+        const response = await fetch('/PanelAdmin/Filtrar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(filtro)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            alert(error.error);
+            return;
+        }
+      
+        const datos = await response.json();        
+
+        if (datos.mensaje) {
+            alert(datos.mensaje);      
+            return;
+        }        
+
+        // Este bloque tendria que llamar a un solo metodo y ese que llame a estos, pero queda para despues
+        actualizarGraficoHoras(datos.actividadesPorHora); 
+        actualizarGraficoCiudad(datos.actividadesPorCiudad);
+
+        window.refresco = false; // Si hay filtro detenemos el refresh del mapa
+
+        if (window.intervaloMapa) {
+            clearInterval(window.intervaloMapa); // detiene el refresh
+            window.intervaloMapa = null; // limpia el ID del intervalo
+        }
+
+        // llamo a funcion para actualizar el mapa ahora con los filtros
+        await traerYActualizarActividades(filtro);
+    });
+
+    // Boton Exportar Csv
+    document.getElementById("exportarCsv").addEventListener("click", () => {
+
+        const fechaInicio = document.getElementById("fechaInicio").value || null;
+        const fechaFin = document.getElementById("fechaFin").value || null;
+        const ciudadId = parseInt(document.getElementById("ciudadId").value) || null;
+
+        const url = `/PanelAdmin/ExportarCsv?ciudadId=${ciudadId}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+
+        window.location.href = url; //hago que el navegador vaya a esta direccion y ese endpoint devuelve un archivo (con return File() de la controller) y el navegador interpreta la respuesta como una descarga y muestra el diálogo para guardar el archivo CSV, o lo descarga directamente
+    });
+
+    function actualizarGraficoHoras(actividadesPorHora) {
+        const labels = Object.keys(actividadesPorHora).sort((a, b) => a - b);
+        const data = labels.map(hora => actividadesPorHora[hora]);
+
+        // Si ya existe, destruyo el gráfico anterior
+        if (graficoHoras){
+            graficoHoras.destroy();
+        } 
+
+        graficoHoras = new Chart(document.getElementById('graficoHoras'), {
+            type: 'line',
+            data: {
+                labels: labels.map(h => `${h}:00`),
+                datasets: [{
+                    label: 'Actividades por hora',
+                    data: data,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, precision: 0 }
+                }
+            }
+        });
+
+        const tituloGrafico = document.getElementById("tituloGraficoHoras");
+        const fechaIni = document.getElementById("fechaInicio").value;
+        const fechaFin = document.getElementById("fechaFin").value;
+
+        const ciudadSelect = document.getElementById("ciudadId");
+        const ciudadId = ciudadSelect.value;
+        const ciudadNombre = ciudadSelect.options[ciudadSelect.selectedIndex].text
+        
+
+        if (fechaIni && fechaFin) {
+            tituloGrafico.textContent = `Actividades por hora (${fechaIni} a ${fechaFin})`;
+            if(ciudadId) {
+                tituloGrafico.textContent = `Actividades por hora (${fechaIni} a ${fechaFin}) en ${ciudadNombre}`;
+            }
+        } else {
+            tituloGrafico.textContent = "Actividades por hora (últimas 24 h)";
+        }
+    }
+
+    function actualizarGraficoCiudad(actividadesPorCiudad) {
+
+        const labelsCiudad = Object.keys(actividadesPorCiudad);
+        const dataCiudad = labelsCiudad.map(c => actividadesPorCiudad[c]);
+
+        // Si ya existe, destruyo el gráfico anterior
+        if (graficoPorCiudad){
+            graficoPorCiudad.destroy();
+        }        
+
+        ContainerGraficoPorCiudad = document.getElementById('graficoActividadesPorCiudad').getContext('2d');
+        graficoPorCiudad = new Chart(ContainerGraficoPorCiudad, {
+            type: 'bar',
+            data: {
+                labels: labelsCiudad,
+                datasets: [{
+                    label: 'Actividades por ciudad',
+                    data: dataCiudad,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }
+            }
+        });
+
+        const tituloGraficoCiudad = document.getElementById("tituloGraficoCiudad");
+        const fechaIni = document.getElementById("fechaInicio").value;
+        const fechaFin = document.getElementById("fechaFin").value;
+
+        const ciudadSelect = document.getElementById("ciudadId");
+        const ciudadId = ciudadSelect.value;
+        const ciudadNombre = ciudadSelect.options[ciudadSelect.selectedIndex].text
+
+
+        if (fechaIni && fechaFin) {
+            tituloGraficoCiudad.textContent = `Actividades por Ciudad (${fechaIni} a ${fechaFin})`;
+            if(ciudadId) {
+                tituloGraficoCiudad.textContent = `Actividades En ${ciudadNombre} (${fechaIni} a ${fechaFin}) en ${ciudadNombre}`;
+            }
+        } else {
+            tituloGraficoCiudad.textContent = "Actividades por Ciudad (ultimos 7 dias)";
+        }
+        if(ciudadId){
+            tituloGraficoCiudad.textContent = `Actividades En ${ciudadNombre}`;
+        }
+    }
+</script>
+
+

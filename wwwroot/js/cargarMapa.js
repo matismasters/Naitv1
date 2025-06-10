@@ -1,32 +1,31 @@
 ﻿let MAP; // Variable global para el mapa
- function initMap() {
+function initMap() {
     var customStyles = [
-      {
-        featureType: "poi",
-        elementType: "all",
-        stylers: [
-          { visibility: "off" }
-        ]
-      },
-      {
-        featureType: "transit",
-        elementType: "all",
-        stylers: [
-          { visibility: "off" }
-        ]
-      },
-      {
-        featureType: "road.highway",
-        elementType: "labels.icon",
-        stylers: [
-          { visibility: "off" }
-        ]
-      }
+        {
+            featureType: "poi",
+            elementType: "all",
+            stylers: [
+                { visibility: "off" }
+            ]
+        },
+        {
+            featureType: "transit",
+            elementType: "all",
+            stylers: [
+                { visibility: "off" }
+            ]
+        },
+        {
+            featureType: "road.highway",
+            elementType: "labels.icon",
+            stylers: [
+                { visibility: "off" }
+            ]
+        }
     ];
 
-    // Inicialización del mapa, centrado en Madrid como ejemplo
     MAP = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: -34.471388888889, lng: -57.844166666667},
+        center: { lat: -34.471388888889, lng: -57.844166666667 },
         zoom: 14,
         disableDefaultUI: true,
         styles: customStyles,
@@ -48,35 +47,35 @@
 
     // Comprobar si el navegador soporta Geolocalización
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          // Obtenemos la posición actual del usuario
-          var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                // Obtenemos la posición actual del usuario
+                var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
 
-          // Centra el mapa en la ubicación actual
-          MAP.setCenter(pos);
+                // Centra el mapa en la ubicación actual
+                MAP.setCenter(pos);
 
-          // Coloca un marcador (pin) en la ubicación actual
-          new google.maps.marker.AdvancedMarkerElement({
-            position: pos,
-            map: MAP,
-            title: 'Aqui estoy'
-          });
-        },
-        function() {
-          handleLocationError(true, MAP.getCenter());
-        }
-      );
+                // Coloca un marcador (pin) en la ubicación actual
+                new google.maps.marker.AdvancedMarkerElement({
+                    position: pos,
+                    map: MAP,
+                    title: 'Aqui estoy'
+                });
+            },
+            function () {
+                handleLocationError(true, MAP.getCenter());
+            }
+        );
     } else {
-      // El navegador no soporta Geolocalización
-      handleLocationError(false, MAP.getCenter());
+        // El navegador no soporta Geolocalización
+        handleLocationError(false, MAP.getCenter());
     }
-  }
+}
 
-  // Función para cargar la API de Google Maps de forma programática
+// Función para cargar la API de Google Maps de forma programática
 function loadGoogleMapsAPI() {
     var apiKey = GOOGLE_MAPS_API_KEY; // Reemplaza con tu clave de API
     var script = document.createElement('script');
@@ -88,7 +87,6 @@ function loadGoogleMapsAPI() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('esta corriendo');
     // Llama a la función para cargar la API de Google Maps
     loadGoogleMapsAPI();
 })
@@ -104,31 +102,31 @@ class RegistroParticipacionController {
     registrarParticipacion() {
         console.log('registrarParticipacion() llamado');
 
-        
+
         // Comprobar si el navegador soporta Geolocalización
         if (navigator.geolocation) {
-              navigator.geolocation.getCurrentPosition(function(position) {
-                    // Obtenemos la posición actual del usuario
-                    var pos = {
-                        lat: position.coords.latitude,
-                        lon: position.coords.longitude
-                    };
+            navigator.geolocation.getCurrentPosition(function (position) {
+                // Obtenemos la posición actual del usuario
+                var pos = {
+                    lat: position.coords.latitude,
+                    lon: position.coords.longitude
+                };
 
-                    fetch(`/RegistroActividades/Participar?latUsuario=${pos.lat}&lonUsuario=${pos.lon}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
+                fetch(`/RegistroActividades/Participar?latUsuario=${pos.lat}&lonUsuario=${pos.lon}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
                     .then(response => response.json())
                     .then((datos) => {
                         console.log('Participación registrada:', datos);
                     })
                     .catch(error => console.error('Error al registrar la participacion:', error));
 
-                    console.log(pos);
-              });
-        } 
+                console.log(pos);
+            });
+        }
     }
 }
 
@@ -152,7 +150,9 @@ class Observado {
         fetch('/Actividades/Visibles')
             .then(response => response.json())
             .then((datos) => {
+                console.log('Actividades recibidas:', datos);
                 this.actividades = datos;
+                //console.log(datos);
                 this.notificarObservadores(datos);
             })
             .catch(error => console.error('Error al cargar las actividades:', error));
@@ -187,17 +187,18 @@ class ObservadorMapa {
         this.borrarMarcadores();
         // Actividades
         actividades.forEach((actividad) => {
-              // 2) Crea un <img> y ajusta sus atributos (src, tamaño, posición CSS, etc.)
-              const imgIcon = document.createElement("img");
-              imgIcon.src = actividad.urlImagenMarcador;
-              imgIcon.style.width = "100px";   // Ancho en px
-              imgIcon.style.height = "100px";  // Alto en px
-              // Si quieres que el “pico” quede centrado en la base de la imagen, puedes
-              // usar margin o position absoluta; pero AdvancedMarker te ancla el elemento
-              // completo en el centro de su caja, así que si la punta está abajo, puedes
-              // desplazarlo con CSS. Por ejemplo:
-              imgIcon.style.transform = "translate(-50%, -100%)";
-              imgIcon.style.position  = "absolute"; // para que el transform funcione bien
+            // 2) Crea un <img> y ajusta sus atributos (src, tamaño, posición CSS, etc.)
+            const imgIcon = document.createElement("img");
+            imgIcon.src = actividad.urlImagenMarcador;
+            imgIcon.style.width = "100px";   // Ancho en px
+            imgIcon.style.height = "100px";  // Alto en px
+
+            // Para que el “pico” quede centrado en la base de la imagen, puedes
+            // usar margin o position absoluta; pero AdvancedMarker te ancla el elemento
+            // completo en el centro de su caja, así que si la punta está abajo, puedes
+            // desplazarlo con CSS. Por ejemplo:
+            imgIcon.style.transform = "translate(-50%, -100%)";
+            imgIcon.style.position = "absolute"; // para que el transform funcione bien
 
             let marker = new google.maps.marker.AdvancedMarkerElement({
                 position: { lat: parseFloat(actividad.lat), lng: parseFloat(actividad.lon) },
@@ -207,7 +208,7 @@ class ObservadorMapa {
             });
 
             // Agregar evento de clic al marcador
-            marker.addListener('gmp-click', function () {
+            marker.addListener('click', () => {
                 // Configurar el contenido del modal dinámicamente
                 document.getElementById('modalTitle').innerText = actividad.tipoActividad;
                 document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
@@ -226,80 +227,3 @@ class ObservadorMapa {
         this.markers = [];
     }
 }
-
-
-
-///////////////////////////
-// Implementación mínima
-// del Patrón Observador con Herencia
-///////////////////////////
-
-//// Observador base: garantiza método actualizar
-//class Observador {
-//  constructor(nombre) {
-//    this.nombre = nombre;
-//  }
-
-//  actualizar(datos) {
-//    console.log(`${this.nombre}:`, datos);
-//  }
-//}
-
-//// Ejemplo de herencia: un observador especializado
-//class ObservadorConcreto extends Observador {
-//  constructor(nombre, prefijo) {
-//    super(nombre);
-//    this.prefijo = prefijo;
-//  }
-
-//  actualizar(datos) {
-//    // Lógica propia antes o después de llamar al padre
-//    console.log(`${this.prefijo} ${this.nombre} recibió:`, datos);
-//    // Opcional: llamar al método del padre
-//    super.actualizar(datos);
-//  }
-//}
-
-//// Sujeto (Subject)
-//class Sujeto {
-//  constructor() {
-//    this.observadores = [];
-//  }
-
-//  suscribir(observador) {
-//    if (!(observador instanceof Observador)) {
-//      throw new Error('El observador debe ser una instancia de Observador');
-//    }
-//    this.observadores.push(observador);
-//  }
-
-//  desuscribir(observador) {
-//    this.observadores = this.observadores.filter(o => o !== observador);
-//  }
-
-//  notificar(datos) {
-//    this.observadores.forEach(o => o.actualizar(datos));
-//  }
-//}
-
-//// Uso mínimo:
-//const sujeto = new Sujeto();
-
-//// Instancias de Observador base y ObservadorConcreto
-//const observadorA = new Observador('Observador A');
-//const observadorB = new ObservadorConcreto('Observador B', '[Prefijo]');
-
-//// Registrar observadores
-//sujeto.suscribir(observadorA);
-//sujeto.suscribir(observadorB);
-
-//// Notificar a todos
-//sujeto.notificar('¡Evento con herencia!');
-
-//// Desregistrar uno
-//sujeto.desuscribir(observadorA);
-
-//// Volver a notificar
-//sujeto.notificar('¡Segundo evento!');
-
-

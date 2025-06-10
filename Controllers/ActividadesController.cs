@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Naitv1.Models;
 using Naitv1.Data;
 using Naitv1.Helpers;
-using System.Net.Http.Json;
+using Naitv1.Models;
+using Naitv1.Services;
 using NetTopologySuite.Geometries;
 using System.Text.Json.Nodes;
 
@@ -12,10 +12,12 @@ namespace Naitv1.Controllers
     public class ActividadesController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly ServicioCiudad _servicioCiudad;
 
-        public ActividadesController(AppDbContext context)
+        public ActividadesController(AppDbContext context, ServicioCiudad servicioCiudad)
         {
             _context = context;
+            _servicioCiudad = servicioCiudad;
         }
 
         [HttpGet]
@@ -31,8 +33,9 @@ namespace Naitv1.Controllers
         public IActionResult Visibles()
         {
             List<Actividad> actividades = _context.Actividades
-                .Where(a => a.Activa == true)
+                .Include(a => a.Ciudad)
                 .Include(a => a.Anfitrion)
+                .Where(a => a.Activa == true)                            
                 .ToList();
 
             List<JsonObject> jsonMarcadores = new List<JsonObject>();
@@ -55,26 +58,30 @@ namespace Naitv1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(int idActividad, string mensajeDelAnfitrion, string tipoActividad, float lat, float lon, float? latSuperAdmin, float? lonSuperAdmin, string? submit)
+        public async Task<IActionResult> Index(int idActividad, string mensajeDelAnfitrion, string tipoActividad, float lat, float lon, float? latSuperAdmin, float? lonSuperAdmin, string? submit)
         {
             Usuario usuario = UsuarioLogueado.Usuario(HttpContext.Session);
             Actividad actividad;
+
+            var ciudad = await _servicioCiudad.ObtenerCiudad(lat, lon);
 
             if (idActividad != 0)
             {
                 actividad = _context.Actividades.Find(idActividad) ?? new Actividad();
                 actividad.MensajeDelAnfitrion = mensajeDelAnfitrion;
-                actividad.TipoActividad = tipoActividad;
+                actividad.TipoActividad = tipoActividad;               
 
                 _context.Actividades.Update(actividad);
             } else
             {
                 actividad = new Actividad();
+
                 actividad.MensajeDelAnfitrion = mensajeDelAnfitrion;
                 actividad.TipoActividad = tipoActividad;
  
                 if (latSuperAdmin != null && lonSuperAdmin != null && UsuarioLogueado.esSuperAdmin(HttpContext.Session))
-                {
+                {                                      
+
                     actividad.Lat = (float) latSuperAdmin;
                     actividad.Lon = (float) lonSuperAdmin;
                 }
@@ -83,6 +90,10 @@ namespace Naitv1.Controllers
                     actividad.Lat = lat;
                     actividad.Lon = lon;
                 }
+
+                ciudad = await _servicioCiudad.ObtenerCiudad(actividad.Lat, actividad.Lon);
+                actividad.Ciudad = ciudad;
+
                 actividad.Ubicacion = new Point(actividad.Lon, actividad.Lat) { SRID = 4326 };
                 actividad.AnfitrionId = usuario.Id;
                 _context.Actividades.Add(actividad);

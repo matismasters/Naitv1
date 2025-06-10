@@ -37,6 +37,12 @@ namespace Naitv1.Migrations
                     b.Property<int>("AnfitrionId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CiudadId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechCreado")
+                        .HasColumnType("datetime2");
+
                     b.Property<float>("Lat")
                         .HasColumnType("real");
 
@@ -58,7 +64,73 @@ namespace Naitv1.Migrations
 
                     b.HasIndex("AnfitrionId");
 
+                    b.HasIndex("CiudadId");
+
+                    b.ToTable("Actividades");
                     b.ToTable("Actividades", (string)null);
+                });
+
+            modelBuilder.Entity("Naitv1.Models.Partner", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Ciudad")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CreadorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Departamento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direccion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("EsVerificado")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LogoUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Pais")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Telefono")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreadorId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Telefono")
+                        .IsUnique();
+
+                    b.ToTable("Partners");
                 });
 
             modelBuilder.Entity("Naitv1.Models.RegistroNotificacion", b =>
@@ -129,6 +201,22 @@ namespace Naitv1.Migrations
                     b.ToTable("RegistrosParticipacion", (string)null);
                 });
 
+            modelBuilder.Entity("Naitv1.Models.Ciudad", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ciudades");
+                });
+
             modelBuilder.Entity("Naitv1.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -139,7 +227,7 @@ namespace Naitv1.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Estado")
                         .IsRequired()
@@ -159,6 +247,9 @@ namespace Naitv1.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Usuarios", (string)null);
                 });
 
@@ -170,7 +261,31 @@ namespace Naitv1.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Naitv1.Models.Ciudad", "Ciudad")
+                        .WithMany("Actividades")
+                        .HasForeignKey("CiudadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Anfitrion");
+
+                    b.Navigation("Ciudad");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.Ciudad", b =>
+                {
+                    b.Navigation("Actividades");
+                });
+
+            modelBuilder.Entity("Naitv1.Models.Partner", b =>
+                {
+                    b.HasOne("Naitv1.Models.Usuario", "Creador")
+                        .WithMany()
+                        .HasForeignKey("CreadorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creador");
                 });
 
             modelBuilder.Entity("Naitv1.Models.RegistroNotificacion", b =>
