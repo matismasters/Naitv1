@@ -1,0 +1,45 @@
+﻿@{
+	ViewData["Title"] = "Notificaciones";
+}
+
+﻿<div class="px-2">
+	<div class="container-fluid justify-content-around mb-4">
+		<div class="d-flex justify-content-between">
+			<h1>Moderación</h1>
+			<a href="/Moderacion/Index" class="btn btn-primary">Volver</a>
+		</div>
+		<h2>Usuarios</h2>
+	</div>
+
+	@foreach (Usuario usuario in ViewBag.usuarios)
+		{
+		if (usuario.Estado == "Activo")
+			{
+            <div class="card mb-2 text-decoration-none text-reset">
+                <div class="d-flex flex-column justify-content-between card-body text-info bg-dark rounded">
+                    <div class="mb-3">
+                        <h5 class="card-title">Id: @usuario.Id</h5>
+                        <p class="card-text">Nombre: @usuario.Nombre</p>
+                        <p class="card-text">Email: @usuario.Email</p>
+                        <p class="card-text">TipoUsuario: @usuario.TipoUsuario</p>
+                    </div>
+
+                    <form asp-action="BloquearUsuario"
+                          asp-controller="Moderacion"
+                          method="post"
+                          class="d-inline"
+                          onsubmit="return confirmarBloqueo()">
+                        <input type="hidden" name="id" value="@usuario.Id" />
+                        <button type="submit" class="btn btn-danger w-100">Bloquear</button>
+                    </form>
+                </div>
+            </div>
+			}			
+		}	
+</div>
+
+<script>
+	function confirmarBloqueo() {
+		return confirm("¿Estás seguro de que quieres bloquear a este usuario?");
+	}
+</script>

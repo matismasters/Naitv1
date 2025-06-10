@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using Naitv1.Data;
 using Naitv1.Helpers;
 using Naitv1.Models;
@@ -62,28 +63,38 @@ namespace Naitv1.Controllers
 			}
 		}
 
-		public IActionResult Estadisticas()
-		{
+		[HttpGet]
+		public IActionResult BloquearUsuario()
+			{
 			if (UsuarioLogueado.esModerador(HttpContext.Session))
-			{
-				return View();
-			}
-			else
-			{
-				return RedirectToAction("Index", "Home");
-			}
-		}
+				{
+				List<Usuario> usuarios = _context.Usuarios
+					.ToList();
 
-		public IActionResult Mapa()
-		{
-			if (UsuarioLogueado.esModerador(HttpContext.Session))
-			{
+				ViewBag.usuarios = usuarios;
+
 				return View();
+				}
+			return RedirectToAction("Index", "Home");
 			}
-			else
+
+		[HttpPost]
+		public IActionResult BloquearUsuario(int id)
 			{
-				return RedirectToAction("Index", "Home");
+			if (UsuarioLogueado.esModerador(HttpContext.Session))
+				{
+                Usuario usuario = _context.Usuarios
+                .Find(id)!;
+
+                if (usuario != null)
+                    {
+                    usuario.Estado = "Bloqueado";
+                    _context.SaveChanges();
+                    }
+
+				return RedirectToAction("BloquearUsuario", "Moderacion");
+                }
+			return RedirectToAction("Index", "Home");
 			}
-		}
 	}
 }
