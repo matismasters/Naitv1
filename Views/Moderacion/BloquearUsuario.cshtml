@@ -13,28 +13,25 @@
 
 	@foreach (Usuario usuario in ViewBag.usuarios)
 		{
-        if (usuario.Estado == "Activo")
-			{
-            <div class="card mb-2 text-decoration-none text-reset">
-                <div class="d-flex flex-column justify-content-between card-body text-info bg-dark rounded">
-                    <div class="mb-3">
-                        <h5 class="card-title">Id: @usuario.Id</h5>
-                        <p class="card-text">Nombre: @usuario.Nombre</p>
-                        <p class="card-text">Email: @usuario.Email</p>
-                        <p class="card-text">TipoUsuario: @usuario.TipoUsuario</p>
-                    </div>
-
-                    <form asp-action="BloquearUsuario"
-                          asp-controller="Moderacion"
-                          method="post"
-                          class="d-inline"
-                          onsubmit="return confirmarBloqueo()">
-                        <input type="hidden" name="id" value="@usuario.Id" />
-                        <button type="submit" class="btn btn-danger w-100">Bloquear</button>
-                    </form>
+        <div class="card mb-2 text-decoration-none text-reset">
+            <div class="d-flex flex-column justify-content-between card-body text-info bg-dark rounded">
+                <div class="mb-3">
+                    <h5 class="card-title">Id: @usuario.Id</h5>
+                    <p class="card-text">Nombre: @usuario.Nombre</p>
+                    <p class="card-text">Email: @usuario.Email</p>
+                    <p class="card-text">TipoUsuario: @usuario.TipoUsuario</p>
                 </div>
+
+                <form asp-action="BloquearUsuario"
+                        asp-controller="Moderacion"
+                        method="post"
+                        class="d-inline"
+                        onsubmit="return confirmarBloqueo()">
+                    <input type="hidden" name="id" value="@usuario.Id" />
+                    <button type="submit" class="btn btn-danger w-100">Bloquear</button>
+                </form>
             </div>
-			}			
+        </div>		
 		}	
 </div>
 

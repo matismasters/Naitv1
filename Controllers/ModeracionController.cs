@@ -69,6 +69,7 @@ namespace Naitv1.Controllers
 			if (UsuarioLogueado.esModerador(HttpContext.Session))
 				{
 				List<Usuario> usuarios = _context.Usuarios
+					.Where(usuario => usuario.Estado == "Activo")
 					.ToList();
 
                 usuarios.RemoveAll(usuario => usuario.Id == UsuarioLogueado.Usuario(HttpContext.Session).Id);
@@ -80,7 +81,23 @@ namespace Naitv1.Controllers
 			return RedirectToAction("Index", "Home");
 			}
 
-		[HttpPost]
+        [HttpGet]
+        public IActionResult UsuariosBloqueados()
+            {
+            if (UsuarioLogueado.esModerador(HttpContext.Session))
+                {
+				List<Usuario> usuariosBloqueados = _context.Usuarios						
+					.Where(usuario => usuario.Estado == "Bloqueado")
+					.ToList();    
+
+                ViewBag.usuariosBloqueados = usuariosBloqueados;
+
+                return View();
+                }
+            return RedirectToAction("Index", "Home");
+            }
+
+        [HttpPost]
 		public IActionResult BloquearUsuario(int id)
 			{
 			if (UsuarioLogueado.esModerador(HttpContext.Session))
