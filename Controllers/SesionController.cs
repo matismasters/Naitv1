@@ -28,17 +28,25 @@ namespace Naitv1.Controllers
             ).ToList();
 
             if (resultado.Count > 0)
-            {
+                {
                 Usuario usuario = resultado.First();
+
+                if (usuario.Estado == "Bloqueado")
+                {
+                    return Redirect("/Sesion/CuentaBloqueada");
+                }
+                
                 UsuarioLogueado.loguearUsuario(HttpContext.Session, usuario);
 
                 if (usuario.TipoUsuario == "moderador")
 				{
 					return RedirectToAction("Index", "Moderacion");
-				} else {
+				} 
+                else 
+                {
 					return Redirect("/");
 				}
-
+               
             } else
             {
                 return Redirect("/Sesion/ErrorDeInicio");
@@ -96,6 +104,16 @@ namespace Naitv1.Controllers
             return View();
         }
 
+        public IActionResult CuentaBloqueada()
+            {
+            if (UsuarioLogueado.estaLogueado(HttpContext.Session))
+                {
+                return RedirectToAction("Index", "Home");
+                }
+
+            return View();
+            }
+
         public IActionResult CuentaCreadaConExito()
         {
             if (UsuarioLogueado.estaLogueado(HttpContext.Session) == false)
@@ -125,6 +143,7 @@ namespace Naitv1.Controllers
                 usuario.Nombre = nombre;
                 usuario.Password = MD5Libreria.Encriptar(password);
                 usuario.TipoUsuario = "basico";
+                usuario.Estado = "Activo";
 
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
@@ -153,6 +172,7 @@ namespace Naitv1.Controllers
                 usuario.Nombre = nombre;
                 usuario.Password = MD5Libreria.Encriptar(password);
                 usuario.TipoUsuario = "anfitrion";
+                usuario.Estado = "Activo";
 
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();

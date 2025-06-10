@@ -63,36 +63,32 @@
         </div>
     </div>
 
-    <footer class="navbar fixed-bottom navbar-dark bg-dark">
-        <div class="container-fluid justify-content-around">
-            @if (UsuarioLogueado.esModerador(Context.Session))
-            {
-                <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Index">H</a>
-                <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Notificaciones">N</a>
-                <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Mapa">M</a>
-                <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Estadisticas">E</a>
-            }
-            else
-            {
-                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">H</a>
-                <a class="nav-link text-white" asp-area="" asp-controller="Actividades" asp-action="Index">CA</a>
-                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Configuracion">Conf</a>
-                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Ayuda">?</a>
-                @if (UsuarioLogueado.esSuperAdmin(Context.Session))
-                {
+<footer class="navbar fixed-bottom navbar-dark bg-dark">
+    <div class="container-fluid justify-content-around">
+    @if (UsuarioLogueado.esModerador(Context.Session))
+    {
+        <p class="text-white">Nait ™</p>           
+    }
+    else 
+    {     
+        <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">H</a>
+        <a class="nav-link text-white" asp-area="" asp-controller="Actividades" asp-action="Index">CA</a>
+        <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Configuracion">Conf</a>
+        <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Ayuda">?</a>
+        @if (UsuarioLogueado.esSuperAdmin(Context.Session))
+        {
+            <a class="nav-link text-white" asp-area="" asp-controller="PanelAdmin" asp-action="Index">Rp</a>
+            <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="Index">Admin Partners</a>
+        }
+        @if (UsuarioLogueado.esPartner(Context.Session))
+        {
+            <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="EditarMiPerfil">Editar Info de Partner</a>
 
-                    <a class="nav-link text-white" asp-area="" asp-controller="PanelAdmin" asp-action="Index">Rp</a>
-                    <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="Index">Admin Partners</a>
-                }
-                @if (UsuarioLogueado.esPartner(Context.Session))
-                {
-                    <a class="nav-link text-white" asp-area="" asp-controller="Partners" asp-action="EditarMiPerfil">Editar Info de Partner</a>
-
-                    <span> Editar Partner</span>
-                }
-            }
-        </div>
-    </footer>
+            <span> Editar Partner</span>
+        }
+    }
+    </div>
+</footer>
 
     <script src="~/js/api_key.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
