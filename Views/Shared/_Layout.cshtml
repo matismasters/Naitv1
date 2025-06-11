@@ -72,7 +72,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modalBody">
-                    <form method="post" action="/RegistroReporte/ReportarActividad" id="formReportarActividad">
+                    <form id="formReportarActividad" method="post">
                         <input type="hidden" name="idActividad" id="idActividad"/>
 
                         <label for="motivo" class="form-label">Motivo</label>
@@ -82,9 +82,10 @@
                                 <option value="@motivo">@motivo</option>
                             }
                         </select>
-
+                        <br />
                         <label for="descripcion" class="form-label">Explique la razón de su reporte</label>
-                        <input type="text" id="descripcion" class="form-control" placeholder="Escriba aquí. . ." />
+                        <input type="text" id="descripcion" name="descripcion" class="form-control" placeholder="Escriba aquí. . ." />
+                        <br />
                         <button type="submit" class="btn btn-secondary form-submit" id="reportarActividad">Enviar Reporte</button>
                     </form>
                 </div>
@@ -92,11 +93,21 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalFinal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-body" id="reportEndBody">
+                    <!-- Modal de alerta de envio -->
+                </div>
+            </div>
+        </div>
+    </div>
 
-    @if (UsuarioLogueado.esModerador(Context.Session))
-    {
-        <footer class="navbar fixed-bottom navbar-dark bg-dark">
-            <div class="container-fluid justify-content-around">
+
+    <footer class="navbar fixed-bottom navbar-dark bg-dark">
+        <div class="container-fluid justify-content-around">
+            @if (UsuarioLogueado.esModerador(Context.Session))
+                { 
                 <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Index">H</a>
                 <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Notificaciones">N</a>
                 <a class="nav-link text-white" asp-area="" asp-controller="Moderacion" asp-action="Mapa">M</a>
@@ -128,6 +139,39 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $('#formReportarActividad').submit(function (e) {
+                console.log('llegando a la funcion ajax');
+                e.preventDefault(); // Evita el envío del formulario por defecto
+
+                let modalOpen = bootstrap.Modal.getInstance(document.getElementById('reportarActModal'));
+                modalOpen.hide(); //Se cierra el modal del formulario
+
+                let modalEnd = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalFinal'));//Modal del mensaje final
+
+                $.ajax({
+                    url: '@Url.Action("ReportarActividad", "RegistroReporte")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (respuesta) {
+                        if (respuesta.exito) {
+                            document.getElementById('reportEndBody').innerHTML = '<div> <strong>Reporte enviado</strong>, gracias por su ayuda.</div> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">X</button>';
+                            modalEnd.show();
+                        } else {
+                            document.getElementById('reportEndBody').innerHTML = '<div> <strong>Error al enviar el reporte</strong>, usted ya ha hecho un reporte sobre esta actividad.</div> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">X</button>'
+                            modalEnd.show();
+                        }
+                    },
+                    error: function () {
+                        document.getElementById('reportEndBody').innerHTML = '<div> <strong>Error al enviar el reporte</strong>, no se pudo procesar la petición.</div> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">X</button>';
+                        modalEnd.show();
+                    }
+
+                })
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

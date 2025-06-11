@@ -32,21 +32,23 @@ namespace Naitv1.Controllers
 
             if (notificacion != null)
             {
-                return Json(new { error = "Ya hay un reporte creado" });
+                return Json(new { exito = false });
             }
 
+            Console.WriteLine(descripcion);
             RegistroNotificacion nuevoRegistro = new RegistroNotificacion
             {
                 ActividadId = idActividad,
                 UsuarioId = usuario.Id,
                 Motivo = motivo,
-                Descripcion = descripcion
+                Descripcion = descripcion,
+                EstadoNotificacion = "Pendiente",
             };
 
             _context.RegistroNotificaciones.Add(nuevoRegistro);
             _context.SaveChanges();
 
-            return Json(nuevoRegistro.Id);
+            return Json( new { exito = true });
         }
     }
 }
