@@ -212,10 +212,18 @@ class ObservadorMapa {
                 // Configurar el contenido del modal dinámicamente
                 document.getElementById('modalTitle').innerText = actividad.tipoActividad;
                 document.getElementById('modalBody').innerText = actividad.mensajeDelAnfitrion;
-
+                
                 // Mostrar el modal de Bootstrap
                 let modal = new bootstrap.Modal(document.getElementById('actividadModal'));
                 modal.show();
+                document.getElementById('reportarActMod').addEventListener('click', function () {
+                    let modalOpen = bootstrap.Modal.getInstance(document.getElementById('actividadModal'));
+                    modalOpen.hide(); // Cerrar el modal de actividad
+
+                    let modalReporte = new bootstrap.Modal(document.getElementById('reportarActModal'));
+                    modalReporte.show(); // Abrir modal de reporte
+                    document.getElementById('idActividad').value = actividad.id;
+                })
             });
 
             this.markers.push(marker);
