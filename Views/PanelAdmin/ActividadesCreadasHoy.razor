@@ -1,0 +1,68 @@
+﻿@namespace Naitv1.Views.PanelAdmin
+@inject NavigationManager NavigationManager
+
+@using System.Net.Http.Json
+
+
+@if (actividadesHoy > 0)
+{
+    <div class="p-2 border-2 bg-black mt-2 text-center">
+        <h4 class="text-white">
+            <span class=""> Act. Creadas Hoy @actividadesHoy</span>
+        </h4>
+
+    </div>
+}
+
+@code {
+
+    private int actividadesHoy; // Esto seria como useState, variables privadas dentro de @code
+
+    protected override async Task OnInitializedAsync() // Esto es el equivalente al UseEffect de React js
+    {
+        await ObtenerCantidadActividadesCreadasHoy(); // se llama la primera vez
+
+        _ = RefrescarCadaMedianoche(); // y despues en la medianoche
+    }
+
+    private async Task RefrescarCadaMedianoche()
+    {
+        while (true)
+        {
+            DateTime ahora = DateTime.Now;
+            
+            // Próxima medianoche
+            DateTime proximaMedianoche = ahora.Date.AddDays(1);
+            var msHastaMedianoche = (proximaMedianoche - ahora).TotalMilliseconds;
+
+            // Espera hasta la próxima medianoche
+            await Task.Delay((int)msHastaMedianoche);
+
+            await ObtenerCantidadActividadesCreadasHoy();
+
+            // Luego, espera siempre 24hs
+            await Task.Delay(TimeSpan.FromDays(1));
+        }
+    }
+
+    private async Task ObtenerCantidadActividadesCreadasHoy()
+    {
+        try
+        {
+            var url = NavigationManager.BaseUri + "PanelAdmin/ObtenerConteoHoy";
+            actividadesHoy = await Http.GetFromJsonAsync<int>(url);
+            
+            StateHasChanged();
+            
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    [Inject]
+    public HttpClient Http { get; set; } // Esto se inyecta para hacer llamadas HTTP al backend, queda raro igual.
+
+}
+

@@ -35,6 +35,15 @@ namespace Naitv1.Controllers
             return View();
         }
 
+        public async Task<IActionResult> ObtenerConteoHoy()
+        {
+            int actividadesCreadasHoy = await _context.Actividades
+                .Where(a => a.FechCreado.Date == DateTime.Today)
+                .CountAsync();
+
+            return Json(actividadesCreadasHoy);
+        }
+
         public async Task<IActionResult> ActividadesActivas()
         {
             int cantidadActivas = await _context.Actividades

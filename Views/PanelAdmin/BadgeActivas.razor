@@ -14,7 +14,6 @@
     </div>
 }
 
-
 @code {
 
     private int CantidadActivas; // Esto seria como useState, variables privadas dentro de @code
@@ -22,10 +21,7 @@
     protected override async Task OnInitializedAsync() // Esto es el equivalente al UseEffect de React js
     {
         await ObtenerCantidadActivas(); // se llama la primera vez
-
-        // Actualizar cada 10 seg
-        //var timer = new System.Threading.Timer(
-        //    async _ => await ObtenerCantidadActivas(), null, 10000, 10000);
+        
         _ = RefrescarCada10s();
     }
 
@@ -36,9 +32,7 @@
             await Task.Delay(10000);
             await ObtenerCantidadActivas();
         }
-    }
-
-    
+    }    
 
     private async Task ObtenerCantidadActivas()
     {
@@ -49,7 +43,7 @@
 
             //CantidadActivas = await Http.GetFromJsonAsync<int>("/PanelAdmin/ActividadesActivas");
             StateHasChanged();
-            Console.WriteLine($"Cantidad actualizada: {CantidadActivas}");
+            //Console.WriteLine($"Cantidad actualizada: {CantidadActivas}");
         }
         catch (Exception ex)
         {
