@@ -23,15 +23,7 @@ namespace Naitv1.Controllers
         public async Task<ActionResult> Index()
         {            
 
-            FiltroDashboard filtro = new FiltroDashboard();
-
-            // Para testear el metodo a ver si anda con filtros
-            /*FiltroDashboard filtro = new FiltroDashboard
-            {
-                FechaInicio = new DateTime(2025, 5, 26),
-                FechaFin = DateTime.Now,
-                CiudadId = 10 // Montevideo
-            };*/
+            FiltroDashboard filtro = new FiltroDashboard();            
 
             var datos = await _servicioDashboard.ObtenerMetrics(filtro); //le paso un filtro vacio
             List<Ciudad> ciudades = await _context.Ciudades.ToListAsync();
@@ -41,6 +33,15 @@ namespace Naitv1.Controllers
             ViewBag.ActividadesPorCiudad = datos.ActividadesPorCiudad;
 
             return View();
+        }
+
+        public async Task<IActionResult> ActividadesActivas()
+        {
+            int cantidadActivas = await _context.Actividades
+                .Where(a => a.Activa == true)
+                .CountAsync();
+
+            return Json(cantidadActivas);                
         }
 
         public async Task<IActionResult> Filtrar([FromBody] FiltroDashboard filtro)

@@ -1,0 +1,63 @@
+﻿@namespace Naitv1.Views.PanelAdmin
+@inject NavigationManager NavigationManager
+
+@using System.Net.Http.Json
+
+
+@if (CantidadActivas > 0)
+{
+    <div class="p-2 border-2 bg-black mt-2 text-center">
+        <h4 class="text-white">
+            <span class=""> Activas @CantidadActivas</span>
+        </h4>        
+
+    </div>
+}
+
+
+@code {
+
+    private int CantidadActivas; // Esto seria como useState, variables privadas dentro de @code
+
+    protected override async Task OnInitializedAsync() // Esto es el equivalente al UseEffect de React js
+    {
+        await ObtenerCantidadActivas(); // se llama la primera vez
+
+        // Actualizar cada 10 seg
+        //var timer = new System.Threading.Timer(
+        //    async _ => await ObtenerCantidadActivas(), null, 10000, 10000);
+        _ = RefrescarCada10s();
+    }
+
+    private async Task RefrescarCada10s()
+    {
+        while (true)
+        {
+            await Task.Delay(10000);
+            await ObtenerCantidadActivas();
+        }
+    }
+
+    
+
+    private async Task ObtenerCantidadActivas()
+    {
+        try
+        {
+            var url = NavigationManager.BaseUri + "PanelAdmin/ActividadesActivas";
+            CantidadActivas = await Http.GetFromJsonAsync<int>(url);
+
+            //CantidadActivas = await Http.GetFromJsonAsync<int>("/PanelAdmin/ActividadesActivas");
+            StateHasChanged();
+            Console.WriteLine($"Cantidad actualizada: {CantidadActivas}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    [Inject]
+    public HttpClient Http { get; set; } // Esto se inyecta para hacer llamadas HTTP al backend, queda raro igual.
+
+}
