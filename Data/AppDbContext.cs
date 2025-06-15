@@ -14,6 +14,7 @@ namespace Naitv1.Data
         public DbSet<RegistroEmail> RegistroEmails { get; set; }
         public DbSet<ActividadesUsuarios> ActividadesUsuarios { get; set; }
         public DbSet<Ciudad> Ciudades { get; set; } // Asegurate de incluirlo también
+        public DbSet<ConfiguracionReporte> ConfiguracionReportes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

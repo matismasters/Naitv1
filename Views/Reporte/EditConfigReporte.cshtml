@@ -1,0 +1,81 @@
+﻿@model Naitv1.Models.ConfiguracionReporte
+@using System
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Editar Configuración del Reporte";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">@ViewData["Title"]</h2>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <form asp-action="EditConfigReporte" method="post">
+            @Html.AntiForgeryToken()
+
+            <input asp-for="Id" type="hidden" />
+
+
+            <!-- Campo oculto para el ID si lo necesitas -->
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label asp-for="DiaObjetivo" class="form-label"></label>
+                <select asp-for="DiaObjetivo" asp-items="@(new SelectList(Enum.GetNames(typeof(DayOfWeek))))" class="form-select"></select>
+                <span asp-validation-for="DiaObjetivo" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Hora" class="form-label"></label>
+                <input asp-for="Hora" type="number" min="0" max="23" class="form-control" />
+                <span asp-validation-for="Hora" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Minuto" class="form-label"></label>
+                <input asp-for="Minuto" type="number" min="0" max="59" class="form-control" />
+                <span asp-validation-for="Minuto" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Destinatario" class="form-label"></label>
+                <input asp-for="Destinatario" type="email" class="form-control" />
+                <span asp-validation-for="Destinatario" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Asunto" class="form-label"></label>
+                <input asp-for="Asunto" class="form-control" />
+                <span asp-validation-for="Asunto" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+</html>

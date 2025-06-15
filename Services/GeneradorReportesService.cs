@@ -19,7 +19,7 @@ namespace Naitv1.Services
         {
             string html = GenerarHtmlConReporte();
 
-            var registro = new RegistroEmail
+            RegistroEmail registro = new RegistroEmail
             {
                 Destinatario = desitinatario,
                 Asunto = asunto,

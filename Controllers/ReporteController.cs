@@ -7,6 +7,7 @@ using Naitv1.Models;
 using Naitv1.Models.Dto;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
+using System.Text.Json;
 
 namespace Naitv1.Controllers
 {
@@ -17,13 +18,15 @@ namespace Naitv1.Controllers
         private readonly pdfServices _pdfServices;
         private readonly IEmailServices _emailServices;
         private readonly IActividadRepository _actividadRepository;
-        public ReporteController(AppDbContext context,GeneradorReportesService reporteService, pdfServices pdfServices, IEmailServices emailServices, IActividadRepository actividadRepository)
+        private readonly ConfiguracionReporteService _configuracionReporteService;
+        public ReporteController(AppDbContext context,GeneradorReportesService reporteService, pdfServices pdfServices, IEmailServices emailServices, IActividadRepository actividadRepository, ConfiguracionReporteService configService)
         {
             _context = context;
             _reporteService = reporteService;
             _pdfServices = pdfServices;
             _emailServices = emailServices;
             _actividadRepository = actividadRepository;
+            _configuracionReporteService = configService;
         }
 
         public IActionResult Imprimir()
@@ -147,7 +150,31 @@ namespace Naitv1.Controllers
 			return File(csvBytes, "text/csv", "actividades_filtradas.csv");
 		}
 
-		
+
+        public IActionResult EditConfigReporte()
+        {
+            ///va a mostrar la ultima fecha que se programo
+            var config = _configuracionReporteService.Obtener();
+            return View(config);
+        }
+
+        [HttpPost]
+        public IActionResult EditConfigReporte(ConfiguracionReporte config)
+        {
+           
+            Console.WriteLine("Post recibido: " + JsonSerializer.Serialize(config));
+               
+
+            if (ModelState.IsValid)
+            {
+                Console.WriteLine("Los datos ingresados no son validos");
+            }
+
+            _configuracionReporteService.Guardar(config);
+            return RedirectToAction("EditConfigReporte");
+
+        }
+
 
     }
 

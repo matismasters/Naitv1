@@ -8,27 +8,30 @@ namespace Naitv1.Jobs
     public class ReporteSemanalJob : IJob
     {
         private readonly GeneradorReportesService _generadorReportesService;
+        private readonly ConfiguracionReporteService _configReporteService;
 
-        // Inyectamos el servicio GeneradorReportesService
-        public ReporteSemanalJob(GeneradorReportesService generadorReportesService)
+        public ReporteSemanalJob(GeneradorReportesService generadorReportesService,ConfiguracionReporteService configReporteService)
         {
             _generadorReportesService = generadorReportesService;
+            _configReporteService = configReporteService;
         }
 
         public Task Execute(IJobExecutionContext context)
         {
-            // Obtener la fecha programada (lunes a las 9 AM)
-            DateTime fechaProgramada = DateTime.Now.Date.AddDays(1); // Fecha del lunes
-            while (fechaProgramada.DayOfWeek != DayOfWeek.Monday)
-            {
-                fechaProgramada = fechaProgramada.AddDays(1); // Sumar días hasta llegar al lunes
-            }
-            fechaProgramada = fechaProgramada.AddHours(9); // Ajustar la hora a las 9 AM
 
-            string destinatario = "Nelsonalvarez_2001@hotmail.com";
-            string asunto = "Resumen Semanal de KPIs";
-            _generadorReportesService.CrearRegistro(fechaProgramada, destinatario, asunto);
+            ///La logica es que apartir de DateTime.Now.Date, es decir, la fecha de hoy (con hora en 00:00), 
+            ///y a partir de ahí busca el próximo día que coincida con el config.DiaObjetivo
+            var config = _configReporteService.Obtener();
 
+            DayOfWeek dia = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), config.DiaObjetivo);
+            DateTime fecha = DateTime.Now.Date;
+
+            while (fecha.DayOfWeek != dia)
+                fecha = fecha.AddDays(1);
+
+            fecha = fecha.AddHours(config.Hora).AddMinutes(config.Minuto);
+
+            _generadorReportesService.CrearRegistro(fecha, config.Destinatario, config.Asunto);
             return Task.CompletedTask;
         }
     }

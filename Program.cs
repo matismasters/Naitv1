@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Naitv1.Data;
 using Naitv1.Services;
 using DinkToPdf;
@@ -24,7 +24,7 @@ builder.Services.AddScoped<GeneradorReportesService>();
 // Registrar el job ReporteSemanalJob
 builder.Services.AddScoped<IJob, ReporteSemanalJob>();
 
-// Registrar DinkToPdf para la conversi�n a PDF
+// Registrar DinkToPdf para la conversión a PDF
 var context = new CustomAssemblyLoadContext();
 context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "wkhtmltox", "libwkhtmltox.dll"));
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
@@ -42,7 +42,7 @@ builder.Services.AddScoped<IActividadRepository, ActividadRepository>();
 // Configurar Quartz.NET
 builder.Services.AddQuartz(q =>
 {
-    // Registrar un JobFactory personalizado para permitir la inyecci�n de dependencias en los jobs
+    // Registrar un JobFactory personalizado para permitir la inyección de dependencias en los jobs
     q.UseMicrosoftDependencyInjectionJobFactory();
 
     // Programar el trabajo ReporteSemanalJob
@@ -56,6 +56,15 @@ builder.Services.AddQuartz(q =>
         .WithCronSchedule("0 0 9 ? * MON") // Cron expression para lunes a las 9 AM
         .StartAt(DateTimeOffset.Now));
 });
+
+// Registrar servicios como GeneradorReportesService
+builder.Services.AddScoped<GeneradorReportesService>();
+
+// 🔧 Registrar ConfiguracionReporteService para el job
+builder.Services.AddScoped<ConfiguracionReporteService>();
+
+// Registrar el job ReporteSemanalJob
+builder.Services.AddScoped<IJob, ReporteSemanalJob>();
 
 // Configurar el scheduler de Quartz.NET
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
